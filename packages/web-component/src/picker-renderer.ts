@@ -40,6 +40,9 @@ export class PickerRenderer {
     this.#host.addEventListener('mouseover', this.#onHover);
     this.#host.addEventListener('mouseleave', this.#onHoverLeave);
     this.#host.addEventListener('wheel', this.#onWheel, { passive: false });
+    this.#host.addEventListener('pointerdown', this.#onPointerDown);
+    this.#host.addEventListener('pointerup', this.#onPointerUp);
+    this.#host.addEventListener('pointercancel', this.#onPointerCancel);
   }
 
   unmount(): void {
@@ -48,10 +51,44 @@ export class PickerRenderer {
     this.#host.removeEventListener('mouseover', this.#onHover);
     this.#host.removeEventListener('mouseleave', this.#onHoverLeave);
     this.#host.removeEventListener('wheel', this.#onWheel);
+    this.#host.removeEventListener('pointerdown', this.#onPointerDown);
+    this.#host.removeEventListener('pointerup', this.#onPointerUp);
+    this.#host.removeEventListener('pointercancel', this.#onPointerCancel);
     for (const u of this.#unsubs) u();
     this.#unsubs.length = 0;
     this.#host.replaceChildren();
   }
+
+  // --- Touch swipe -------------------------------------------------------
+  // Track the horizontal-distance/time of a single pointer over the grid;
+  // commit a page-prev or page-next if the swipe exceeds the threshold.
+  #swipeStart: { x: number; y: number; t: number } | null = null;
+
+  #onPointerDown = (event: PointerEvent): void => {
+    if (event.pointerType !== 'touch') return;
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.cal-picker__grid')) return;
+    this.#swipeStart = { x: event.clientX, y: event.clientY, t: Date.now() };
+  };
+
+  #onPointerUp = (event: PointerEvent): void => {
+    const start = this.#swipeStart;
+    this.#swipeStart = null;
+    if (!start || event.pointerType !== 'touch') return;
+    const dx = event.clientX - start.x;
+    const dy = event.clientY - start.y;
+    // Require a horizontal swipe of at least 40px, mostly horizontal, in <600ms.
+    if (Math.abs(dx) < 40 || Math.abs(dy) > Math.abs(dx)) return;
+    if (Date.now() - start.t > 600) return;
+    const isRTL = this.#engine.locale.direction === 'rtl';
+    const goNext = isRTL ? dx > 0 : dx < 0;
+    if (goNext) this.#engine.pageNext();
+    else this.#engine.pagePrev();
+  };
+
+  #onPointerCancel = (): void => {
+    this.#swipeStart = null;
+  };
 
   // Throttled wheel handler — page month on each gesture, then ignore for 150ms.
   #wheelLockUntil = 0;

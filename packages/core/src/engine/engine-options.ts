@@ -64,6 +64,10 @@ export interface DatePickerEngineOptions {
   readonly showSeconds?: boolean;
   /** Initial time when none has been picked. Defaults to 00:00:00. */
   readonly initialTime?: { hour: number; minute: number; second?: number };
+  /** Minimum allowed time-of-day (inclusive). Out-of-range setTime calls are clamped. */
+  readonly minTime?: { hour: number; minute: number; second?: number };
+  /** Maximum allowed time-of-day (inclusive). */
+  readonly maxTime?: { hour: number; minute: number; second?: number };
   /**
    * Render month + year `<select>` dropdowns in the header instead of a single
    * clickable title. Lets the user jump to any year/month in one click.

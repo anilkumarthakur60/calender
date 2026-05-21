@@ -658,6 +658,24 @@
   color: #dc2626; // red-600
 }
 
+// --- DateRangeField (paired inputs) -------------------------------------
+.cal-range-field {
+  display: inline-block;
+  font-family: var(--cal-font-family);
+}
+
+.cal-range-field__inputs {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.cal-range-field__separator {
+  color: var(--cal-color-text-muted);
+  font-size: 1rem;
+  padding-bottom: 0.5rem;
+}
+
 .cal-field--error .cal-field__control,
 .cal-field__control[data-error] {
   border-color: #ef4444; // red-500

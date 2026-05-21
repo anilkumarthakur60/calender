@@ -87,6 +87,7 @@ export {
   type TimeOfDay,
 } from './i18n/pattern.js';
 export { applyMask, isMaskable, type MaskResult } from './i18n/mask.js';
+export { usHolidays, ukHolidays, npHolidays, composeHolidays } from './holidays/index.js';
 export type { DateHighlight, SelectionGranularity } from './engine/engine-options.js';
 export {
   BUILTIN_PRESETS,

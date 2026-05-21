@@ -72,6 +72,14 @@ export default defineConfig({
           ],
         },
         {
+          text: 'Recipes',
+          items: [
+            { text: 'Cookbook', link: '/guide/cookbook' },
+            { text: 'Linked pickers', link: '/guide/linked-pickers' },
+            { text: 'Server-side rendering', link: '/guide/ssr' },
+          ],
+        },
+        {
           text: 'Ops',
           items: [{ text: 'Deployment', link: '/guide/deployment' }],
         },

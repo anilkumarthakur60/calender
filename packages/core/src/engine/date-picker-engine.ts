@@ -25,6 +25,19 @@ import { HighlightIndex } from './highlights.js';
 import type { KeyboardAction } from '../focus/keyboard-action.js';
 import { interpretKey, type KeyboardEventLike } from '../focus/keyboard-controller.js';
 
+const timeToSeconds = (t: TimeOfDay): number => t.hour * 3600 + t.minute * 60 + t.second;
+
+const compareTime = (
+  t: TimeOfDay,
+  min: TimeOfDay | undefined,
+  max: TimeOfDay | undefined,
+): -1 | 0 | 1 => {
+  const s = timeToSeconds(t);
+  if (min && s < timeToSeconds(min)) return -1;
+  if (max && s > timeToSeconds(max)) return 1;
+  return 0;
+};
+
 export interface DatePickerEvents {
   change: { state: EngineState; previous: EngineState };
   select: { selection: SelectionValue; focused: CalendarDate };
@@ -80,6 +93,8 @@ export class DatePickerEngine {
   readonly #timeStep: number;
   readonly #use12HourClock: boolean;
   readonly #showSeconds: boolean;
+  readonly #minTime: TimeOfDay | undefined;
+  readonly #maxTime: TimeOfDay | undefined;
   #state: EngineState;
 
   constructor(options: DatePickerEngineOptions = {}) {
@@ -107,6 +122,20 @@ export class DatePickerEngine {
     this.#timeStep = options.timeStep ?? 1;
     this.#use12HourClock = options.use12HourClock ?? false;
     this.#showSeconds = options.showSeconds ?? false;
+    this.#minTime = options.minTime
+      ? {
+          hour: options.minTime.hour,
+          minute: options.minTime.minute,
+          second: options.minTime.second ?? 0,
+        }
+      : undefined;
+    this.#maxTime = options.maxTime
+      ? {
+          hour: options.maxTime.hour,
+          minute: options.maxTime.minute,
+          second: options.maxTime.second ?? 0,
+        }
+      : undefined;
 
     const constraints: DateConstraint[] = [];
     if (options.min || options.max)
@@ -313,8 +342,29 @@ export class DatePickerEngine {
   }
 
   setTime(time: TimeOfDay | null): void {
-    this.#commit({ ...this.#state, time });
-    this.#bus.emit('time', { time });
+    const clamped = time !== null ? this.#clampTime(time) : null;
+    this.#commit({ ...this.#state, time: clamped });
+    this.#bus.emit('time', { time: clamped });
+  }
+
+  /** Read-only access to min/max time bounds. */
+  get minTime(): TimeOfDay | undefined {
+    return this.#minTime;
+  }
+  get maxTime(): TimeOfDay | undefined {
+    return this.#maxTime;
+  }
+
+  /** True when `time` falls within `minTime`/`maxTime` (or both are unset). */
+  isTimePickable(time: TimeOfDay): boolean {
+    return compareTime(time, this.#minTime, this.#maxTime) === 0;
+  }
+
+  #clampTime(time: TimeOfDay): TimeOfDay {
+    const cmp = compareTime(time, this.#minTime, this.#maxTime);
+    if (cmp < 0 && this.#minTime) return this.#minTime;
+    if (cmp > 0 && this.#maxTime) return this.#maxTime;
+    return time;
   }
 
   setView(view: ViewMode): void {
