@@ -13,14 +13,27 @@
     "build:core": "pnpm --filter @calender/core run build",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",
-    "dev": "pnpm --filter @calender/playground run dev",
-    "lint": "pnpm -r run lint",
+    "dev": "pnpm --filter @calender/vue-playground run dev",
+    "dev:vue": "pnpm --filter @calender/vue-playground run dev",
+    "dev:react": "pnpm --filter @calender/react-playground run dev",
+    "dev:svelte": "pnpm --filter @calender/svelte-playground run dev",
+    "dev:solid": "pnpm --filter @calender/solid-playground run dev",
+    "dev:wc": "pnpm --filter @calender/wc-playground run dev",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "clean": "pnpm -r exec rm -rf dist node_modules/.cache .tsbuildinfo"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@types/node": "^25.9.1",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "typescript": "~6.0.3",
+    "typescript-eslint": "^8.20.0",
     "vitest": "^2.1.8"
   }
 }

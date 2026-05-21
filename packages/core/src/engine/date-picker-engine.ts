@@ -21,17 +21,11 @@ import { resolveLocaleConfig, type LocaleConfig } from '../i18n/locale-config.js
 import { drillDown, drillUp, type ViewMode } from '../navigation/view-mode.js';
 import { stepBackward, stepForward } from '../navigation/view-navigator.js';
 import { createSelectionStrategy } from '../selection/selection-factory.js';
-import type {
-  SelectionStrategy,
-  SelectionValue,
-} from '../selection/selection-strategy.js';
+import type { SelectionStrategy, SelectionValue } from '../selection/selection-strategy.js';
 import type { DatePickerEngineOptions } from './engine-options.js';
 import type { EngineState } from './engine-state.js';
 import type { KeyboardAction } from '../focus/keyboard-action.js';
-import {
-  interpretKey,
-  type KeyboardEventLike,
-} from '../focus/keyboard-controller.js';
+import { interpretKey, type KeyboardEventLike } from '../focus/keyboard-controller.js';
 
 export interface DatePickerEvents {
   change: { state: EngineState; previous: EngineState };
@@ -71,9 +65,12 @@ export class DatePickerEngine {
     this.#fixedWeeks = options.fixedWeeks ?? true;
 
     const constraints: DateConstraint[] = [];
-    if (options.min || options.max) constraints.push(new MinMaxConstraint(options.min, options.max));
-    if (options.disabledDates?.length) constraints.push(new DisabledDatesConstraint(options.disabledDates));
-    if (options.disabledWeekdays?.length) constraints.push(new DisabledWeekdayConstraint(options.disabledWeekdays));
+    if (options.min || options.max)
+      constraints.push(new MinMaxConstraint(options.min, options.max));
+    if (options.disabledDates?.length)
+      constraints.push(new DisabledDatesConstraint(options.disabledDates));
+    if (options.disabledWeekdays?.length)
+      constraints.push(new DisabledWeekdayConstraint(options.disabledWeekdays));
     if (options.extraConstraints?.length) constraints.push(...options.extraConstraints);
     this.#constraint = new CompositeConstraint(constraints);
 
@@ -211,14 +208,16 @@ export class DatePickerEngine {
       case 'move': {
         const isRTL = this.#locale.direction === 'rtl';
         const visual =
-          action.direction === 'left' ? (isRTL ? 'right' : 'left') :
-          action.direction === 'right' ? (isRTL ? 'left' : 'right') :
-          action.direction;
-        const delta =
-          visual === 'left' ? -1 :
-          visual === 'right' ? 1 :
-          visual === 'up' ? -7 :
-          7;
+          action.direction === 'left'
+            ? isRTL
+              ? 'right'
+              : 'left'
+            : action.direction === 'right'
+              ? isRTL
+                ? 'left'
+                : 'right'
+              : action.direction;
+        const delta = visual === 'left' ? -1 : visual === 'right' ? 1 : visual === 'up' ? -7 : 7;
         this.focus(addDays(f, delta * action.amount));
         return;
       }

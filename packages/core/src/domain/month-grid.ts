@@ -65,8 +65,7 @@ export const buildMonthGrid = (
     const cell: MonthGridCell = Object.freeze({
       date,
       inCurrentMonth: isSameMonth(date, focusedMonth),
-      isToday:
-        date.year === today.year && date.month === today.month && date.day === today.day,
+      isToday: date.year === today.year && date.month === today.month && date.day === today.day,
       isWeekend: weekendSet.has(usWeekday(date)),
     });
     currentWeek.push(cell);

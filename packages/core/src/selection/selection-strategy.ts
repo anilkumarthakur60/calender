@@ -5,7 +5,11 @@ export type SelectionMode = 'single' | 'range' | 'multi';
 
 export type SelectionValue =
   | { readonly mode: 'single'; readonly value: CalendarDate | null }
-  | { readonly mode: 'range'; readonly value: DateRange | null; readonly anchor: CalendarDate | null }
+  | {
+      readonly mode: 'range';
+      readonly value: DateRange | null;
+      readonly anchor: CalendarDate | null;
+    }
   | { readonly mode: 'multi'; readonly value: ReadonlyArray<CalendarDate> };
 
 /**

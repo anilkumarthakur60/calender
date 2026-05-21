@@ -24,7 +24,10 @@ export class DateFormatter {
     return this.#formatter({ weekday: style }).format(ref);
   }
 
-  formatMonth(date: CalendarDate, style: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow' = 'long'): string {
+  formatMonth(
+    date: CalendarDate,
+    style: 'numeric' | '2-digit' | 'long' | 'short' | 'narrow' = 'long',
+  ): string {
     return this.format(date, { month: style });
   }
 

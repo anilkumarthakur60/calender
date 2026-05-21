@@ -1,0 +1,24 @@
+.layout {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  max-width: 70rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: grid;
+  gap: 1.5rem;
+}
+section {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background: #fff;
+}
+.status {
+  margin-top: 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  color: #6b7280;
+}

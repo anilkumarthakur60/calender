@@ -6,17 +6,27 @@ styled with SCSS + CSS custom properties.
 
 ## Packages
 
-| Package                    | What it is                                                                |
-| -------------------------- | ------------------------------------------------------------------------- |
-| `@calender/core`           | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events. |
-| `@calender/styles`         | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.       |
-| `@calender/web-component`  | Framework-free `<calender-picker>` custom element. Form-associated.       |
-| `@calender/react`          | `useDatePicker` hook + `<DatePicker>` component (React 18+).              |
-| `@calender/vue`            | `useDatePicker` composable + `<DatePicker>` component (Vue 3).            |
-| `@calender/svelte`         | `createDatePicker` factory that satisfies the Svelte store contract.      |
-| `@calender/solid`          | `createDatePicker` returning fine-grained Solid signals.                  |
-| `@calender/angular`        | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). |
-| `apps/playground`          | Vite + Vue demo exercising the WC and Vue adapters.                       |
+| Package                   | What it is                                                                                                                |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `@calender/core`          | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events. |
+| `@calender/styles`        | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.                                                       |
+| `@calender/web-component` | Framework-free `<calender-picker>` custom element. Form-associated.                                                       |
+| `@calender/react`         | `useDatePicker` hook + `<DatePicker>` component (React 18+).                                                              |
+| `@calender/vue`           | `useDatePicker` composable + `<DatePicker>` component (Vue 3).                                                            |
+| `@calender/svelte`        | `createDatePicker` factory that satisfies the Svelte store contract.                                                      |
+| `@calender/solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                  |
+| `@calender/angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+).                                            |
+
+### Playgrounds (one per adapter)
+
+| App                        | Port | Stack                                                  |
+| -------------------------- | ---- | ------------------------------------------------------ |
+| `apps/wc-playground`       | 5180 | Plain HTML + Vite — uses the `<calender-picker>` element |
+| `apps/vue-playground`      | 5173 | Vue 3 + Vite — uses `@calender/vue` and the WC together |
+| `apps/react-playground`    | 5174 | React 18 + Vite                                        |
+| `apps/svelte-playground`   | 5175 | Svelte 5 (runes) + Vite                                |
+| `apps/solid-playground`    | 5176 | Solid + Vite                                           |
+| `apps/angular-playground`  | —    | Reference snippets (Angular CLI required to run, see its README) |
 
 ## Architecture (SOLID & modular)
 
@@ -57,7 +67,13 @@ disk-efficient install). This is a dev-time choice and doesn't affect end users.
 ```bash
 pnpm install
 pnpm -r --filter "./packages/**" run build
-pnpm dev   # playground at http://localhost:5173
+
+# Open any playground:
+pnpm dev:wc       # http://localhost:5180
+pnpm dev:vue      # http://localhost:5173
+pnpm dev:react    # http://localhost:5174
+pnpm dev:svelte   # http://localhost:5175
+pnpm dev:solid    # http://localhost:5176
 ```
 
 > Don't have pnpm? `npm install -g pnpm` (or use Corepack: `corepack enable`).

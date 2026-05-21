@@ -69,7 +69,8 @@ export class CalenderPickerElement extends HTMLElement {
     const state = this.#engine?.state;
     if (!state) return null;
     const sel = state.selection;
-    if (sel.mode === 'single') return sel.value ? `${sel.value.year}-${pad(sel.value.month)}-${pad(sel.value.day)}` : null;
+    if (sel.mode === 'single')
+      return sel.value ? `${sel.value.year}-${pad(sel.value.month)}-${pad(sel.value.day)}` : null;
     if (sel.mode === 'range' && sel.value) {
       return `${iso(sel.value.start)}/${iso(sel.value.end)}`;
     }
@@ -102,7 +103,12 @@ export class CalenderPickerElement extends HTMLElement {
       ...(maxAttr ? { max: fromIso(maxAttr) } : {}),
       ...(localeAttr ? { locale: localeAttr } : {}),
       ...(dwAttr
-        ? { disabledWeekdays: dwAttr.split(',').map(s => Number(s.trim())).filter(Number.isFinite) }
+        ? {
+            disabledWeekdays: dwAttr
+              .split(',')
+              .map(s => Number(s.trim()))
+              .filter(Number.isFinite),
+          }
         : {}),
     };
 
@@ -131,7 +137,9 @@ export class CalenderPickerElement extends HTMLElement {
     if (!this.#internals) return;
     const v = this.value;
     this.#internals.setFormValue(v ?? '');
-    this.dispatchEvent(new CustomEvent('cal-change', { detail: { value: v, state: this.#engine?.state } }));
+    this.dispatchEvent(
+      new CustomEvent('cal-change', { detail: { value: v, state: this.#engine?.state } }),
+    );
   }
 }
 

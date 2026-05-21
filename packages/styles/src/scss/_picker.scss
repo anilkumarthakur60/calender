@@ -8,7 +8,13 @@
   border: 1px solid var(--cal-color-border);
   border-radius: var(--cal-radius);
   padding: var(--cal-header-padding);
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   font-size: var(--cal-font-size);
   line-height: 1.4;
   user-select: none;

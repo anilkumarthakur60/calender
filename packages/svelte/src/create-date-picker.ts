@@ -1,8 +1,4 @@
-import {
-  DatePickerEngine,
-  type DatePickerEngineOptions,
-  type EngineState,
-} from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
 
 export interface SvelteStoreLike<T> {
   subscribe(run: (value: T) => void): () => void;
@@ -21,9 +17,7 @@ export interface CreateDatePickerResult {
  * `subscribe`. Works with Svelte 3/4 `$store` and Svelte 5 `$state` bridges
  * without depending on Svelte at runtime.
  */
-export const createDatePicker = (
-  options: DatePickerEngineOptions = {},
-): CreateDatePickerResult => {
+export const createDatePicker = (options: DatePickerEngineOptions = {}): CreateDatePickerResult => {
   const engine = new DatePickerEngine(options);
 
   const subscribe = (listener: (state: EngineState) => void): (() => void) => {

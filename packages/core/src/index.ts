@@ -34,7 +34,12 @@ export {
 export type { DateRange } from './domain/date-range.js';
 export { createRange, isInRange, isRangeStart, isRangeEnd } from './domain/date-range.js';
 
-export type { MonthGrid, MonthGridCell, MonthGridOptions, WeekdayStart } from './domain/month-grid.js';
+export type {
+  MonthGrid,
+  MonthGridCell,
+  MonthGridOptions,
+  WeekdayStart,
+} from './domain/month-grid.js';
 export { buildMonthGrid } from './domain/month-grid.js';
 
 export type {

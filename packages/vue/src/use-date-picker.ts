@@ -1,9 +1,5 @@
 import { onBeforeUnmount, shallowRef, triggerRef, type ShallowRef } from 'vue';
-import {
-  DatePickerEngine,
-  type DatePickerEngineOptions,
-  type EngineState,
-} from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
 
 export interface UseDatePickerResult {
   readonly engine: DatePickerEngine;

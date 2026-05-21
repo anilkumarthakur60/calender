@@ -1,10 +1,4 @@
-import {
-  type CalendarDate,
-  compareDates,
-  isAfter,
-  isBefore,
-  isSameDay,
-} from './calendar-date.js';
+import { type CalendarDate, compareDates, isAfter, isBefore, isSameDay } from './calendar-date.js';
 
 export interface DateRange {
   readonly start: CalendarDate;

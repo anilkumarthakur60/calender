@@ -17,7 +17,10 @@ export const DatePicker = defineComponent({
     mode: { type: String as PropType<DatePickerEngineOptions['mode']>, default: undefined },
     min: { type: Object as PropType<CalendarDate>, default: undefined },
     max: { type: Object as PropType<CalendarDate>, default: undefined },
-    locale: { type: [String, Object] as PropType<DatePickerEngineOptions['locale']>, default: undefined },
+    locale: {
+      type: [String, Object] as PropType<DatePickerEngineOptions['locale']>,
+      default: undefined,
+    },
     disabledWeekdays: { type: Array as PropType<ReadonlyArray<number>>, default: undefined },
   },
   emits: {
@@ -39,7 +42,11 @@ export const DatePicker = defineComponent({
       const fmt = engine.formatter;
 
       const weekdayHeaders = s.grid.weekdayHeaders.map(w =>
-        h('div', { class: 'cal-picker__weekday', role: 'columnheader' }, fmt.formatWeekday(w, 'short')),
+        h(
+          'div',
+          { class: 'cal-picker__weekday', role: 'columnheader' },
+          fmt.formatWeekday(w, 'short'),
+        ),
       );
 
       const cells = s.grid.weeks.flatMap(week =>
@@ -97,9 +104,31 @@ export const DatePicker = defineComponent({
         },
         [
           h('div', { class: 'cal-picker__header' }, [
-            h('button', { type: 'button', class: 'cal-picker__nav', 'aria-label': 'Previous', onClick: () => engine.pagePrev() }, '‹'),
-            h('button', { type: 'button', class: 'cal-picker__title', onClick: () => engine.drillUp() }, fmt.formatMonthYear(s.focused)),
-            h('button', { type: 'button', class: 'cal-picker__nav', 'aria-label': 'Next', onClick: () => engine.pageNext() }, '›'),
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'cal-picker__nav',
+                'aria-label': 'Previous',
+                onClick: () => engine.pagePrev(),
+              },
+              '‹',
+            ),
+            h(
+              'button',
+              { type: 'button', class: 'cal-picker__title', onClick: () => engine.drillUp() },
+              fmt.formatMonthYear(s.focused),
+            ),
+            h(
+              'button',
+              {
+                type: 'button',
+                class: 'cal-picker__nav',
+                'aria-label': 'Next',
+                onClick: () => engine.pageNext(),
+              },
+              '›',
+            ),
           ]),
           h('div', { class: 'cal-picker__grid', role: 'grid' }, [...weekdayHeaders, ...cells]),
         ],

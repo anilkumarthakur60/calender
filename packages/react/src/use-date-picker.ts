@@ -1,9 +1,5 @@
 import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
-import {
-  DatePickerEngine,
-  type DatePickerEngineOptions,
-  type EngineState,
-} from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
 
 export interface UseDatePickerResult {
   readonly engine: DatePickerEngine;
@@ -32,7 +28,12 @@ export const useDatePicker = (options: DatePickerEngineOptions = {}): UseDatePic
     () => engine.state,
   );
 
-  useEffect(() => () => { /* no-op cleanup; engine has no timers */ }, [engine]);
+  useEffect(
+    () => () => {
+      /* no-op cleanup; engine has no timers */
+    },
+    [engine],
+  );
 
   return { engine, state };
 };

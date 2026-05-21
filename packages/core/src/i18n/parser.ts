@@ -19,7 +19,7 @@ export const parseDate = (input: string, locale: string = 'en-US'): CalendarDate
   }
 
   const order = detectDateOrder(locale);
-  const parts = trimmed.split(/[\/.\-\s]/).filter(Boolean);
+  const parts = trimmed.split(/[/.\-\s]/).filter(Boolean);
   if (parts.length !== 3) return null;
 
   let year: number | undefined;

@@ -3,8 +3,15 @@
   "version": "0.1.0",
   "description": "SCSS source and compiled CSS theme for the @calender renderers.",
   "license": "MIT",
-  "sideEffects": ["*.css", "*.scss"],
-  "files": ["dist", "src", "README.md"],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "main": "./dist/calender.css",
   "style": "./dist/calender.css",
   "exports": {

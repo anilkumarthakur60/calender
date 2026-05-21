@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@calender/web-component playground</title>
+    <script type="module" src="/src/main.ts"></script>
+    <style>
+      body {
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        max-width: 70rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        display: grid;
+        gap: 1.5rem;
+      }
+      section {
+        border: 1px solid #e5e7eb;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        background: #fff;
+      }
+      .row {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .status {
+        margin-top: 0.5rem;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        color: #6b7280;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>@calender — Web Component playground</h1>
+      <p>Framework-free. Just &lt;script type="module"&gt; and &lt;calender-picker&gt;.</p>
+    </header>
+
+    <section>
+      <h2>Single, in a form</h2>
+      <form id="single-form" class="row">
+        <calender-picker name="dob" mode="single" locale="en-GB"></calender-picker>
+        <button type="submit">Submit</button>
+      </form>
+      <p class="status" id="single-out">(unsubmitted)</p>
+    </section>
+
+    <section>
+      <h2>Range, dark theme, dense</h2>
+      <calender-picker
+        id="range-picker"
+        mode="range"
+        theme="dark"
+        density="dense"
+        min="2024-01-01"
+        max="2026-12-31"
+      ></calender-picker>
+      <p class="status" id="range-out">(none)</p>
+    </section>
+
+    <section>
+      <h2>Multi, weekends disabled, Arabic locale (RTL)</h2>
+      <calender-picker
+        id="multi-picker"
+        mode="multi"
+        locale="ar-EG"
+        disabled-weekdays="0,6"
+      ></calender-picker>
+      <p class="status" id="multi-out">(none)</p>
+    </section>
+  </body>
+</html>

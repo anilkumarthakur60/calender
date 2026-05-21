@@ -78,7 +78,9 @@ describe('DatePickerEngine', () => {
   it('emits change on focus()', () => {
     const e = new DatePickerEngine({ initialFocused: createCalendarDate(2025, 1, 1) });
     let count = 0;
-    e.on('change', () => { count += 1; });
+    e.on('change', () => {
+      count += 1;
+    });
     e.focus(createCalendarDate(2025, 1, 5));
     expect(count).toBe(1);
     expect(e.state.focused).toEqual({ year: 2025, month: 1, day: 5 });
@@ -86,9 +88,21 @@ describe('DatePickerEngine', () => {
 
   it('keyboard arrow keys move focus by one day', () => {
     const e = new DatePickerEngine({ initialFocused: createCalendarDate(2025, 6, 15) });
-    e.handleKey({ key: 'ArrowRight', shiftKey: false, ctrlKey: false, altKey: false, metaKey: false });
+    e.handleKey({
+      key: 'ArrowRight',
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+      metaKey: false,
+    });
     expect(e.state.focused.day).toBe(16);
-    e.handleKey({ key: 'ArrowDown', shiftKey: false, ctrlKey: false, altKey: false, metaKey: false });
+    e.handleKey({
+      key: 'ArrowDown',
+      shiftKey: false,
+      ctrlKey: false,
+      altKey: false,
+      metaKey: false,
+    });
     expect(e.state.focused.day).toBe(23);
   });
 });

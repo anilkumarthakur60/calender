@@ -8,7 +8,10 @@ export type Unsubscribe = () => void;
 export class EventBus<EventMap> {
   readonly #listeners: Map<keyof EventMap, Set<EventListener<unknown>>> = new Map();
 
-  on<K extends keyof EventMap & string>(event: K, listener: EventListener<EventMap[K]>): Unsubscribe {
+  on<K extends keyof EventMap & string>(
+    event: K,
+    listener: EventListener<EventMap[K]>,
+  ): Unsubscribe {
     let bucket = this.#listeners.get(event);
     if (!bucket) {
       bucket = new Set();

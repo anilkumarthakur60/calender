@@ -4,8 +4,16 @@
   "description": "Framework-free <calender-picker> custom element built on @calender/core.",
   "license": "MIT",
   "type": "module",
-  "sideEffects": ["./dist/index.js", "./dist/index.cjs", "./src/auto-register.ts"],
-  "files": ["dist", "src", "README.md"],
+  "sideEffects": [
+    "./dist/index.js",
+    "./dist/index.cjs",
+    "./src/auto-register.ts"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

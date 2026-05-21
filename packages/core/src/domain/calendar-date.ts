@@ -12,7 +12,9 @@ export interface CalendarDate {
   readonly day: number;
 }
 
-const DAYS_IN_MONTH_COMMON: ReadonlyArray<number> = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const DAYS_IN_MONTH_COMMON: ReadonlyArray<number> = [
+  31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
+];
 
 export const isLeapYear = (year: number): boolean =>
   (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
@@ -47,7 +49,8 @@ export const todayCalendarDate = (tz?: string): CalendarDate => {
     month: '2-digit',
     day: '2-digit',
   }).formatToParts(now);
-  const get = (t: Intl.DateTimeFormatPartTypes): number => Number(parts.find(p => p.type === t)?.value);
+  const get = (t: Intl.DateTimeFormatPartTypes): number =>
+    Number(parts.find(p => p.type === t)?.value);
   return createCalendarDate(get('year'), get('month'), get('day'));
 };
 
@@ -121,7 +124,7 @@ export const addMonths = (date: CalendarDate, months: number): CalendarDate => {
   const totalMonths = date.month - 1 + months;
   const yearDelta = Math.floor(totalMonths / 12);
   const newYear = date.year + yearDelta;
-  const newMonth = ((totalMonths % 12) + 12) % 12 + 1;
+  const newMonth = (((totalMonths % 12) + 12) % 12) + 1;
   const newDay = Math.min(date.day, daysInMonth(newYear, newMonth));
   return createCalendarDate(newYear, newMonth, newDay);
 };

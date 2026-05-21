@@ -16,7 +16,13 @@ const engine = new DatePickerEngine({
 });
 
 engine.on('change', ({ state }) => render(state));
-engine.handleKey({ key: 'ArrowRight', shiftKey: false, ctrlKey: false, altKey: false, metaKey: false });
+engine.handleKey({
+  key: 'ArrowRight',
+  shiftKey: false,
+  ctrlKey: false,
+  altKey: false,
+  metaKey: false,
+});
 ```
 
 ## Architecture

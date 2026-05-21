@@ -101,9 +101,11 @@ export class PickerRenderer {
     if (state.selection.mode === 'range' && state.selection.value) {
       if (isSameDay(cell.date, state.selection.value.start)) btn.dataset['rangeStart'] = 'true';
       if (isSameDay(cell.date, state.selection.value.end)) btn.dataset['rangeEnd'] = 'true';
-      if (isInRange(cell.date, state.selection.value, true) &&
-          !isSameDay(cell.date, state.selection.value.start) &&
-          !isSameDay(cell.date, state.selection.value.end)) {
+      if (
+        isInRange(cell.date, state.selection.value, true) &&
+        !isSameDay(cell.date, state.selection.value.start) &&
+        !isSameDay(cell.date, state.selection.value.end)
+      ) {
         btn.dataset['rangeMid'] = 'true';
       }
     }
@@ -132,7 +134,10 @@ export class PickerRenderer {
   };
 }
 
-const el = <K extends keyof HTMLElementTagNameMap>(tag: K, className?: string): HTMLElementTagNameMap[K] => {
+const el = <K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className?: string,
+): HTMLElementTagNameMap[K] => {
   const node = document.createElement(tag);
   if (className) node.className = className;
   return node;

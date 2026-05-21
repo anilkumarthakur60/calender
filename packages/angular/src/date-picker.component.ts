@@ -38,14 +38,32 @@ import { DatePickerService } from './date-picker.service.js';
       (keydown)="onKey($event)"
     >
       <div class="cal-picker__header">
-        <button type="button" class="cal-picker__nav" aria-label="Previous" (click)="picker.engine.pagePrev()">‹</button>
+        <button
+          type="button"
+          class="cal-picker__nav"
+          aria-label="Previous"
+          (click)="picker.engine.pagePrev()"
+        >
+          ‹
+        </button>
         <button type="button" class="cal-picker__title" (click)="picker.engine.drillUp()">
           {{ monthYearLabel() }}
         </button>
-        <button type="button" class="cal-picker__nav" aria-label="Next" (click)="picker.engine.pageNext()">›</button>
+        <button
+          type="button"
+          class="cal-picker__nav"
+          aria-label="Next"
+          (click)="picker.engine.pageNext()"
+        >
+          ›
+        </button>
       </div>
       <div class="cal-picker__grid" role="grid">
-        <div *ngFor="let w of state().grid.weekdayHeaders" class="cal-picker__weekday" role="columnheader">
+        <div
+          *ngFor="let w of state().grid.weekdayHeaders"
+          class="cal-picker__weekday"
+          role="columnheader"
+        >
           {{ picker.engine.formatter.formatWeekday(w, 'short') }}
         </div>
         <ng-container *ngFor="let week of state().grid.weeks">

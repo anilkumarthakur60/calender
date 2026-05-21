@@ -1,9 +1,12 @@
-import { Injectable, signal, type Signal, type WritableSignal, DestroyRef, inject } from '@angular/core';
 import {
-  DatePickerEngine,
-  type DatePickerEngineOptions,
-  type EngineState,
-} from '@calender/core';
+  Injectable,
+  signal,
+  type Signal,
+  type WritableSignal,
+  DestroyRef,
+  inject,
+} from '@angular/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
 
 /**
  * Injectable factory wrapper. Use `provideDatePicker(options)` (see index.ts)

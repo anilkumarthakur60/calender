@@ -54,11 +54,25 @@ export const DatePicker = (props: DatePickerProps): JSX.Element => {
       onKeyDown={handleKey}
     >
       <div className="cal-picker__header">
-        <button type="button" className="cal-picker__nav" aria-label="Previous" onClick={() => engine.pagePrev()}>‹</button>
+        <button
+          type="button"
+          className="cal-picker__nav"
+          aria-label="Previous"
+          onClick={() => engine.pagePrev()}
+        >
+          ‹
+        </button>
         <button type="button" className="cal-picker__title" onClick={() => engine.drillUp()}>
           {fmt.formatMonthYear(state.focused)}
         </button>
-        <button type="button" className="cal-picker__nav" aria-label="Next" onClick={() => engine.pageNext()}>›</button>
+        <button
+          type="button"
+          className="cal-picker__nav"
+          aria-label="Next"
+          onClick={() => engine.pageNext()}
+        >
+          ›
+        </button>
       </div>
       <div className="cal-picker__grid" role="grid">
         {state.grid.weekdayHeaders.map(w => (

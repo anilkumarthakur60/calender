@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { DatePicker, useDatePicker } from '@calender/vue';
-import { createCalendarDate, type CalendarDate } from '@calender/core';
+import { ref } from "vue";
+import { DatePicker, useDatePicker } from "@calender/vue";
+import { createCalendarDate, type CalendarDate } from "@calender/core";
 
 const lastWcValue = ref<string | null>(null);
 const lastVueDate = ref<CalendarDate | null>(null);
 
 const { state, engine } = useDatePicker({
-  mode: 'range',
+  mode: "range",
   min: createCalendarDate(2024, 1, 1),
   max: createCalendarDate(2026, 12, 31),
 });
@@ -38,7 +38,7 @@ const handleWcChange = (event: Event): void => {
         density="comfortable"
         @cal-change="handleWcChange"
       ></calender-picker>
-      <p class="status">Value: {{ lastWcValue ?? '(none)' }}</p>
+      <p class="status">Value: {{ lastWcValue ?? "(none)" }}</p>
     </section>
 
     <section>
@@ -49,14 +49,17 @@ const handleWcChange = (event: Event): void => {
         :max="createCalendarDate(2026, 12, 31)"
         @select="handleVueSelect"
       />
-      <p class="status">Last clicked: {{ lastVueDate ? `${lastVueDate.year}-${lastVueDate.month}-${lastVueDate.day}` : '(none)' }}</p>
+      <p class="status">
+        Last clicked:
+        {{ lastVueDate ? `${lastVueDate.year}-${lastVueDate.month}-${lastVueDate.day}` : "(none)" }}
+      </p>
     </section>
 
     <section>
       <h2>Headless composable — custom UI</h2>
       <p>
-        Focus: {{ state.focused.year }}-{{ state.focused.month }}-{{ state.focused.day }}
-        | View: {{ state.view }} | Mode: {{ state.mode }}
+        Focus: {{ state.focused.year }}-{{ state.focused.month }}-{{ state.focused.day }} | View:
+        {{ state.view }} | Mode: {{ state.mode }}
       </p>
       <button @click="engine.pagePrev()">← prev</button>
       <button @click="engine.pageNext()">next →</button>
@@ -66,7 +69,12 @@ const handleWcChange = (event: Event): void => {
 
 <style scoped>
 .layout {
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
   max-width: 70rem;
   margin: 2rem auto;
   padding: 0 1rem;
