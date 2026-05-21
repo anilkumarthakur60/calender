@@ -41,6 +41,8 @@ export type {
   WeekdayStart,
 } from './domain/month-grid.js';
 export { buildMonthGrid } from './domain/month-grid.js';
+export type { PeriodCell, PeriodGrid } from './domain/period-grid.js';
+export { buildPeriodGrid } from './domain/period-grid.js';
 
 export type {
   SelectionMode,
@@ -67,6 +69,32 @@ export type { LocaleConfig } from './i18n/locale-config.js';
 export { resolveLocaleConfig } from './i18n/locale-config.js';
 export { DateFormatter } from './i18n/formatter.js';
 export { parseDate } from './i18n/parser.js';
+export {
+  encodeSelectionValue,
+  decodeSelectionValue,
+  formatSelection,
+  parseSelection,
+  type DecodedSelection,
+  type FormatSelectionOptions,
+} from './i18n/value-codec.js';
+export {
+  formatWithPattern,
+  parseWithPattern,
+  parseDateTimeWithPattern,
+  resolvePattern,
+  type FormatPreset,
+  type ParsedDateTime,
+  type TimeOfDay,
+} from './i18n/pattern.js';
+export type { DateHighlight, SelectionGranularity } from './engine/engine-options.js';
+export {
+  BUILTIN_PRESETS,
+  resolvePreset,
+  resolvePresets,
+  type DatePreset,
+  type PresetSpec,
+} from './engine/preset.js';
+export { isoWeekOfYear } from './domain/iso-week.js';
 
 export type { KeyboardAction } from './focus/keyboard-action.js';
 export { interpretKey, type KeyboardEventLike } from './focus/keyboard-controller.js';
@@ -76,3 +104,18 @@ export { EventBus, type EventListener, type Unsubscribe } from './events/event-b
 export { DatePickerEngine, type DatePickerEvents } from './engine/date-picker-engine.js';
 export type { DatePickerEngineOptions } from './engine/engine-options.js';
 export type { EngineState } from './engine/engine-state.js';
+
+// --- Calendar systems (AD / BS) --------------------------------------------
+export type { CalendarId, CalendarSystem } from './calendar/calendar-system.js';
+export { GregorianCalendar } from './calendar/gregorian-calendar.js';
+export { BikramSambatCalendar } from './calendar/bikram-sambat-calendar.js';
+export { createCalendarSystem } from './calendar/calendar-factory.js';
+export {
+  BS_EPOCH_GREGORIAN,
+  BS_MAX_YEAR,
+  BS_MIN_YEAR,
+  BS_MONTH_DAYS,
+  BS_MONTH_NAMES_EN,
+  BS_MONTH_NAMES_NE,
+  toDevanagariDigits,
+} from './calendar/bikram-sambat-data.js';

@@ -4,6 +4,8 @@
 .cal-theme-light {
   @include t.tokens-light;
   @include t.tokens-density-comfortable;
+  @include t.tokens-motion;
+  @include t.tokens-type;
 }
 
 .cal-theme-dark {
@@ -11,7 +13,8 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root.cal-theme-auto {
+  :root.cal-theme-auto,
+  .cal-theme-auto {
     @include t.tokens-dark;
   }
 }

@@ -1,21 +1,12 @@
-import {
-  DatePickerEngine,
-  type DatePickerEngineOptions,
-  type SelectionMode,
-  fromIso,
-} from '@calender/core';
+import { DatePickerEngine, type SelectionMode, fromIso } from '@calender/core';
 import { PickerRenderer } from './picker-renderer.js';
+import {
+  readEngineOptionsFromAttributes,
+  readPresetsFromAttribute,
+  STANDARD_OBSERVED_ATTRS,
+} from './attributes.js';
 
-const OBSERVED: ReadonlyArray<string> = [
-  'mode',
-  'min',
-  'max',
-  'value',
-  'locale',
-  'disabled-weekdays',
-  'theme',
-  'density',
-];
+const OBSERVED: ReadonlyArray<string> = STANDARD_OBSERVED_ATTRS;
 
 /**
  * `<calender-picker>` — form-associated custom element. Attributes map to
@@ -91,36 +82,20 @@ export class CalenderPickerElement extends HTMLElement {
   #rebuild(): void {
     this.#renderer?.unmount();
 
-    const mode = (this.getAttribute('mode') as SelectionMode | null) ?? undefined;
-    const minAttr = this.getAttribute('min');
-    const maxAttr = this.getAttribute('max');
-    const localeAttr = this.getAttribute('locale');
-    const dwAttr = this.getAttribute('disabled-weekdays');
-
-    const options: DatePickerEngineOptions = {
-      ...(mode ? { mode } : {}),
-      ...(minAttr ? { min: fromIso(minAttr) } : {}),
-      ...(maxAttr ? { max: fromIso(maxAttr) } : {}),
-      ...(localeAttr ? { locale: localeAttr } : {}),
-      ...(dwAttr
-        ? {
-            disabledWeekdays: dwAttr
-              .split(',')
-              .map(s => Number(s.trim()))
-              .filter(Number.isFinite),
-          }
-        : {}),
-    };
+    const options = readEngineOptionsFromAttributes(this);
+    const mode = (this.getAttribute('mode') as SelectionMode | null) ?? 'single';
 
     const engine = new DatePickerEngine(options);
     const initial = this.getAttribute('value');
-    if (initial) applyInitialValue(engine, initial, mode ?? 'single');
+    if (initial) applyInitialValue(engine, initial, mode);
 
     engine.on('select', () => this.#syncForm());
     engine.on('change', () => this.#syncForm());
 
     this.#engine = engine;
     this.#renderer = new PickerRenderer(this, engine);
+    const presets = readPresetsFromAttribute(this);
+    if (presets) this.#renderer.presets = presets;
     this.#renderer.mount();
     this.#syncForm();
 

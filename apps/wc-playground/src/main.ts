@@ -6,16 +6,27 @@ const setStatus = (id: string, value: string | null): void => {
   if (el) el.textContent = value ?? '(none)';
 };
 
-document.getElementById('range-picker')?.addEventListener('cal-change', e => {
-  setStatus('range-out', (e as CustomEvent<{ value: string | null }>).detail.value);
-});
+const wire = (id: string, outId: string): void => {
+  document.getElementById(id)?.addEventListener('cal-change', e => {
+    setStatus(outId, (e as CustomEvent<{ value: string | null }>).detail.value);
+  });
+};
 
-document.getElementById('multi-picker')?.addEventListener('cal-change', e => {
-  setStatus('multi-out', (e as CustomEvent<{ value: string | null }>).detail.value);
-});
+wire('multi-basic', 'multi-basic-out');
+wire('format-input', 'format-input-out');
+wire('eu-input', 'eu-input-out');
+wire('datetime-input', 'datetime-input-out');
+wire('month-only', 'month-only-out');
+wire('year-only', 'year-only-out');
 
-document.getElementById('single-form')?.addEventListener('submit', e => {
+document.getElementById('input-form')?.addEventListener('submit', e => {
   e.preventDefault();
   const data = new FormData(e.target as HTMLFormElement);
-  setStatus('single-out', `dob = ${data.get('dob') ?? '(empty)'}`);
+  setStatus('input-form-out', `bookingDate = ${data.get('bookingDate') ?? '(empty)'}`);
+});
+
+document.getElementById('picker-form')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const data = new FormData(e.target as HTMLFormElement);
+  setStatus('picker-form-out', `dob = ${data.get('dob') ?? '(empty)'}`);
 });

@@ -1,24 +1,155 @@
-.layout {
+@import url('https://rsms.me/inter/inter.css');
+
+:root {
+  --page-bg: #f8fafc;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --ink: #0f172a;
+  --ink-muted: #64748b;
+  --accent: #2563eb;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+}
+body {
   font-family:
+    'Inter',
     ui-sans-serif,
     system-ui,
     -apple-system,
     'Segoe UI',
     sans-serif;
-  max-width: 70rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+  font-feature-settings: 'cv11';
+  background:
+    radial-gradient(ellipse 60% 40% at 50% -10%, rgba(37, 99, 235, 0.08), transparent 60%),
+    var(--page-bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.layout {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
   display: grid;
   gap: 1.5rem;
 }
+.hero {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.hero .badge {
+  display: inline-block;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--accent);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+.hero h1 {
+  font-size: 2.5rem;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, #0f172a, #475569);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero p {
+  color: var(--ink-muted);
+  font-size: 1.0625rem;
+  margin: 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
 section {
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
-  padding: 1.25rem;
-  background: #fff;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow:
+    0 0 0 1px rgb(15 23 42 / 0.02),
+    0 1px 3px 0 rgb(15 23 42 / 0.04);
+  transition: box-shadow 200ms ease;
+}
+section:hover {
+  box-shadow:
+    0 0 0 1px rgb(15 23 42 / 0.04),
+    0 8px 20px -4px rgb(15 23 42 / 0.08);
+}
+section > header {
+  margin-bottom: 1.25rem;
+}
+section h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+}
+section > header p {
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  margin: 2.5rem 0 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--card-border);
+}
+.section-title:first-of-type {
+  margin-top: 1rem;
+}
+
+.submit-btn-react {
+  margin-top: 0.75rem;
+  background: #2563eb;
+  color: #fff;
+  border: 0;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+.submit-btn-react:hover {
+  background: #1d4ed8;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.78em;
+  padding: 0.0625rem 0.25rem;
+  border-radius: 0.25rem;
+  background: rgba(15, 23, 42, 0.06);
 }
 .status {
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-family: ui-monospace, SFMono-Regular, monospace;
-  color: #6b7280;
+  font-size: 0.75rem;
+  background: #f8fafc;
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  padding: 0.4375rem 0.625rem;
+  color: var(--ink-muted);
 }

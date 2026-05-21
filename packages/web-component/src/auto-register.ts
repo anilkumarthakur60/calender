@@ -1,3 +1,4 @@
-import { defineCalenderPicker } from './index.js';
+import { defineCalenderInput, defineCalenderPicker } from './index.js';
 
 defineCalenderPicker();
+defineCalenderInput();
