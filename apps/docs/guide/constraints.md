@@ -23,9 +23,7 @@ Multiple constraint shapes, layered through `CompositeConstraint`. `engine.isDis
 ## Disabled specific dates
 
 ```html
-<calender-picker
-  disabled-dates="2025-12-25, 2025-12-26, 2026-01-01"
-></calender-picker>
+<calender-picker disabled-dates="2025-12-25, 2025-12-26, 2026-01-01"></calender-picker>
 ```
 
 ::: code-group
@@ -47,10 +45,7 @@ Multiple constraint shapes, layered through `CompositeConstraint`. `engine.isDis
 ```ts
 import { FilterConstraint } from '@calender/core';
 
-const blockHolidays = new FilterConstraint(
-  d => !isHoliday(d),
-  'holiday',
-);
+const blockHolidays = new FilterConstraint(d => !isHoliday(d), 'holiday');
 
 new DatePickerEngine({
   extraConstraints: [blockHolidays],
@@ -62,11 +57,7 @@ new DatePickerEngine({
 In range mode only: cap the number of days a range can span.
 
 ```html
-<calender-picker
-  mode="range"
-  min-range-days="3"
-  max-range-days="14"
-></calender-picker>
+<calender-picker mode="range" min-range-days="3" max-range-days="14"></calender-picker>
 ```
 
 After the user clicks an anchor, any date outside the allowed window becomes

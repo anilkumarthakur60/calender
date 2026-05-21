@@ -19,6 +19,7 @@ export const DatePicker = defineComponent({
   name: 'DatePicker',
   props: {
     mode: { type: String as PropType<DatePickerEngineOptions['mode']>, default: undefined },
+    initialFocused: { type: Object as PropType<CalendarDate>, default: undefined },
     min: { type: Object as PropType<CalendarDate>, default: undefined },
     max: { type: Object as PropType<CalendarDate>, default: undefined },
     locale: {
@@ -61,9 +62,10 @@ export const DatePicker = defineComponent({
     select: (_date: CalendarDate) => true,
     change: (_state: EngineState) => true,
   },
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const options: DatePickerEngineOptions = {
       ...(props.mode !== undefined ? { mode: props.mode } : {}),
+      ...(props.initialFocused !== undefined ? { initialFocused: props.initialFocused } : {}),
       ...(props.min !== undefined ? { min: props.min } : {}),
       ...(props.max !== undefined ? { max: props.max } : {}),
       ...(props.locale !== undefined ? { locale: props.locale } : {}),
@@ -112,7 +114,7 @@ export const DatePicker = defineComponent({
         } else {
           title = buildPeriodGrid(s.focused, s.view, engine.calendar, engine.locale.locale).title;
         }
-        const terminal = s.view === 'decade' || s.view === engine.granularity;
+        const terminal = s.view === 'decade';
 
         const centerNode =
           engine.headerSelectors && s.view === 'day'
@@ -259,7 +261,15 @@ export const DatePicker = defineComponent({
               }
             },
           },
-          fmt.formatDay(cell.date),
+          slots.cell
+            ? slots.cell({
+                cell,
+                defaultLabel: fmt.formatDay(cell.date),
+                selected,
+                disabled: !pickable,
+                inRange: isStart || isEnd || isMid,
+              })
+            : fmt.formatDay(cell.date),
         );
       };
 

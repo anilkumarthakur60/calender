@@ -15,10 +15,15 @@ import {
   type CalendarSystem,
   type DatePickerEngineOptions,
   type EngineState,
+  type FocusTrap,
   type FormatPreset,
   type SelectionMode,
+  activateFocusTrap,
+  announce,
+  applyMask,
   createCalendarSystem,
   formatSelection,
+  isMaskable,
   parseSelection,
 } from '@calender/core';
 import { DatePicker } from './DatePicker.js';
@@ -69,6 +74,12 @@ export const DateField = defineComponent({
     disabledWeekdays: { type: Array as PropType<ReadonlyArray<number>>, default: undefined },
     format: { type: String as PropType<string | FormatPreset>, default: 'iso' },
     valueFormat: { type: String as PropType<string | FormatPreset>, default: undefined },
+    required: { type: Boolean, default: false },
+    helperText: { type: String, default: undefined },
+    errorText: { type: String, default: undefined },
+    error: { type: Boolean, default: false },
+    label: { type: String, default: undefined },
+    mask: { type: Boolean, default: undefined },
   },
   emits: {
     'update:modelValue': (_value: string) => true,
@@ -178,6 +189,28 @@ export const DateField = defineComponent({
       document.removeEventListener('keydown', onDocumentKey);
     });
 
+    // Focus trap inside the popover
+    let trap: FocusTrap | null = null;
+    watch(open, isOpen => {
+      if (isOpen) {
+        nextTick(() => {
+          if (popoverRef.value) trap = activateFocusTrap(popoverRef.value);
+        });
+      } else if (trap) {
+        trap.deactivate();
+        trap = null;
+      }
+    });
+    onBeforeUnmount(() => trap?.deactivate());
+
+    // Announce the committed value to screen readers
+    watch(
+      () => props.modelValue,
+      v => {
+        if (typeof v === 'string' && v) announce(`Selected ${v}`);
+      },
+    );
+
     watch(open, isOpen => {
       if (!isOpen) {
         flipUp.value = false;
@@ -198,6 +231,13 @@ export const DateField = defineComponent({
         HINT_BY_PATTERN[typeof displayPattern.value === 'string' ? displayPattern.value : 'iso'] ??
         String(displayPattern.value);
 
+      const isInvalid = props.error === true || !!props.errorText;
+      const fieldId = `cal-input-${Math.random().toString(36).slice(2, 9)}`;
+      const helperId = `${fieldId}-helper`;
+      const errorId = `${fieldId}-error`;
+      const describedBy =
+        isInvalid && props.errorText ? errorId : props.helperText ? helperId : undefined;
+
       const pickerProps: Record<string, unknown> = { mode: props.mode };
       if (initialFocused.value !== undefined) pickerProps['initialFocused'] = initialFocused.value;
       if (props.min !== undefined) pickerProps['min'] = props.min;
@@ -210,29 +250,50 @@ export const DateField = defineComponent({
       return h(
         'div',
         {
-          class: 'cal-field',
+          class: ['cal-field', isInvalid ? 'cal-field--error' : ''].filter(Boolean).join(' '),
           ref: (el: unknown) => (wrapperRef.value = el as HTMLElement | null),
         },
         [
+          props.label
+            ? h('label', { class: 'cal-field__label', for: fieldId }, [
+                props.label,
+                props.required
+                  ? h('span', { class: 'cal-field__required', 'aria-hidden': 'true' }, ' *')
+                  : null,
+              ])
+            : null,
           h(
             'div',
             {
               class: 'cal-field__control',
               ...(props.disabled ? { 'data-disabled': 'true' } : {}),
+              ...(isInvalid ? { 'data-error': 'true' } : {}),
             },
             [
               h('input', {
                 ref: (el: unknown) => (inputRef.value = el as HTMLInputElement | null),
+                id: fieldId,
                 type: 'text',
                 class: 'cal-field__input',
                 value: text.value,
                 placeholder: placeholderText,
                 disabled: props.disabled,
+                required: props.required,
                 autocomplete: 'off',
                 spellcheck: false,
                 'aria-haspopup': 'dialog',
                 'aria-expanded': open.value,
-                onInput: (e: Event) => (text.value = (e.target as HTMLInputElement).value),
+                'aria-invalid': isInvalid || undefined,
+                'aria-describedby': describedBy,
+                onInput: (e: Event) => {
+                  const raw = (e.target as HTMLInputElement).value;
+                  const maskEnabled = props.mask ?? isMaskable(displayPattern.value);
+                  if (!maskEnabled || raw.length < text.value.length) {
+                    text.value = raw;
+                    return;
+                  }
+                  text.value = applyMask(raw, displayPattern.value).value;
+                },
                 onFocus: () => (open.value = true),
                 onClick: () => (open.value = true),
                 onBlur: handleBlur,
@@ -272,6 +333,11 @@ export const DateField = defineComponent({
                 [h(DatePicker, { ...pickerProps, onChange: handlePickerChange })],
               )
             : null,
+          isInvalid && props.errorText
+            ? h('p', { id: errorId, class: 'cal-field__error', role: 'alert' }, props.errorText)
+            : !isInvalid && props.helperText
+              ? h('p', { id: helperId, class: 'cal-field__helper' }, props.helperText)
+              : null,
         ],
       );
     };

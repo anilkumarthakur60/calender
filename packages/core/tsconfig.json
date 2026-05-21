@@ -3,7 +3,10 @@
   "compilerOptions": {
     "outDir": "./dist",
     "rootDir": "./src",
-    "lib": ["ES2023"],
+    // DOM types are needed for the a11y helpers (focus-trap, live-announcer).
+    // They're tree-shakeable — server-side consumers that don't import a11y
+    // never reach the browser code, and the engine itself stays DOM-free.
+    "lib": ["ES2023", "DOM"],
     "types": []
   },
   "include": ["src/**/*.ts"]

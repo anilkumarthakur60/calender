@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@3.0.0/schema.json",
+  "changelog": "@changesets/cli/changelog",
+  "commit": false,
+  "fixed": [],
+  "linked": [["@calender/*"]],
+  "access": "public",
+  "baseBranch": "main",
+  "updateInternalDependencies": "patch",
+  "ignore": [
+    "@calender/docs",
+    "@calender/wc-playground",
+    "@calender/react-playground",
+    "@calender/vue-playground",
+    "@calender/svelte-playground",
+    "@calender/solid-playground",
+    "@calender/angular-playground"
+  ]
+}

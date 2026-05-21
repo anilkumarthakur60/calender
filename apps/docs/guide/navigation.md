@@ -44,16 +44,16 @@ window).
 
 Full WAI-ARIA grid model:
 
-| Key                | Action                                        |
-| ------------------ | --------------------------------------------- |
-| ←/→/↑/↓            | Move focus by 1 day / 7 days                  |
-| `Home` / `End`     | Start / end of week                           |
-| `Ctrl+Home/End`    | Start / end of month                          |
-| `PageUp/PageDown`  | Previous / next month                         |
-| `Shift+PageUp/Down`| Previous / next year                          |
-| `Enter` / `Space`  | Select focused date                           |
-| `Esc`              | Cancel / close popover                        |
-| `+` / `-`          | Drill up / drill down (view mode)             |
+| Key                 | Action                            |
+| ------------------- | --------------------------------- |
+| ←/→/↑/↓             | Move focus by 1 day / 7 days      |
+| `Home` / `End`      | Start / end of week               |
+| `Ctrl+Home/End`     | Start / end of month              |
+| `PageUp/PageDown`   | Previous / next month             |
+| `Shift+PageUp/Down` | Previous / next year              |
+| `Enter` / `Space`   | Select focused date               |
+| `Esc`               | Cancel / close popover            |
+| `+` / `-`           | Drill up / drill down (view mode) |
 
 In RTL locales the left/right arrows are flipped automatically.
 
@@ -61,12 +61,12 @@ In RTL locales the left/right arrows are flipped automatically.
 
 ```ts
 engine.focus({ year: 2025, month: 4, day: 15 });
-engine.setMonth(7);     // jump month, keep year/day
-engine.setYear(2030);   // jump year, keep month/day
-engine.pagePrev();      // previous month/year/decade by view
+engine.setMonth(7); // jump month, keep year/day
+engine.setYear(2030); // jump year, keep month/day
+engine.pagePrev(); // previous month/year/decade by view
 engine.pageNext();
-engine.drillUp();       // day → month → year → decade
+engine.drillUp(); // day → month → year → decade
 engine.drillDown();
-engine.goToToday();     // back to day view, focused on today
+engine.goToToday(); // back to day view, focused on today
 engine.selectToday();
 ```

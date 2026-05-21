@@ -11,6 +11,8 @@
   "scripts": {
     "build": "pnpm -r --filter \"./packages/**\" run build",
     "build:core": "pnpm --filter @calender/core run build",
+    "build:apps": "pnpm -r --filter \"./apps/**\" run build",
+    "build:all": "pnpm build && pnpm build:apps",
     "typecheck": "pnpm -r run typecheck",
     "test": "pnpm -r run test",
     "dev": "pnpm --filter @calender/vue-playground run dev",
@@ -25,17 +27,39 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "clean": "pnpm -r exec rm -rf dist node_modules/.cache .tsbuildinfo"
+    "clean": "pnpm -r exec rm -rf dist node_modules/.cache .tsbuildinfo",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish",
+    "size": "size-limit",
+    "size:why": "size-limit --why",
+    "prepare": "husky || true"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.11",
+    "@size-limit/esbuild": "^11.1.6",
+    "@size-limit/file": "^11.1.6",
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "size-limit": "^11.1.6",
     "@eslint/js": "^9.18.0",
     "@types/node": "^25.9.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.20.0",
     "vitest": "^2.1.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css,scss,html,yml,yaml}": [
+      "prettier --write"
+    ]
   }
 }

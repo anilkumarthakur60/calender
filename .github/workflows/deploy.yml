@@ -1,0 +1,82 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# One deploy at a time per app — cancel earlier deploys.
+concurrency:
+  group: deploy-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # Fan out: one job per app. Each job builds the workspace and deploys its
+  # single app to a separate Vercel project. The project ID per app is read
+  # from a per-app secret (see DEPLOYMENT.md / docs/guide/deployment.md).
+  deploy:
+    name: Deploy ${{ matrix.app.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - { name: docs, dir: apps/docs, project_id_secret: VERCEL_PROJECT_ID_DOCS }
+          - {
+              name: wc-playground,
+              dir: apps/wc-playground,
+              project_id_secret: VERCEL_PROJECT_ID_WC,
+            }
+          - {
+              name: react-playground,
+              dir: apps/react-playground,
+              project_id_secret: VERCEL_PROJECT_ID_REACT,
+            }
+          - {
+              name: vue-playground,
+              dir: apps/vue-playground,
+              project_id_secret: VERCEL_PROJECT_ID_VUE,
+            }
+          - {
+              name: svelte-playground,
+              dir: apps/svelte-playground,
+              project_id_secret: VERCEL_PROJECT_ID_SVELTE,
+            }
+          - {
+              name: solid-playground,
+              dir: apps/solid-playground,
+              project_id_secret: VERCEL_PROJECT_ID_SOLID,
+            }
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.app.project_id_secret] }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel env
+        working-directory: ${{ matrix.app.dir }}
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+
+      - name: Build (Vercel)
+        working-directory: ${{ matrix.app.dir }}
+        run: vercel build --prod --token=$VERCEL_TOKEN
+
+      - name: Deploy (Vercel)
+        working-directory: ${{ matrix.app.dir }}
+        run: vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

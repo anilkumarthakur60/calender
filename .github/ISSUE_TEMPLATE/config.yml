@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://calender.dev
+    about: Read the docs first — most questions are answered there.
+  - name: Discussions
+    url: https://github.com/your-org/calender/discussions
+    about: Ask a question or share a usage pattern.

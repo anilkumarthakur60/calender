@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "@calender"
+  name: '@calender'
   text: "One headless engine.\nEvery modern framework."
   tagline: Calendar / date-picker for React, Vue, Svelte, Solid, Angular & Web Components. AD + Bikram Sambat out of the box.
   image:
@@ -65,7 +65,7 @@ features:
 ```tsx [React]
 import { DatePicker } from '@calender/react';
 
-<DatePicker mode="range" headerSelectors months={2} presets={['today', 'last7days']} />
+<DatePicker mode="range" headerSelectors months={2} presets={['today', 'last7days']} />;
 ```
 
 ```vue [Vue]

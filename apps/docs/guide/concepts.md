@@ -36,12 +36,12 @@ Immutable snapshot produced on every state mutation:
 interface EngineState {
   mode: 'single' | 'range' | 'multi';
   view: 'day' | 'month' | 'year' | 'decade';
-  focused: CalendarDate;           // roving-focus target
-  selection: SelectionValue;       // shape depends on mode
-  grid: MonthGrid;                 // 6×7 day grid for the focused month
+  focused: CalendarDate; // roving-focus target
+  selection: SelectionValue; // shape depends on mode
+  grid: MonthGrid; // 6×7 day grid for the focused month
   isOpen: boolean;
-  hovered: CalendarDate | null;    // range-mode hover preview cursor
-  time: TimeOfDay | null;          // when withTime is enabled
+  hovered: CalendarDate | null; // range-mode hover preview cursor
+  time: TimeOfDay | null; // when withTime is enabled
 }
 ```
 
@@ -57,7 +57,7 @@ avoids time-zone surprises and makes BS support trivial.
 import { createCalendarDate, addDays } from '@calender/core';
 
 const d = createCalendarDate(2025, 4, 15);
-const a = addDays(d, 7);  // { year: 2025, month: 4, day: 22 }
+const a = addDays(d, 7); // { year: 2025, month: 4, day: 22 }
 ```
 
 Conversion helpers (`fromJsDate`, `toJsDate`, `fromIso`, `toIso`) handle the
@@ -108,12 +108,28 @@ enforces `minRangeDays` / `maxRangeDays` when an anchor is set in range mode.
 The engine is an event source. Subscribe to whichever signal you need:
 
 ```ts
-engine.on('change', ({ state, previous }) => { /* every mutation */ });
-engine.on('select', ({ selection, focused }) => { /* user picked */ });
-engine.on('focus',  ({ focused, previous }) => { /* roving focus */ });
-engine.on('view',   ({ view, previous })    => { /* day/month/year */ });
-engine.on('hover',  ({ hovered })           => { /* range preview */ });
-engine.on('time',   ({ time })              => { /* time changed */ });
-engine.on('open',   ({ focused })           => { /* popover opened */ });
-engine.on('close',  ({ reason })            => { /* popover closed */ });
+engine.on('change', ({ state, previous }) => {
+  /* every mutation */
+});
+engine.on('select', ({ selection, focused }) => {
+  /* user picked */
+});
+engine.on('focus', ({ focused, previous }) => {
+  /* roving focus */
+});
+engine.on('view', ({ view, previous }) => {
+  /* day/month/year */
+});
+engine.on('hover', ({ hovered }) => {
+  /* range preview */
+});
+engine.on('time', ({ time }) => {
+  /* time changed */
+});
+engine.on('open', ({ focused }) => {
+  /* popover opened */
+});
+engine.on('close', ({ reason }) => {
+  /* popover closed */
+});
 ```

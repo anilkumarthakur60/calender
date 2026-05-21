@@ -11,18 +11,18 @@ timezone-safe.
 ```ts
 interface CalendarDate {
   readonly year: number;
-  readonly month: number;   // 1..12 (1..N depending on calendar)
-  readonly day: number;     // 1..31 (varies by month + calendar)
+  readonly month: number; // 1..12 (1..N depending on calendar)
+  readonly day: number; // 1..31 (varies by month + calendar)
 }
 ```
 
 Construction helpers:
 
 ```ts
-createCalendarDate(2025, 4, 15)              // throws on invalid Gregorian dates
-fromIso('2025-04-15')                        // ISO parsing
-fromJsDate(new Date())                       // JS Date → CalendarDate
-todayCalendarDate('Asia/Kathmandu')          // today in a time zone
+createCalendarDate(2025, 4, 15); // throws on invalid Gregorian dates
+fromIso('2025-04-15'); // ISO parsing
+fromJsDate(new Date()); // JS Date → CalendarDate
+todayCalendarDate('Asia/Kathmandu'); // today in a time zone
 ```
 
 ## DateRange
@@ -33,8 +33,8 @@ interface DateRange {
   readonly end: CalendarDate;
 }
 
-createRange(d1, d2)              // canonicalises order
-isInRange(date, range, inclusive = true)
+createRange(d1, d2); // canonicalises order
+isInRange(date, range, (inclusive = true));
 ```
 
 ## SelectionValue
@@ -44,17 +44,17 @@ Tagged union — the shape depends on `mode`.
 ```ts
 type SelectionValue =
   | { mode: 'single'; value: CalendarDate | null }
-  | { mode: 'range';  value: DateRange | null; anchor: CalendarDate | null }
-  | { mode: 'multi';  value: ReadonlyArray<CalendarDate> };
+  | { mode: 'range'; value: DateRange | null; anchor: CalendarDate | null }
+  | { mode: 'multi'; value: ReadonlyArray<CalendarDate> };
 ```
 
 ## TimeOfDay
 
 ```ts
 interface TimeOfDay {
-  readonly hour: number;     // 0..23
-  readonly minute: number;   // 0..59
-  readonly second: number;   // 0..59
+  readonly hour: number; // 0..23
+  readonly minute: number; // 0..59
+  readonly second: number; // 0..59
 }
 ```
 
@@ -79,8 +79,8 @@ interface EngineState {
 interface MonthGrid {
   readonly month: number;
   readonly year: number;
-  readonly weeks: ReadonlyArray<ReadonlyArray<MonthGridCell>>;   // 6×7
-  readonly weekdayHeaders: ReadonlyArray<number>;               // 0..6, ordered
+  readonly weeks: ReadonlyArray<ReadonlyArray<MonthGridCell>>; // 6×7
+  readonly weekdayHeaders: ReadonlyArray<number>; // 0..6, ordered
 }
 
 interface MonthGridCell {
@@ -97,12 +97,12 @@ The cells in month / year / decade views.
 
 ```ts
 interface PeriodCell {
-  readonly date: CalendarDate;     // canonical date for the period
-  readonly label: string;          // short label ("Apr", "2025", "2020s")
-  readonly longLabel: string;      // long label (for aria-label)
+  readonly date: CalendarDate; // canonical date for the period
+  readonly label: string; // short label ("Apr", "2025", "2020s")
+  readonly longLabel: string; // long label (for aria-label)
   readonly isFocused: boolean;
   readonly isToday: boolean;
-  readonly outside: boolean;       // outside the visible decade/century band
+  readonly outside: boolean; // outside the visible decade/century band
 }
 ```
 
@@ -111,8 +111,8 @@ interface PeriodCell {
 ```ts
 interface DateHighlight {
   readonly date: CalendarDate;
-  readonly color?: string;        // CSS colour for the dot
-  readonly label?: string;        // appended to aria-label
+  readonly color?: string; // CSS colour for the dot
+  readonly label?: string; // appended to aria-label
 }
 ```
 
@@ -147,6 +147,6 @@ interface CalendarSystem {
 
 ```ts
 interface DateConstraint {
-  evaluate(date: CalendarDate): string | null;  // null = pickable
+  evaluate(date: CalendarDate): string | null; // null = pickable
 }
 ```

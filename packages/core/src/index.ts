@@ -86,6 +86,7 @@ export {
   type ParsedDateTime,
   type TimeOfDay,
 } from './i18n/pattern.js';
+export { applyMask, isMaskable, type MaskResult } from './i18n/mask.js';
 export type { DateHighlight, SelectionGranularity } from './engine/engine-options.js';
 export {
   BUILTIN_PRESETS,
@@ -95,6 +96,7 @@ export {
   type PresetSpec,
 } from './engine/preset.js';
 export { isoWeekOfYear } from './domain/iso-week.js';
+export { activateFocusTrap, announce, type FocusTrap } from './a11y/index.js';
 
 export type { KeyboardAction } from './focus/keyboard-action.js';
 export { interpretKey, type KeyboardEventLike } from './focus/keyboard-controller.js';
@@ -109,6 +111,8 @@ export type { EngineState } from './engine/engine-state.js';
 export type { CalendarId, CalendarSystem } from './calendar/calendar-system.js';
 export { GregorianCalendar } from './calendar/gregorian-calendar.js';
 export { BikramSambatCalendar } from './calendar/bikram-sambat-calendar.js';
+export { BuddhistCalendar } from './calendar/buddhist-calendar.js';
+export { PersianCalendar } from './calendar/persian-calendar.js';
 export { createCalendarSystem } from './calendar/calendar-factory.js';
 export {
   BS_EPOCH_GREGORIAN,

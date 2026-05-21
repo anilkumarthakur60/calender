@@ -39,6 +39,7 @@ export class PickerRenderer {
     this.#host.addEventListener('click', this.#onClick);
     this.#host.addEventListener('mouseover', this.#onHover);
     this.#host.addEventListener('mouseleave', this.#onHoverLeave);
+    this.#host.addEventListener('wheel', this.#onWheel, { passive: false });
   }
 
   unmount(): void {
@@ -46,10 +47,29 @@ export class PickerRenderer {
     this.#host.removeEventListener('click', this.#onClick);
     this.#host.removeEventListener('mouseover', this.#onHover);
     this.#host.removeEventListener('mouseleave', this.#onHoverLeave);
+    this.#host.removeEventListener('wheel', this.#onWheel);
     for (const u of this.#unsubs) u();
     this.#unsubs.length = 0;
     this.#host.replaceChildren();
   }
+
+  // Throttled wheel handler — page month on each gesture, then ignore for 150ms.
+  #wheelLockUntil = 0;
+  #onWheel = (event: WheelEvent): void => {
+    const target = event.target as HTMLElement | null;
+    // Only act when the wheel happens on the grid (not the title/header/time row).
+    if (!target?.closest('.cal-picker__grid')) return;
+    const now = Date.now();
+    if (now < this.#wheelLockUntil) {
+      event.preventDefault();
+      return;
+    }
+    if (Math.abs(event.deltaY) < 8 && Math.abs(event.deltaX) < 8) return;
+    event.preventDefault();
+    this.#wheelLockUntil = now + 150;
+    if (event.deltaY > 0 || event.deltaX > 0) this.#engine.pageNext();
+    else this.#engine.pagePrev();
+  };
 
   #render(): void {
     const state = this.#engine.state;
@@ -75,7 +95,7 @@ export class PickerRenderer {
       return header;
     }
     const title = this.#titleForView(state);
-    const terminal = state.view === 'decade' || state.view === this.#engine.granularity;
+    const terminal = state.view === 'decade';
     header.append(
       navButton('prev', '‹', () => this.#engine.pagePrev()),
       titleButton(title, () => this.#engine.drillUp(), terminal),

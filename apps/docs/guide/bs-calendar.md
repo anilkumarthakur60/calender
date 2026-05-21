@@ -8,8 +8,8 @@ The engine operates in **Gregorian (AD)** by default. To use **Bikram Sambat
 ```ts
 const engine = new DatePickerEngine({
   calendar: 'bikram-sambat',
-  locale: 'ne-NP',                                      // Devanagari numerals
-  initialFocused: { year: 2080, month: 1, day: 15 },    // BS Baishakh 15
+  locale: 'ne-NP', // Devanagari numerals
+  initialFocused: { year: 2080, month: 1, day: 15 }, // BS Baishakh 15
 });
 ```
 
@@ -57,10 +57,10 @@ import { BikramSambatCalendar } from '@calender/core';
 
 const bs = new BikramSambatCalendar();
 
-bs.toGregorian({ year: 2080, month: 1, day: 1 });   // ≈ { year: 2023, month: 4, day: 14 }
+bs.toGregorian({ year: 2080, month: 1, day: 1 }); // ≈ { year: 2023, month: 4, day: 14 }
 bs.fromGregorian({ year: 2024, month: 12, day: 31 });
-bs.daysInMonth(2080, 9);                            // 29 (varies per year)
-bs.weekday({ year: 2080, month: 1, day: 1 });       // 0-6 (US weekday)
+bs.daysInMonth(2080, 9); // 29 (varies per year)
+bs.weekday({ year: 2080, month: 1, day: 1 }); // 0-6 (US weekday)
 ```
 
 ## Supported range
@@ -83,8 +83,12 @@ class MyCalendar implements CalendarSystem {
   readonly id = 'gregorian' as const;
   readonly displayName = 'My Calendar';
   readonly monthsInYear = 12;
-  daysInMonth(year, month) { /* … */ }
-  addDays(date, n) { /* … */ }
+  daysInMonth(year, month) {
+    /* … */
+  }
+  addDays(date, n) {
+    /* … */
+  }
   // … plus addMonths, addYears, weekday, today, toGregorian, fromGregorian,
   //    monthName, formatDay, toIso, compare, isValidDate
 }

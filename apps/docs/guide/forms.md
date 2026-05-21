@@ -34,7 +34,7 @@ import { DateField } from '@calender/react';
 
 const [date, setDate] = useState('2025-04-15');
 
-<DateField value={date} onChange={setDate} mode="single" />
+<DateField value={date} onChange={setDate} mode="single" />;
 ```
 
 ## React — react-hook-form
@@ -53,7 +53,7 @@ const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
     render={({ field }) => <DateField value={field.value} onChange={field.onChange} />}
   />
   <button type="submit">Submit</button>
-</form>
+</form>;
 ```
 
 ## React — native form submit
@@ -97,20 +97,20 @@ const date = ref('2025-04-15');
 
 ## Common props
 
-| Prop                       | Description                                                          |
-| -------------------------- | -------------------------------------------------------------------- |
-| `name`                     | Native form input name. Emits a hidden `<input>`.                    |
-| `value` / `v-model`        | Controlled value.                                                    |
-| `defaultValue` (React)     | Initial value when uncontrolled.                                     |
-| `onChange` / `@change`     | Fires whenever the value commits (pick OR parse-on-blur).            |
-| `format`                   | Display format. `'iso'` (default), `'us'`, `'eu'`, `'medium'`, `'long'`, `'short'`, or a token pattern. |
-| `valueFormat`              | Storage format for the controlled value. Defaults to `format`. Pass `'iso'` to store ISO with a human display format. |
-| `mode`                     | `'single'` (default), `'range'`, `'multi'`.                          |
-| `min` / `max`              | `CalendarDate` bounds.                                               |
-| `withTime`                 | Show an inline time picker beneath the grid.                         |
-| `locale`                   | BCP-47 tag, e.g. `'en-GB'`, `'ne-NP'`.                               |
-| `calendar`                 | `'gregorian'` (default) or `'bikram-sambat'`.                        |
-| `placeholder`              | Defaults to a hint matching `format` (`YYYY-MM-DD`, etc.).            |
-| `disabled`                 | Disable both input and trigger.                                      |
-| `disabledWeekdays`         | E.g. `[0, 6]` to disable Sun/Sat.                                    |
-| `inputProps` (React)       | Forwarded to the underlying `<input>`.                               |
+| Prop                   | Description                                                                                                           |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `name`                 | Native form input name. Emits a hidden `<input>`.                                                                     |
+| `value` / `v-model`    | Controlled value.                                                                                                     |
+| `defaultValue` (React) | Initial value when uncontrolled.                                                                                      |
+| `onChange` / `@change` | Fires whenever the value commits (pick OR parse-on-blur).                                                             |
+| `format`               | Display format. `'iso'` (default), `'us'`, `'eu'`, `'medium'`, `'long'`, `'short'`, or a token pattern.               |
+| `valueFormat`          | Storage format for the controlled value. Defaults to `format`. Pass `'iso'` to store ISO with a human display format. |
+| `mode`                 | `'single'` (default), `'range'`, `'multi'`.                                                                           |
+| `min` / `max`          | `CalendarDate` bounds.                                                                                                |
+| `withTime`             | Show an inline time picker beneath the grid.                                                                          |
+| `locale`               | BCP-47 tag, e.g. `'en-GB'`, `'ne-NP'`.                                                                                |
+| `calendar`             | `'gregorian'` (default) or `'bikram-sambat'`.                                                                         |
+| `placeholder`          | Defaults to a hint matching `format` (`YYYY-MM-DD`, etc.).                                                            |
+| `disabled`             | Disable both input and trigger.                                                                                       |
+| `disabledWeekdays`     | E.g. `[0, 6]` to disable Sun/Sat.                                                                                     |
+| `inputProps` (React)   | Forwarded to the underlying `<input>`.                                                                                |

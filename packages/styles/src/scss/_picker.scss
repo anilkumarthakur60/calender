@@ -167,7 +167,32 @@
 
 // --- Grid ----------------------------------------------------------------
 
+@keyframes cal-grid-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes cal-grid-slide-in-reverse {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .cal-picker__grid {
+  // Subtle slide+fade on month change. Renderers set the key on the grid to
+  // re-trigger the animation; CSS just animates each remount.
+  animation: cal-grid-slide-in var(--cal-duration-base) var(--cal-easing);
+
   display: grid;
   grid-template-columns: repeat(7, var(--cal-cell-size));
   gap: 0;
@@ -603,6 +628,48 @@
   position: relative;
   display: inline-block;
   font-family: var(--cal-font-family);
+}
+
+.cal-field__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--cal-color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.cal-field__required {
+  color: var(--cal-color-accent);
+  font-weight: 600;
+}
+
+.cal-field__helper,
+.cal-field__error {
+  font-size: 0.75rem;
+  margin: 0.375rem 0 0;
+  line-height: 1.4;
+}
+
+.cal-field__helper {
+  color: var(--cal-color-text-muted);
+}
+
+.cal-field__error {
+  color: #dc2626; // red-600
+}
+
+.cal-field--error .cal-field__control,
+.cal-field__control[data-error] {
+  border-color: #ef4444; // red-500
+
+  &:hover {
+    border-color: #dc2626;
+  }
+
+  &:focus-within {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  }
 }
 
 .cal-field__control {

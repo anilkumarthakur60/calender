@@ -1,0 +1,85 @@
+name: Preview
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: preview-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Same matrix as Deploy, but publishes a preview URL per app instead of
+  # promoting to production. Each preview URL is commented on the PR by the
+  # Vercel CLI's standard output.
+  preview:
+    name: Preview ${{ matrix.app.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        app:
+          - { name: docs, dir: apps/docs, project_id_secret: VERCEL_PROJECT_ID_DOCS }
+          - {
+              name: wc-playground,
+              dir: apps/wc-playground,
+              project_id_secret: VERCEL_PROJECT_ID_WC,
+            }
+          - {
+              name: react-playground,
+              dir: apps/react-playground,
+              project_id_secret: VERCEL_PROJECT_ID_REACT,
+            }
+          - {
+              name: vue-playground,
+              dir: apps/vue-playground,
+              project_id_secret: VERCEL_PROJECT_ID_VUE,
+            }
+          - {
+              name: svelte-playground,
+              dir: apps/svelte-playground,
+              project_id_secret: VERCEL_PROJECT_ID_SVELTE,
+            }
+          - {
+              name: solid-playground,
+              dir: apps/solid-playground,
+              project_id_secret: VERCEL_PROJECT_ID_SOLID,
+            }
+
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets[matrix.app.project_id_secret] }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel env
+        working-directory: ${{ matrix.app.dir }}
+        run: vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+
+      - name: Build (Vercel)
+        working-directory: ${{ matrix.app.dir }}
+        run: vercel build --token=$VERCEL_TOKEN
+
+      - name: Deploy preview
+        id: deploy
+        working-directory: ${{ matrix.app.dir }}
+        run: |
+          URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          echo "## ${{ matrix.app.name }} preview" >> $GITHUB_STEP_SUMMARY
+          echo "$URL" >> $GITHUB_STEP_SUMMARY

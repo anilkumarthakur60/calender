@@ -34,14 +34,16 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "echo 'no tests'"
+    "test": "vitest run"
   },
   "dependencies": {
     "@calender/core": "workspace:*"
   },
   "devDependencies": {
+    "happy-dom": "^15.11.7",
     "tsup": "^8.3.5",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^2.1.8"
   },
   "publishConfig": {
     "access": "public"

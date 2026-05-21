@@ -24,13 +24,13 @@ Pass `withTime` to add an inline time picker beneath the day grid.
 
 ## Options
 
-| Option            | Default | Description                                    |
-| ----------------- | ------- | ---------------------------------------------- |
-| `withTime`        | `false` | Show the time picker row.                      |
-| `use12HourClock`  | `false` | 12-hour with AM/PM toggle. WC: `clock="12"`.   |
-| `showSeconds`     | `false` | Display a seconds field. WC: `seconds`.        |
-| `timeStep`        | `1`     | Minute step (1, 5, 10, 15, 30).                |
-| `initialTime`     | `00:00:00` | Initial time when none picked.              |
+| Option           | Default    | Description                                  |
+| ---------------- | ---------- | -------------------------------------------- |
+| `withTime`       | `false`    | Show the time picker row.                    |
+| `use12HourClock` | `false`    | 12-hour with AM/PM toggle. WC: `clock="12"`. |
+| `showSeconds`    | `false`    | Display a seconds field. WC: `seconds`.      |
+| `timeStep`       | `1`        | Minute step (1, 5, 10, 15, 30).              |
+| `initialTime`    | `00:00:00` | Initial time when none picked.               |
 
 ## DateTime in a form input
 
@@ -38,11 +38,7 @@ For `<calender-input>` / `DateField` the value automatically includes the time
 when `withTime` is on and your format includes time tokens:
 
 ```html
-<calender-input
-  with-time
-  time-step="15"
-  format="yyyy-MM-dd HH:mm"
-></calender-input>
+<calender-input with-time time-step="15" format="yyyy-MM-dd HH:mm"></calender-input>
 ```
 
 <div class="docs-demo">

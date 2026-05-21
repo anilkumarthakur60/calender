@@ -16,11 +16,13 @@ export const App = () => {
   return (
     <div class="cal-picker" role="group">
       <div class="cal-picker__header">
-        <button class="cal-picker__nav" onClick={() => engine.pagePrev()}>‹</button>
-        <span class="cal-picker__title">
-          {engine.formatter.formatMonthYear(state().focused)}
-        </span>
-        <button class="cal-picker__nav" onClick={() => engine.pageNext()}>›</button>
+        <button class="cal-picker__nav" onClick={() => engine.pagePrev()}>
+          ‹
+        </button>
+        <span class="cal-picker__title">{engine.formatter.formatMonthYear(state().focused)}</span>
+        <button class="cal-picker__nav" onClick={() => engine.pageNext()}>
+          ›
+        </button>
       </div>
       <div class="cal-picker__grid" role="grid">
         <For each={state().grid.weekdayHeaders}>

@@ -4,19 +4,19 @@ The footer renders a configurable row of preset chips. Default: just `today`.
 
 ## Built-ins
 
-| ID            | Label           | Behaviour                                                  |
-| ------------- | --------------- | ---------------------------------------------------------- |
-| `today`       | Today           | Select today (or set to [today, today] in range mode).     |
-| `yesterday`   | Yesterday       | Select yesterday.                                          |
-| `tomorrow`    | Tomorrow        | Select tomorrow.                                           |
-| `last7days`   | Last 7 days     | Range: [today−6, today].                                   |
-| `last30days`  | Last 30 days    | Range: [today−29, today].                                  |
-| `last90days`  | Last 90 days    | Range: [today−89, today].                                  |
-| `thisWeek`    | This week       | Range: current week (locale's first day of week).          |
-| `thisMonth`   | This month      | Range: full current month.                                 |
-| `lastMonth`   | Last month      | Range: full previous month.                                |
-| `thisYear`    | This year       | Range: full current year.                                  |
-| `clear`       | Clear           | Wipe the selection.                                        |
+| ID           | Label        | Behaviour                                              |
+| ------------ | ------------ | ------------------------------------------------------ |
+| `today`      | Today        | Select today (or set to [today, today] in range mode). |
+| `yesterday`  | Yesterday    | Select yesterday.                                      |
+| `tomorrow`   | Tomorrow     | Select tomorrow.                                       |
+| `last7days`  | Last 7 days  | Range: [today−6, today].                               |
+| `last30days` | Last 30 days | Range: [today−29, today].                              |
+| `last90days` | Last 90 days | Range: [today−89, today].                              |
+| `thisWeek`   | This week    | Range: current week (locale's first day of week).      |
+| `thisMonth`  | This month   | Range: full current month.                             |
+| `lastMonth`  | Last month   | Range: full previous month.                            |
+| `thisYear`   | This year    | Range: full current year.                              |
+| `clear`      | Clear        | Wipe the selection.                                    |
 
 ## Use them
 
@@ -34,10 +34,7 @@ The footer renders a configurable row of preset chips. Default: just `today`.
 ```
 
 ```vue [Vue]
-<DatePicker
-  mode="range"
-  :presets="['today', 'last7days', 'last30days', 'thisMonth', 'clear']"
-/>
+<DatePicker mode="range" :presets="['today', 'last7days', 'last30days', 'thisMonth', 'clear']" />
 ```
 
 :::
@@ -62,7 +59,7 @@ const Easter: DatePreset = {
   apply: e => e.select(createCalendarDate(2025, 4, 20)),
 };
 
-<DatePicker presets={['today', Easter]} />
+<DatePicker presets={['today', Easter]} />;
 ```
 
 The `apply` callback gets the engine instance — drive it however you want

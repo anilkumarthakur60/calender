@@ -13,24 +13,24 @@ interface DatePreset {
   readonly apply: (engine: DatePickerEngine) => void;
 }
 
-type PresetSpec = string | DatePreset;  // string IDs reference BUILTIN_PRESETS
+type PresetSpec = string | DatePreset; // string IDs reference BUILTIN_PRESETS
 ```
 
 ## Built-ins
 
-| ID           | Label         | Action                                      |
-| ------------ | ------------- | ------------------------------------------- |
-| `today`      | Today         | Select today (or range [today, today]).     |
-| `yesterday`  | Yesterday     | Select yesterday.                           |
-| `tomorrow`   | Tomorrow      | Select tomorrow.                            |
-| `last7days`  | Last 7 days   | Range: [today−6, today].                    |
-| `last30days` | Last 30 days  | Range: [today−29, today].                   |
-| `last90days` | Last 90 days  | Range: [today−89, today].                   |
-| `thisWeek`   | This week     | Range: current week, using locale's start.  |
-| `thisMonth`  | This month    | Range: full current month.                  |
-| `lastMonth`  | Last month    | Range: full previous month.                 |
-| `thisYear`   | This year     | Range: full current year.                   |
-| `clear`      | Clear         | Wipe the selection.                         |
+| ID           | Label        | Action                                     |
+| ------------ | ------------ | ------------------------------------------ |
+| `today`      | Today        | Select today (or range [today, today]).    |
+| `yesterday`  | Yesterday    | Select yesterday.                          |
+| `tomorrow`   | Tomorrow     | Select tomorrow.                           |
+| `last7days`  | Last 7 days  | Range: [today−6, today].                   |
+| `last30days` | Last 30 days | Range: [today−29, today].                  |
+| `last90days` | Last 90 days | Range: [today−89, today].                  |
+| `thisWeek`   | This week    | Range: current week, using locale's start. |
+| `thisMonth`  | This month   | Range: full current month.                 |
+| `lastMonth`  | Last month   | Range: full previous month.                |
+| `thisYear`   | This year    | Range: full current year.                  |
+| `clear`      | Clear        | Wipe the selection.                        |
 
 ## resolvePreset
 

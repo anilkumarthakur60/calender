@@ -5,16 +5,16 @@ need plus `@calender/styles` for the visual layer.
 
 ## Packages
 
-| Package                    | What it is                                                                |
-| -------------------------- | ------------------------------------------------------------------------- |
-| `@calender/core`           | Headless TS engine. Pulled in transitively by every adapter.              |
-| `@calender/styles`         | SCSS source + compiled CSS theme.                                         |
-| `@calender/web-component`  | `<calender-picker>` + `<calender-input>` custom elements.                 |
-| `@calender/react`          | `useDatePicker` hook, `<DatePicker>`, `<DateField>`.                      |
-| `@calender/vue`            | `useDatePicker` composable, `<DatePicker>`, `<DateField>`.                |
-| `@calender/svelte`         | `createDatePicker` factory satisfying the store contract.                 |
-| `@calender/solid`          | `createDatePicker` returning Solid signals.                               |
-| `@calender/angular`        | Standalone `DatePickerComponent` + `DatePickerService`.                   |
+| Package                   | What it is                                                   |
+| ------------------------- | ------------------------------------------------------------ |
+| `@calender/core`          | Headless TS engine. Pulled in transitively by every adapter. |
+| `@calender/styles`        | SCSS source + compiled CSS theme.                            |
+| `@calender/web-component` | `<calender-picker>` + `<calender-input>` custom elements.    |
+| `@calender/react`         | `useDatePicker` hook, `<DatePicker>`, `<DateField>`.         |
+| `@calender/vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>`.   |
+| `@calender/svelte`        | `createDatePicker` factory satisfying the store contract.    |
+| `@calender/solid`         | `createDatePicker` returning Solid signals.                  |
+| `@calender/angular`       | Standalone `DatePickerComponent` + `DatePickerService`.      |
 
 ## Package manager
 

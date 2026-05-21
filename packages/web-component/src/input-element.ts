@@ -2,8 +2,11 @@ import {
   type CalendarId,
   type CalendarSystem,
   DatePickerEngine,
+  type FocusTrap,
   type FormatPreset,
   type SelectionMode,
+  activateFocusTrap,
+  announce,
   createCalendarSystem,
   formatSelection,
   parseSelection,
@@ -332,6 +335,7 @@ export class CalenderInputElement extends HTMLElement {
     if (next) this.setAttribute('value', next);
     else this.removeAttribute('value');
     this.#syncForm(next);
+    if (next) announce(`Selected ${next}`);
     this.dispatchEvent(new CustomEvent('cal-change', { detail: { value: next } }));
   }
 
@@ -346,11 +350,18 @@ export class CalenderInputElement extends HTMLElement {
   }
 
   #syncForm(value: string): void {
+    // Keep the hidden input in sync (also propagate the host's `name` so
+    // FormData traversal works in environments without ElementInternals).
+    const name = this.getAttribute('name');
+    if (name !== null) this.#hiddenInput.name = name;
+    else this.#hiddenInput.removeAttribute('name');
     this.#hiddenInput.value = value;
     if (this.#internals) this.#internals.setFormValue(value);
   }
 
   // --- popover ----------------------------------------------------------
+
+  #focusTrap: FocusTrap | null = null;
 
   #openPopover(): void {
     if (this.#open || this.#input.disabled) return;
@@ -359,6 +370,8 @@ export class CalenderInputElement extends HTMLElement {
     this.#input.setAttribute('aria-expanded', 'true');
     this.#positionPopover();
     this.#installGlobalHandlers();
+    // Focus trap inside the popover
+    this.#focusTrap = activateFocusTrap(this.#popover);
   }
 
   #closePopover(): void {
@@ -367,6 +380,8 @@ export class CalenderInputElement extends HTMLElement {
     this.#popover.style.display = 'none';
     this.#input.setAttribute('aria-expanded', 'false');
     this.#teardownGlobalHandlers();
+    this.#focusTrap?.deactivate();
+    this.#focusTrap = null;
   }
 
   #positionPopover(): void {

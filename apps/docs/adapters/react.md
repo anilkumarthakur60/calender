@@ -27,9 +27,7 @@ option as a prop.
   headerSelectors
   weekNumbers
   presets={['today', 'last7days', 'thisMonth', 'clear']}
-  highlights={[
-    { date: createCalendarDate(2025, 12, 25), color: '#dc2626', label: 'Christmas' },
-  ]}
+  highlights={[{ date: createCalendarDate(2025, 12, 25), color: '#dc2626', label: 'Christmas' }]}
   onSelect={d => console.log(d)}
   onChange={state => console.log(state)}
 />
@@ -40,12 +38,7 @@ option as a prop.
 Text input + popover. Form-associated. Type or pick.
 
 ```tsx
-<DateField
-  value={iso}
-  onChange={setIso}
-  format="MMM d, yyyy"
-  valueFormat="iso"
-/>
+<DateField value={iso} onChange={setIso} format="MMM d, yyyy" valueFormat="iso" />
 ```
 
 ### `useDatePicker(options)`
@@ -70,13 +63,13 @@ return (
 
 `DatePicker` extends `DatePickerEngineOptions` and adds:
 
-| Prop          | Type                              | Description                              |
-| ------------- | --------------------------------- | ---------------------------------------- |
-| `className`   | `string`                          | Forwarded to the root `<div>`            |
-| `onSelect`    | `(date: CalendarDate) => void`    | Fires when the user picks a date         |
-| `onChange`    | `(state: EngineState) => void`    | Fires on every state mutation            |
-| `hideFooter`  | `boolean`                         | Don't render the preset footer           |
-| `presets`     | `ReadonlyArray<PresetSpec>`       | Preset chips. Default `['today']`        |
+| Prop         | Type                           | Description                       |
+| ------------ | ------------------------------ | --------------------------------- |
+| `className`  | `string`                       | Forwarded to the root `<div>`     |
+| `onSelect`   | `(date: CalendarDate) => void` | Fires when the user picks a date  |
+| `onChange`   | `(state: EngineState) => void` | Fires on every state mutation     |
+| `hideFooter` | `boolean`                      | Don't render the preset footer    |
+| `presets`    | `ReadonlyArray<PresetSpec>`    | Preset chips. Default `['today']` |
 
 `DateField` adds the form-input chrome on top of the picker. See
 [Form integration](/guide/forms) for the full props table.
@@ -107,5 +100,5 @@ const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
     rules={{ required: 'Pick a date' }}
     render={({ field }) => <DateField value={field.value} onChange={field.onChange} />}
   />
-</form>
+</form>;
 ```

@@ -18,21 +18,21 @@ See [Options](/api/options) for the full options shape.
 
 ## Read-only API
 
-| Property            | Type                | Description                                          |
-| ------------------- | ------------------- | ---------------------------------------------------- |
-| `state`             | `EngineState`       | Current immutable snapshot.                          |
-| `locale`            | `LocaleConfig`      | Resolved locale, first-day-of-week, RTL.             |
-| `formatter`         | `DateFormatter`     | Memoised Intl formatters.                            |
-| `calendar`          | `CalendarSystem`    | Active calendar (Gregorian or BS).                   |
-| `granularity`       | `'day'\|'month'\|'year'` | Terminal selection view.                        |
-| `months`            | `number`            | Multi-month layout count.                            |
-| `weekNumbers`       | `boolean`           |                                                      |
-| `headerSelectors`   | `boolean`           |                                                      |
-| `withTime`          | `boolean`           |                                                      |
-| `timeStep`          | `number`            |                                                      |
-| `use12HourClock`    | `boolean`           |                                                      |
-| `showSeconds`       | `boolean`           |                                                      |
-| `on`                | function            | Event subscription. See **Events** below.            |
+| Property          | Type                     | Description                               |
+| ----------------- | ------------------------ | ----------------------------------------- |
+| `state`           | `EngineState`            | Current immutable snapshot.               |
+| `locale`          | `LocaleConfig`           | Resolved locale, first-day-of-week, RTL.  |
+| `formatter`       | `DateFormatter`          | Memoised Intl formatters.                 |
+| `calendar`        | `CalendarSystem`         | Active calendar (Gregorian or BS).        |
+| `granularity`     | `'day'\|'month'\|'year'` | Terminal selection view.                  |
+| `months`          | `number`                 | Multi-month layout count.                 |
+| `weekNumbers`     | `boolean`                |                                           |
+| `headerSelectors` | `boolean`                |                                           |
+| `withTime`        | `boolean`                |                                           |
+| `timeStep`        | `number`                 |                                           |
+| `use12HourClock`  | `boolean`                |                                           |
+| `showSeconds`     | `boolean`                |                                           |
+| `on`              | function                 | Event subscription. See **Events** below. |
 
 ## Predicates
 

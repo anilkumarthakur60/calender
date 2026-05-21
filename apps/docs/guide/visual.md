@@ -5,8 +5,7 @@
 Light (default), dark, or auto (matches OS).
 
 ```html
-<calender-picker theme="dark"></calender-picker>
-<calender-picker theme="auto"></calender-picker>
+<calender-picker theme="dark"></calender-picker> <calender-picker theme="auto"></calender-picker>
 ```
 
 Or set the class on a wrapper:
@@ -20,7 +19,8 @@ Or set the class on a wrapper:
 ## Density
 
 ```html
-<calender-picker density="comfortable"></calender-picker>  <!-- default -->
+<calender-picker density="comfortable"></calender-picker>
+<!-- default -->
 <calender-picker density="dense"></calender-picker>
 ```
 
@@ -62,15 +62,15 @@ part of the cell's `aria-label`.
 <DatePicker
   highlights={[
     { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
-    { date: createCalendarDate(2026, 1, 1),   color: '#16a34a', label: 'New Year' },
+    { date: createCalendarDate(2026, 1, 1), color: '#16a34a', label: 'New Year' },
   ]}
 />
 ```
 
 ```vue [Vue]
-<DatePicker :highlights="[
-  { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
-]" />
+<DatePicker
+  :highlights="[{ date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' }]"
+/>
 ```
 
 :::

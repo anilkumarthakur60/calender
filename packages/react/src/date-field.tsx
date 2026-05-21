@@ -5,10 +5,15 @@ import {
   type CalendarSystem,
   type DatePickerEngineOptions,
   type EngineState,
+  type FocusTrap,
   type FormatPreset,
   type SelectionMode,
+  activateFocusTrap,
+  announce,
+  applyMask,
   createCalendarSystem,
   formatSelection,
+  isMaskable,
   parseSelection,
 } from '@calender/core';
 import { DatePicker } from './date-picker.js';
@@ -49,10 +54,27 @@ export interface DateFieldProps {
   // --- Input chrome ------------------------------------------------------
   readonly placeholder?: string;
   readonly disabled?: boolean;
+  readonly required?: boolean;
   readonly id?: string;
   readonly className?: string;
   readonly inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
   readonly autoFocus?: boolean;
+
+  // --- Form feedback -----------------------------------------------------
+  /** Helper text shown below the input. Hidden when an error is active. */
+  readonly helperText?: React.ReactNode;
+  /** Error message shown below the input. When present, sets `aria-invalid` + applies error styling. */
+  readonly errorText?: React.ReactNode;
+  /** Force the error state on without an `errorText` message. */
+  readonly error?: boolean;
+  /** Optional label rendered above the input. */
+  readonly label?: React.ReactNode;
+  /**
+   * Auto-format the input as the user types (insert separators between
+   * digits). Defaults to `true` for numeric patterns (iso/us/eu/short), `false`
+   * for patterns with month/weekday names.
+   */
+  readonly mask?: boolean;
 }
 
 const HINT_BY_PATTERN: Record<string, string> = {
@@ -82,14 +104,23 @@ export const DateField = (props: DateFieldProps): JSX.Element => {
     valueFormat,
     placeholder,
     disabled,
+    required,
     id: idProp,
     className,
     inputProps,
     autoFocus,
     locale,
     calendar,
+    helperText,
+    errorText,
+    error,
+    label,
+    mask,
     ...engineProps
   } = props;
+
+  const isInvalid = error === true || errorText != null;
+  const maskEnabled = mask ?? isMaskable(format);
 
   const controlled = value !== undefined;
   const generatedId = useId();
@@ -213,14 +244,50 @@ export const DateField = (props: DateFieldProps): JSX.Element => {
     setFlipUp(input.bottom + popH + 8 > window.innerHeight && input.top - popH - 8 > 0);
   }, [open]);
 
+  // Focus trap inside the popover.
+  useEffect(() => {
+    if (!open || !popoverRef.current) return;
+    const trap: FocusTrap = activateFocusTrap(popoverRef.current);
+    return () => trap.deactivate();
+  }, [open]);
+
+  // Announce the committed value to screen readers.
+  useEffect(() => {
+    if (current) announce(`Selected ${current}`);
+  }, [current]);
+
   const placeholderText =
     placeholder ??
     HINT_BY_PATTERN[typeof displayPattern === 'string' ? displayPattern : 'iso'] ??
     String(displayPattern);
 
+  const helperId = `${id}-helper`;
+  const errorId = `${id}-error`;
+  const describedBy =
+    isInvalid && errorText != null ? errorId : helperText != null ? helperId : undefined;
+
   return (
-    <div ref={wrapperRef} className={['cal-field', className].filter(Boolean).join(' ')}>
-      <div className="cal-field__control" data-disabled={disabled || undefined}>
+    <div
+      ref={wrapperRef}
+      className={['cal-field', isInvalid ? 'cal-field--error' : '', className]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {label != null && (
+        <label htmlFor={id} className="cal-field__label">
+          {label}
+          {required && (
+            <span className="cal-field__required" aria-hidden="true">
+              {' *'}
+            </span>
+          )}
+        </label>
+      )}
+      <div
+        className="cal-field__control"
+        data-disabled={disabled || undefined}
+        data-error={isInvalid || undefined}
+      >
         <input
           ref={inputRef}
           id={id}
@@ -229,15 +296,31 @@ export const DateField = (props: DateFieldProps): JSX.Element => {
           value={text}
           placeholder={placeholderText}
           disabled={disabled}
+          required={required}
           autoComplete="off"
           spellCheck={false}
-          onChange={e => setText(e.target.value)}
+          onChange={e => {
+            const raw = e.target.value;
+            if (!maskEnabled) {
+              setText(raw);
+              return;
+            }
+            // Don't mask while the user is deleting (length shrank).
+            if (raw.length < text.length) {
+              setText(raw);
+              return;
+            }
+            const masked = applyMask(raw, format);
+            setText(masked.value);
+          }}
           onFocus={() => setOpen(true)}
           onClick={() => setOpen(true)}
           onBlur={handleBlur}
           autoFocus={autoFocus}
           aria-haspopup="dialog"
           aria-expanded={open}
+          aria-invalid={isInvalid || undefined}
+          aria-describedby={describedBy}
           {...inputProps}
         />
         <button
@@ -274,6 +357,16 @@ export const DateField = (props: DateFieldProps): JSX.Element => {
             onChange={handlePickerChange}
           />
         </div>
+      )}
+      {isInvalid && errorText != null && (
+        <p id={errorId} className="cal-field__error" role="alert">
+          {errorText}
+        </p>
+      )}
+      {!isInvalid && helperText != null && (
+        <p id={helperId} className="cal-field__helper">
+          {helperText}
+        </p>
       )}
     </div>
   );

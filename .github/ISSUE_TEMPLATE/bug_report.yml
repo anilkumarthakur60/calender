@@ -1,0 +1,78 @@
+name: Bug report
+description: Report something that's broken
+title: '[Bug]: '
+labels: ['bug', 'triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill in everything you can — it makes triage much faster.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is the bug in?
+      options:
+        - '@calender/core'
+        - '@calender/styles'
+        - '@calender/web-component'
+        - '@calender/react'
+        - '@calender/vue'
+        - '@calender/svelte'
+        - '@calender/solid'
+        - '@calender/angular'
+        - "I don't know"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: |
+        A minimal reproduction is hugely appreciated. Either a code snippet,
+        a CodeSandbox / StackBlitz link, or a small public repo.
+      placeholder: |
+        ```ts
+        const engine = new DatePickerEngine({ mode: 'range' });
+        engine.select({ year: 2025, month: 4, day: 15 });
+        // ...
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: |
+        - OS:
+        - Browser:
+        - Framework + version:
+        - Node version:
+    validations:
+      required: false

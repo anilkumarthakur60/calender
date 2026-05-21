@@ -29,9 +29,7 @@ Accepts every engine option as a prop and emits `select` + `change`.
   :header-selectors="true"
   :week-numbers="true"
   :presets="['today', 'last7days', 'thisMonth', 'clear']"
-  :highlights="[
-    { date: createCalendarDate(2025, 12, 25), color: '#dc2626', label: 'Christmas' },
-  ]"
+  :highlights="[{ date: createCalendarDate(2025, 12, 25), color: '#dc2626', label: 'Christmas' }]"
   @select="d => console.log(d)"
   @change="state => console.log(state)"
 />
@@ -76,27 +74,27 @@ const { engine, state } = useDatePicker({ mode: 'single' });
 
 ## Props reference
 
-| Prop                  | Type                              | Notes                                       |
-| --------------------- | --------------------------------- | ------------------------------------------- |
-| `mode`                | `'single' \| 'range' \| 'multi'`  | Default `single`.                           |
-| `min` / `max`         | `CalendarDate`                    | Bounds.                                     |
-| `locale`              | `string \| Partial<LocaleConfig>` |                                             |
-| `calendar`            | `'gregorian' \| 'bikram-sambat'`  |                                             |
-| `granularity`         | `'day' \| 'month' \| 'year'`      | Terminal view.                              |
-| `months`              | `number`                          | Multi-month layout.                         |
-| `weekNumbers`         | `boolean`                         | ISO week column.                            |
-| `headerSelectors`     | `boolean`                         | Replace title with dropdowns.               |
-| `yearRange`           | `[number, number]`                | Dropdown year span.                         |
-| `minRangeDays`        | `number`                          | Range mode only.                            |
-| `maxRangeDays`        | `number`                          |                                             |
-| `withTime`            | `boolean`                         | Time picker.                                |
-| `timeStep`            | `number`                          | Minute step.                                |
-| `use12HourClock`      | `boolean`                         |                                             |
-| `showSeconds`         | `boolean`                         |                                             |
-| `disabledWeekdays`    | `ReadonlyArray<number>`           |                                             |
-| `presets`             | `ReadonlyArray<PresetSpec>`       | Default `['today']`.                        |
-| `highlights`          | `ReadonlyArray<DateHighlight>`    | `{date, color?, label?}`.                   |
-| `hideFooter`          | `boolean`                         |                                             |
+| Prop               | Type                              | Notes                         |
+| ------------------ | --------------------------------- | ----------------------------- |
+| `mode`             | `'single' \| 'range' \| 'multi'`  | Default `single`.             |
+| `min` / `max`      | `CalendarDate`                    | Bounds.                       |
+| `locale`           | `string \| Partial<LocaleConfig>` |                               |
+| `calendar`         | `'gregorian' \| 'bikram-sambat'`  |                               |
+| `granularity`      | `'day' \| 'month' \| 'year'`      | Terminal view.                |
+| `months`           | `number`                          | Multi-month layout.           |
+| `weekNumbers`      | `boolean`                         | ISO week column.              |
+| `headerSelectors`  | `boolean`                         | Replace title with dropdowns. |
+| `yearRange`        | `[number, number]`                | Dropdown year span.           |
+| `minRangeDays`     | `number`                          | Range mode only.              |
+| `maxRangeDays`     | `number`                          |                               |
+| `withTime`         | `boolean`                         | Time picker.                  |
+| `timeStep`         | `number`                          | Minute step.                  |
+| `use12HourClock`   | `boolean`                         |                               |
+| `showSeconds`      | `boolean`                         |                               |
+| `disabledWeekdays` | `ReadonlyArray<number>`           |                               |
+| `presets`          | `ReadonlyArray<PresetSpec>`       | Default `['today']`.          |
+| `highlights`       | `ReadonlyArray<DateHighlight>`    | `{date, color?, label?}`.     |
+| `hideFooter`       | `boolean`                         |                               |
 
 ## Live example
 

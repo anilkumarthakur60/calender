@@ -1,6 +1,6 @@
 import type { CalendarDate } from '../domain/calendar-date.js';
 
-export type CalendarId = 'gregorian' | 'bikram-sambat';
+export type CalendarId = 'gregorian' | 'bikram-sambat' | 'buddhist' | 'persian';
 
 /**
  * Abstract calendar system. All date math operates on plain {year, month, day}
@@ -12,7 +12,7 @@ export type CalendarId = 'gregorian' | 'bikram-sambat';
  * through this abstraction — no other code needs to change.
  */
 export interface CalendarSystem {
-  readonly id: CalendarId;
+  readonly id: 'gregorian' | 'bikram-sambat' | 'buddhist' | 'persian';
   /** Human-readable name, e.g. "Gregorian", "Bikram Sambat". */
   readonly displayName: string;
   /** Always 12 for the two calendars shipped here; left abstract for future systems. */

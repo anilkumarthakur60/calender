@@ -14,6 +14,17 @@ import {
 import { useCallback, useMemo } from 'react';
 import { useDatePicker } from './use-date-picker.js';
 
+export interface DayCellContext {
+  readonly cell: ReturnType<typeof buildMonthGrid>['weeks'][number][number];
+  /** Default label the renderer would have shown (e.g. "15"). */
+  readonly defaultLabel: string;
+  readonly selected: boolean;
+  /** True when constraints / range-length make this date unclickable. */
+  readonly disabled: boolean;
+  /** True when the cell falls inside a committed range. */
+  readonly inRange: boolean;
+}
+
 export interface DatePickerProps extends DatePickerEngineOptions {
   readonly className?: string;
   readonly onSelect?: (date: CalendarDate) => void;
@@ -22,6 +33,12 @@ export interface DatePickerProps extends DatePickerEngineOptions {
   readonly hideFooter?: boolean;
   /** Preset specs (string ids of built-ins, or custom {id, label, apply}). Default ['today']. */
   readonly presets?: ReadonlyArray<PresetSpec>;
+  /**
+   * Custom render function for the contents of each day cell. The button shell
+   * (click handler, data-attrs, aria-label, focus management) is preserved —
+   * only the cell's child content is replaced.
+   */
+  readonly renderCell?: (ctx: DayCellContext) => React.ReactNode;
 }
 
 export const DatePicker = (props: DatePickerProps): JSX.Element => {
@@ -31,6 +48,7 @@ export const DatePicker = (props: DatePickerProps): JSX.Element => {
     onChange,
     hideFooter,
     presets = ['today'],
+    renderCell,
     ...engineOptions
   } = props;
   const { engine, state } = useDatePicker(engineOptions);
@@ -81,7 +99,8 @@ export const DatePicker = (props: DatePickerProps): JSX.Element => {
   }, [state.view, state.focused, periodGrid, fmt, engine]);
 
   const resolved = useMemo(() => resolvePresets(presets), [presets]);
-  const terminalView = state.view === 'decade' || state.view === engine.granularity;
+  // Title navigates upward; only disable at the top of the view hierarchy.
+  const terminalView = state.view === 'decade';
   const monthsToRender = Math.max(1, engine.months);
 
   const renderDayCell = (
@@ -151,7 +170,15 @@ export const DatePicker = (props: DatePickerProps): JSX.Element => {
           }
         }}
       >
-        {fmt.formatDay(cell.date)}
+        {renderCell
+          ? renderCell({
+              cell,
+              defaultLabel: fmt.formatDay(cell.date),
+              selected,
+              disabled: !pickable,
+              inRange: isStart || isEnd || isMid,
+            })
+          : fmt.formatDay(cell.date)}
       </button>
     );
   };

@@ -71,6 +71,10 @@ export default defineConfig({
             { text: 'Presets & shortcuts', link: '/guide/presets' },
           ],
         },
+        {
+          text: 'Ops',
+          items: [{ text: 'Deployment', link: '/guide/deployment' }],
+        },
       ],
       '/adapters/': [
         {
