@@ -17,10 +17,11 @@ styled with SCSS + CSS custom properties.
 | `@calender/solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                  |
 | `@calender/angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+).                                            |
 
-### Playgrounds (one per adapter)
+### Apps
 
 | App                       | Port | Stack                                                            |
 | ------------------------- | ---- | ---------------------------------------------------------------- |
+| `apps/docs`               | 5179 | **VitePress docs site** — guides, adapter pages, API reference   |
 | `apps/wc-playground`      | 5180 | Plain HTML + Vite — uses the `<calender-picker>` element         |
 | `apps/vue-playground`     | 5173 | Vue 3 + Vite — uses `@calender/vue` and the WC together          |
 | `apps/react-playground`   | 5174 | React 18 + Vite                                                  |
@@ -107,7 +108,10 @@ disk-efficient install). This is a dev-time choice and doesn't affect end users.
 pnpm install
 pnpm -r --filter "./packages/**" run build
 
-# Open any playground:
+# Docs site:
+pnpm dev:docs     # http://localhost:5179
+
+# Or any playground:
 pnpm dev:wc       # http://localhost:5180
 pnpm dev:vue      # http://localhost:5173
 pnpm dev:react    # http://localhost:5174

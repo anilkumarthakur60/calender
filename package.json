@@ -19,6 +19,8 @@
     "dev:svelte": "pnpm --filter @calender/svelte-playground run dev",
     "dev:solid": "pnpm --filter @calender/solid-playground run dev",
     "dev:wc": "pnpm --filter @calender/wc-playground run dev",
+    "dev:docs": "pnpm --filter @calender/docs run dev",
+    "build:docs": "pnpm --filter @calender/docs run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
