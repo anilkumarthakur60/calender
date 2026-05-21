@@ -1,0 +1,26 @@
+{
+  "name": "calender-monorepo",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Headless, framework-agnostic calendar/date-picker for React, Vue, Svelte, Solid, Angular & Web Components.",
+  "type": "module",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter \"./packages/**\" run build",
+    "build:core": "pnpm --filter @calender/core run build",
+    "typecheck": "pnpm -r run typecheck",
+    "test": "pnpm -r run test",
+    "dev": "pnpm --filter @calender/playground run dev",
+    "lint": "pnpm -r run lint",
+    "clean": "pnpm -r exec rm -rf dist node_modules/.cache .tsbuildinfo"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsup": "^8.3.5",
+    "typescript": "~6.0.3",
+    "vitest": "^2.1.8"
+  }
+}

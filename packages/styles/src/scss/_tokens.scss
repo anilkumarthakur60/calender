@@ -1,0 +1,58 @@
+// Design tokens exposed as CSS custom properties.
+// All visual styling is driven by these — consumers override at any scope.
+
+@mixin tokens-light {
+  --cal-color-bg: #ffffff;
+  --cal-color-surface: #ffffff;
+  --cal-color-surface-elevated: #ffffff;
+  --cal-color-border: #e5e7eb;
+  --cal-color-text: #111827;
+  --cal-color-text-muted: #6b7280;
+  --cal-color-text-disabled: #d1d5db;
+  --cal-color-accent: #2563eb;
+  --cal-color-accent-contrast: #ffffff;
+  --cal-color-accent-soft: #dbeafe;
+  --cal-color-range-bg: #eff6ff;
+  --cal-color-today-ring: #2563eb;
+  --cal-color-weekend: #9ca3af;
+  --cal-color-hover-bg: #f3f4f6;
+  --cal-color-focus-ring: #2563eb;
+  --cal-shadow-popover: 0 10px 30px -10px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+@mixin tokens-dark {
+  --cal-color-bg: #0b0f17;
+  --cal-color-surface: #111827;
+  --cal-color-surface-elevated: #1f2937;
+  --cal-color-border: #1f2937;
+  --cal-color-text: #f3f4f6;
+  --cal-color-text-muted: #9ca3af;
+  --cal-color-text-disabled: #4b5563;
+  --cal-color-accent: #60a5fa;
+  --cal-color-accent-contrast: #0b0f17;
+  --cal-color-accent-soft: #1e3a8a;
+  --cal-color-range-bg: #1e293b;
+  --cal-color-today-ring: #60a5fa;
+  --cal-color-weekend: #6b7280;
+  --cal-color-hover-bg: #1f2937;
+  --cal-color-focus-ring: #60a5fa;
+  --cal-shadow-popover: 0 10px 30px -10px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+@mixin tokens-density-comfortable {
+  --cal-cell-size: 2.25rem;
+  --cal-cell-gap: 0.125rem;
+  --cal-font-size: 0.875rem;
+  --cal-header-padding: 0.75rem;
+  --cal-radius: 0.5rem;
+  --cal-cell-radius: 0.375rem;
+}
+
+@mixin tokens-density-dense {
+  --cal-cell-size: 1.875rem;
+  --cal-cell-gap: 0.0625rem;
+  --cal-font-size: 0.8125rem;
+  --cal-header-padding: 0.5rem;
+  --cal-radius: 0.375rem;
+  --cal-cell-radius: 0.25rem;
+}

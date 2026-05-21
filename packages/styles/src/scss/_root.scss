@@ -1,0 +1,25 @@
+@use 'tokens' as t;
+
+:root,
+.cal-theme-light {
+  @include t.tokens-light;
+  @include t.tokens-density-comfortable;
+}
+
+.cal-theme-dark {
+  @include t.tokens-dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root.cal-theme-auto {
+    @include t.tokens-dark;
+  }
+}
+
+.cal-density-dense {
+  @include t.tokens-density-dense;
+}
+
+.cal-density-comfortable {
+  @include t.tokens-density-comfortable;
+}

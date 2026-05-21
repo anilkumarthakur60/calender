@@ -1,0 +1,28 @@
+{
+  "name": "@calender/styles",
+  "version": "0.1.0",
+  "description": "SCSS source and compiled CSS theme for the @calender renderers.",
+  "license": "MIT",
+  "sideEffects": ["*.css", "*.scss"],
+  "files": ["dist", "src", "README.md"],
+  "main": "./dist/calender.css",
+  "style": "./dist/calender.css",
+  "exports": {
+    ".": "./dist/calender.css",
+    "./scss/*": "./src/scss/*",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "sass --no-source-map --style=compressed src/scss/calender.scss dist/calender.css && sass --no-source-map --style=expanded src/scss/calender.scss dist/calender.dev.css",
+    "dev": "sass --watch src/scss/calender.scss dist/calender.css",
+    "typecheck": "echo 'no ts'",
+    "test": "echo 'no tests'"
+  },
+  "devDependencies": {
+    "sass": "^1.83.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

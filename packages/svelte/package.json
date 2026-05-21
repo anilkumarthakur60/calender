@@ -1,0 +1,39 @@
+{
+  "name": "@calender/svelte",
+  "version": "0.1.0",
+  "description": "Svelte 5 adapter for @calender/core.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "files": ["dist", "src", "README.md"],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'no tests'"
+  },
+  "dependencies": {
+    "@calender/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "svelte": ">=5"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "~6.0.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
