@@ -1,12 +1,12 @@
 # React
 
 ```bash
-npm install @calender/react @calender/styles
+npm install @anil-labs/react @anil-labs/styles
 ```
 
 ```tsx
-import '@calender/styles';
-import { DatePicker } from '@calender/react';
+import '@anil-labs/styles';
+import { DatePicker } from '@anil-labs/react';
 
 export default function App() {
   return <DatePicker mode="range" />;
@@ -47,7 +47,7 @@ Headless hook — returns the engine + a reactive `state` (via
 `useSyncExternalStore`). Useful when you want to render your own UI.
 
 ```tsx
-import { useDatePicker } from '@calender/react';
+import { useDatePicker } from '@anil-labs/react';
 
 const { engine, state } = useDatePicker({ mode: 'single' });
 
@@ -89,7 +89,7 @@ adapter produces an identical UI through its own JSX.
 
 ```tsx
 import { Controller, useForm } from 'react-hook-form';
-import { DateField } from '@calender/react';
+import { DateField } from '@anil-labs/react';
 
 const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
 

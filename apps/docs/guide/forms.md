@@ -30,7 +30,7 @@ and normalised back to the format you specified.
 ## React — controlled
 
 ```tsx
-import { DateField } from '@calender/react';
+import { DateField } from '@anil-labs/react';
 
 const [date, setDate] = useState('2025-04-15');
 
@@ -41,7 +41,7 @@ const [date, setDate] = useState('2025-04-15');
 
 ```tsx
 import { Controller, useForm } from 'react-hook-form';
-import { DateField } from '@calender/react';
+import { DateField } from '@anil-labs/react';
 
 const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
 
@@ -76,7 +76,7 @@ const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
 ```vue
 <script setup>
 import { ref } from 'vue';
-import { DateField } from '@calender/vue';
+import { DateField } from '@anil-labs/vue';
 
 const date = ref('2025-04-15');
 </script>

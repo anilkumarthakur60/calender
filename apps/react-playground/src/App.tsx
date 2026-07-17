@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { DateField, DatePicker } from '@calender/react';
-import { type CalendarDate, createCalendarDate } from '@calender/core';
+import { DateField, DatePicker } from '@anil-labs/react';
+import { type CalendarDate, createCalendarDate } from '@anil-labs/core';
 
 const toLabel = (d: CalendarDate | null): string =>
   d ? `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}` : '(none)';

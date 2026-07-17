@@ -1,17 +1,17 @@
-# @calender/angular-playground
+# @anil-labs/angular-playground
 
 > **Note** — Angular ships its own build tooling (`@angular/build` / Angular
 > CLI) that's tightly version-coupled and doesn't compose cleanly with the
 > rest of this Vite-based monorepo. So this app holds **reference integration
 > snippets only** — copy them into an Angular CLI scaffold to run them.
 
-The `@calender/angular` adapter itself is fully built and tested via tsup and
+The `@anil-labs/angular` adapter itself is fully built and tested via tsup and
 publishes to npm like the other adapters. Users consume it the standard way:
 
 ```bash
 ng new my-app --standalone
 cd my-app
-npm install @calender/angular @calender/styles
+npm install @anil-labs/angular @anil-labs/styles
 ```
 
 Then in your component:
@@ -19,8 +19,8 @@ Then in your component:
 ```ts
 // src/app/app.component.ts
 import { Component, signal } from '@angular/core';
-import { DatePickerComponent } from '@calender/angular';
-import { type CalendarDate } from '@calender/core';
+import { DatePickerComponent } from '@anil-labs/angular';
+import { type CalendarDate } from '@anil-labs/core';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +46,7 @@ export class AppComponent {
 ```ts
 // src/main.ts
 import 'zone.js';
-import '@calender/styles';
+import '@anil-labs/styles';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 bootstrapApplication(AppComponent);

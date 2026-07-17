@@ -38,7 +38,7 @@ install/build commands:
 {
   "framework": "vite",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm -r --filter \"./packages/**\" run build && pnpm --filter @calender/<app> run build",
+  "buildCommand": "cd ../.. && pnpm -r --filter \"./packages/**\" run build && pnpm --filter @anil-labs/<app> run build",
   "outputDirectory": "dist",
   "cleanUrls": true
 }
@@ -85,7 +85,7 @@ Best free tier (unlimited bandwidth, fast CDN, free custom domains).
 Per app, create a Pages project pointing at this repo with:
 
 - **Root directory**: `/` (the monorepo root)
-- **Build command**: `pnpm install --frozen-lockfile && pnpm -r --filter "./packages/**" run build && pnpm --filter @calender/<app> run build`
+- **Build command**: `pnpm install --frozen-lockfile && pnpm -r --filter "./packages/**" run build && pnpm --filter @anil-labs/<app> run build`
 - **Build output directory**: `apps/<app>/dist`
 - **Env vars**: `NODE_VERSION=20`, `PNPM_VERSION=10`
 
@@ -94,7 +94,7 @@ Per app, create a Pages project pointing at this repo with:
 Per app, create a site with:
 
 - **Base directory**: `apps/<app>`
-- **Build command**: `cd ../.. && pnpm install --frozen-lockfile && pnpm -r --filter "./packages/**" run build && pnpm --filter @calender/<app> run build`
+- **Build command**: `cd ../.. && pnpm install --frozen-lockfile && pnpm -r --filter "./packages/**" run build && pnpm --filter @anil-labs/<app> run build`
 - **Publish directory**: `apps/<app>/dist`
 - **Env vars**: `NODE_VERSION=20`, `PNPM_VERSION=10`
 

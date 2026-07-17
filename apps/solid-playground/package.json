@@ -1,5 +1,5 @@
 {
-  "name": "@calender/solid-playground",
+  "name": "@anil-labs/solid-playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,9 +9,9 @@
     "preview": "vite preview --port 5176"
   },
   "dependencies": {
-    "@calender/core": "workspace:*",
-    "@calender/solid": "workspace:*",
-    "@calender/styles": "workspace:*",
+    "@anil-labs/core": "workspace:*",
+    "@anil-labs/solid": "workspace:*",
+    "@anil-labs/styles": "workspace:*",
     "solid-js": "^1.9.3"
   },
   "devDependencies": {

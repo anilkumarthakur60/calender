@@ -3,7 +3,7 @@
 The pure-TS state machine. Every adapter wraps an instance of this class.
 
 ```ts
-import { DatePickerEngine } from '@calender/core';
+import { DatePickerEngine } from '@anil-labs/core';
 
 const engine = new DatePickerEngine(options);
 ```

@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2022',
-  external: ['solid-js', '@calender/core'],
+  external: ['solid-js', '@anil-labs/core'],
 });

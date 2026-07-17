@@ -6,7 +6,7 @@ import {
   type SelectionGranularity,
   type SelectionMode,
   fromIso,
-} from '@calender/core';
+} from '@anil-labs/core';
 
 /**
  * Parse a complete {@link DatePickerEngineOptions} from an HTMLElement's

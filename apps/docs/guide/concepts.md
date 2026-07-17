@@ -7,7 +7,7 @@ selection, focus, navigation, and view mode. It has no DOM or framework
 dependencies.
 
 ```ts
-import { DatePickerEngine } from '@calender/core';
+import { DatePickerEngine } from '@anil-labs/core';
 
 const engine = new DatePickerEngine({
   mode: 'range',
@@ -54,7 +54,7 @@ The picker stores dates as a `{year, month, day}` triple, not a JS `Date`. This
 avoids time-zone surprises and makes BS support trivial.
 
 ```ts
-import { createCalendarDate, addDays } from '@calender/core';
+import { createCalendarDate, addDays } from '@anil-labs/core';
 
 const d = createCalendarDate(2025, 4, 15);
 const a = addDays(d, 7); // { year: 2025, month: 4, day: 22 }
@@ -72,7 +72,7 @@ through a `CalendarSystem` interface. Two systems ship:
 - `BikramSambatCalendar` — Nepali calendar with months Baishakh, Jestha, …
 
 ```ts
-import { BikramSambatCalendar } from '@calender/core';
+import { BikramSambatCalendar } from '@anil-labs/core';
 
 const bs = new BikramSambatCalendar();
 bs.toGregorian({ year: 2080, month: 1, day: 1 }); // BS New Year → AD
@@ -92,7 +92,7 @@ accumulate. Built-in:
 - `MultiSelectionStrategy` — clicks toggle
 
 ```ts
-import { RangeSelectionStrategy } from '@calender/core';
+import { RangeSelectionStrategy } from '@anil-labs/core';
 // Implement a custom one if you need different semantics
 ```
 

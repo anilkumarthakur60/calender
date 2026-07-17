@@ -12,7 +12,7 @@ import {
   isSameDay,
   isoWeekOfYear,
   resolvePresets,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { useDatePicker } from './use-date-picker.js';
 
 export const DatePicker = defineComponent({

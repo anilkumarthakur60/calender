@@ -65,7 +65,7 @@ unclickable. Useful for hotel bookings (e.g. "1–30 nights").
 ## Mode in code
 
 ```ts
-import { DatePickerEngine } from '@calender/core';
+import { DatePickerEngine } from '@anil-labs/core';
 
 const engine = new DatePickerEngine({ mode: 'range' });
 

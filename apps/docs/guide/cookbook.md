@@ -9,8 +9,8 @@ A hotel-style booking input where the user must book at least 2 nights and
 no more than 30.
 
 ```tsx
-import { DateRangeField } from '@calender/react';
-import { createCalendarDate } from '@calender/core';
+import { DateRangeField } from '@anil-labs/react';
+import { createCalendarDate } from '@anil-labs/core';
 
 const [range, setRange] = useState('');
 
@@ -33,8 +33,8 @@ as check-in disables Apr 14 and earlier in the check-out picker.
 Compute the boundary date once, pass as `max`.
 
 ```tsx
-import { DateField } from '@calender/react';
-import { createCalendarDate, addYears } from '@calender/core';
+import { DateField } from '@anil-labs/react';
+import { createCalendarDate, addYears } from '@anil-labs/core';
 
 const today = new Date();
 const eighteenYearsAgo = createCalendarDate(
@@ -55,7 +55,7 @@ const eighteenYearsAgo = createCalendarDate(
 Custom preset that selects the current FY.
 
 ```tsx
-import { DatePicker, type DatePreset, createCalendarDate } from '@calender/react';
+import { DatePicker, type DatePreset, createCalendarDate } from '@anil-labs/react';
 
 const fy: DatePreset = {
   id: 'fy',
@@ -75,10 +75,10 @@ const fy: DatePreset = {
 <DatePicker mode="range" presets={['last7days', fy, 'clear']} />;
 ```
 
-## 4. Highlight holidays from `@calender/core/holidays`
+## 4. Highlight holidays from `@anil-labs/core/holidays`
 
 ```tsx
-import { DatePicker, usHolidays } from '@calender/react';
+import { DatePicker, usHolidays } from '@anil-labs/react';
 
 const year = new Date().getFullYear();
 const holidays = [...usHolidays(year), ...usHolidays(year + 1)];
@@ -125,7 +125,7 @@ const [date, setDate] = useState(params.get('date') ?? '');
 Same `highlights` API, BS dates:
 
 ```tsx
-import { DatePicker, createCalendarDate } from '@calender/react';
+import { DatePicker, createCalendarDate } from '@anil-labs/react';
 
 <DatePicker
   calendar="bikram-sambat"
@@ -140,8 +140,8 @@ import { DatePicker, createCalendarDate } from '@calender/react';
 ## 8. Custom day cell — show prices in a date picker
 
 ```tsx
-import { DatePicker } from '@calender/react';
-import { toIso } from '@calender/core';
+import { DatePicker } from '@anil-labs/react';
+import { toIso } from '@anil-labs/core';
 
 const prices = { '2025-04-15': '$120', '2025-04-16': '$95' };
 

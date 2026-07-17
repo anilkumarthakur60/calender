@@ -1,7 +1,7 @@
 # Svelte
 
 ```bash
-npm install @calender/svelte @calender/styles
+npm install @anil-labs/svelte @anil-labs/styles
 ```
 
 The adapter ships a single factory — `createDatePicker` — that satisfies
@@ -10,9 +10,9 @@ Svelte's readable-store contract. Works with Svelte 3/4 store auto-subscribe
 
 ```svelte
 <script lang="ts">
-  import '@calender/styles';
-  import { createDatePicker } from '@calender/svelte';
-  import { isSameDay } from '@calender/core';
+  import '@anil-labs/styles';
+  import { createDatePicker } from '@anil-labs/svelte';
+  import { isSameDay } from '@anil-labs/core';
 
   const { engine, state } = createDatePicker({ mode: 'single', locale: 'en-GB' });
 </script>

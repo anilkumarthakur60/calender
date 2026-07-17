@@ -1,4 +1,4 @@
-import { DatePickerEngine, type SelectionMode, fromIso } from '@calender/core';
+import { DatePickerEngine, type SelectionMode, fromIso } from '@anil-labs/core';
 import { PickerRenderer } from './picker-renderer.js';
 import {
   readEngineOptionsFromAttributes,

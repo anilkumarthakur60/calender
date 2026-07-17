@@ -1,7 +1,7 @@
 {
-  "name": "@calender/react",
+  "name": "@anil-labs/react",
   "version": "0.1.0",
-  "description": "React 18+ adapter for @calender/core.",
+  "description": "React 18+ adapter for @anil-labs/core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/react#readme",
@@ -53,7 +53,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@calender/core": "workspace:*"
+    "@anil-labs/core": "workspace:*"
   },
   "peerDependencies": {
     "react": ">=18",

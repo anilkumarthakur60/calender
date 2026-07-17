@@ -1,5 +1,5 @@
 import { render } from 'solid-js/web';
-import '@calender/styles';
+import '@anil-labs/styles';
 import './styles.css';
 import { App } from './App.js';
 

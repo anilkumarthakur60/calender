@@ -1,5 +1,5 @@
 {
-  "name": "@calender/react-playground",
+  "name": "@anil-labs/react-playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,9 +9,9 @@
     "preview": "vite preview --port 5174"
   },
   "dependencies": {
-    "@calender/core": "workspace:*",
-    "@calender/react": "workspace:*",
-    "@calender/styles": "workspace:*",
+    "@anil-labs/core": "workspace:*",
+    "@anil-labs/react": "workspace:*",
+    "@anil-labs/styles": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

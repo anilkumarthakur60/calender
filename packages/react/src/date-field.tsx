@@ -15,7 +15,7 @@ import {
   formatSelection,
   isMaskable,
   parseSelection,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { DatePicker } from './date-picker.js';
 
 export interface DateFieldProps {

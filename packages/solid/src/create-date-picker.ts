@@ -1,5 +1,5 @@
 import { createSignal, onCleanup, type Accessor } from 'solid-js';
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
 
 export interface CreateDatePickerResult {
   readonly engine: DatePickerEngine;

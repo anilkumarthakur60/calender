@@ -1,14 +1,14 @@
 # Solid
 
 ```bash
-npm install @calender/solid @calender/styles
+npm install @anil-labs/solid @anil-labs/styles
 ```
 
 ```tsx
-import '@calender/styles';
-import { createDatePicker } from '@calender/solid';
+import '@anil-labs/styles';
+import { createDatePicker } from '@anil-labs/solid';
 import { For } from 'solid-js';
-import { isSameDay } from '@calender/core';
+import { isSameDay } from '@anil-labs/core';
 
 export const App = () => {
   const { engine, state } = createDatePicker({ mode: 'single', locale: 'en-GB' });

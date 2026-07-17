@@ -1,5 +1,5 @@
 {
-  "name": "@calender/docs",
+  "name": "@anil-labs/docs",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,10 +9,10 @@
     "preview": "vitepress preview . --port 5179"
   },
   "dependencies": {
-    "@calender/core": "workspace:*",
-    "@calender/styles": "workspace:*",
-    "@calender/vue": "workspace:*",
-    "@calender/web-component": "workspace:*",
+    "@anil-labs/core": "workspace:*",
+    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/vue": "workspace:*",
+    "@anil-labs/web-component": "workspace:*",
     "vue": "^3.5.34"
   },
   "devDependencies": {

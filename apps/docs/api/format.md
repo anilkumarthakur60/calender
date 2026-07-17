@@ -11,7 +11,7 @@ import {
   type FormatPreset,
   type TimeOfDay,
   type ParsedDateTime,
-} from '@calender/core';
+} from '@anil-labs/core';
 ```
 
 ## formatWithPattern

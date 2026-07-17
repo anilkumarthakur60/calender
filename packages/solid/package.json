@@ -1,7 +1,7 @@
 {
-  "name": "@calender/solid",
+  "name": "@anil-labs/solid",
   "version": "0.1.0",
-  "description": "Solid adapter for @calender/core.",
+  "description": "Solid adapter for @anil-labs/core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/solid#readme",
@@ -53,7 +53,7 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@calender/core": "workspace:*"
+    "@anil-labs/core": "workspace:*"
   },
   "peerDependencies": {
     "solid-js": ">=1.7"

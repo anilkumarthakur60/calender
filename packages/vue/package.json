@@ -1,7 +1,7 @@
 {
-  "name": "@calender/vue",
+  "name": "@anil-labs/vue",
   "version": "0.1.0",
-  "description": "Vue 3 adapter for @calender/core.",
+  "description": "Vue 3 adapter for @anil-labs/core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/vue#readme",
@@ -53,7 +53,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@calender/core": "workspace:*"
+    "@anil-labs/core": "workspace:*"
   },
   "peerDependencies": {
     "vue": ">=3.3"

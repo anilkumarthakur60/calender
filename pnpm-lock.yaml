@@ -67,16 +67,16 @@ importers:
 
   apps/docs:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@calender/vue':
+      '@anil-labs/vue':
         specifier: workspace:*
         version: link:../../packages/vue
-      '@calender/web-component':
+      '@anil-labs/web-component':
         specifier: workspace:*
         version: link:../../packages/web-component
       vue:
@@ -89,13 +89,13 @@ importers:
 
   apps/react-playground:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@calender/react':
+      '@anil-labs/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
       react:
@@ -123,13 +123,13 @@ importers:
 
   apps/solid-playground:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@calender/solid':
+      '@anil-labs/solid':
         specifier: workspace:*
         version: link:../../packages/solid
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
       solid-js:
@@ -148,13 +148,13 @@ importers:
 
   apps/svelte-playground:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@calender/svelte':
+      '@anil-labs/svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
@@ -176,16 +176,16 @@ importers:
 
   apps/vue-playground:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@calender/vue':
+      '@anil-labs/vue':
         specifier: workspace:*
         version: link:../../packages/vue
-      '@calender/web-component':
+      '@anil-labs/web-component':
         specifier: workspace:*
         version: link:../../packages/web-component
       vue:
@@ -213,10 +213,10 @@ importers:
 
   apps/wc-playground:
     dependencies:
-      '@calender/styles':
+      '@anil-labs/styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@calender/web-component':
+      '@anil-labs/web-component':
         specifier: workspace:*
         version: link:../../packages/web-component
     devDependencies:
@@ -226,7 +226,7 @@ importers:
 
   packages/angular:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -266,7 +266,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -306,7 +306,7 @@ importers:
 
   packages/solid:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -328,7 +328,7 @@ importers:
 
   packages/svelte:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
       svelte:
@@ -344,7 +344,7 @@ importers:
 
   packages/vue:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -378,7 +378,7 @@ importers:
 
   packages/web-component:
     dependencies:
-      '@calender/core':
+      '@anil-labs/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

@@ -1,6 +1,6 @@
 # Format & parsing
 
-`@calender/core` ships a token-based formatter and parser. Both calendar-aware,
+`@anil-labs/core` ships a token-based formatter and parser. Both calendar-aware,
 both used by every adapter.
 
 ## Tokens
@@ -30,7 +30,7 @@ both used by every adapter.
 Anything not a token is taken literally — spaces, slashes, commas, words.
 
 ```ts
-import { formatWithPattern, createCalendarDate } from '@calender/core';
+import { formatWithPattern, createCalendarDate } from '@anil-labs/core';
 
 const d = createCalendarDate(2025, 4, 7);
 formatWithPattern(d, 'yyyy-MM-dd'); // "2025-04-07"
@@ -100,7 +100,7 @@ When the calendar system is BS, month names + numbers automatically pick up the
 right ones:
 
 ```ts
-import { BikramSambatCalendar } from '@calender/core';
+import { BikramSambatCalendar } from '@anil-labs/core';
 
 const bs = new BikramSambatCalendar();
 formatWithPattern({ year: 2080, month: 1, day: 15 }, 'MMMM d, yyyy', 'en-US', bs);

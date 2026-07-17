@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
 
 export interface UseDatePickerResult {
   readonly engine: DatePickerEngine;

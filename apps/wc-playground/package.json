@@ -1,5 +1,5 @@
 {
-  "name": "@calender/wc-playground",
+  "name": "@anil-labs/wc-playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,8 +9,8 @@
     "preview": "vite preview --port 5180"
   },
   "dependencies": {
-    "@calender/styles": "workspace:*",
-    "@calender/web-component": "workspace:*"
+    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/web-component": "workspace:*"
   },
   "devDependencies": {
     "vite": "^8.0.13"

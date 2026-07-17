@@ -6,7 +6,7 @@ Web Component) only touch the DOM when they actually render.
 
 ## Next.js (App Router)
 
-`@calender/react` works in both server and client components. The
+`@anil-labs/react` works in both server and client components. The
 `<DatePicker>` and `<DateField>` use hooks, so add `"use client"` to the file
 that imports them:
 
@@ -14,7 +14,7 @@ that imports them:
 // app/components/booking-picker.tsx
 'use client';
 
-import { DateField } from '@calender/react';
+import { DateField } from '@anil-labs/react';
 
 export const BookingPicker = ({ defaultValue }: { defaultValue: string }) => (
   <DateField defaultValue={defaultValue} />
@@ -45,24 +45,24 @@ mismatch:
 
 ### Styles
 
-Import `@calender/styles` once at the top of your `app/layout.tsx` (or
+Import `@anil-labs/styles` once at the top of your `app/layout.tsx` (or
 `pages/_app.tsx`). The styles are pure CSS — no `useEffect` needed.
 
 ```tsx
-import '@calender/styles';
+import '@anil-labs/styles';
 ```
 
 ## Web Component in SSR frameworks
 
 `<calender-picker>` is a custom element. SSR frameworks render it as-is on
 the server; the upgrade happens after hydration when
-`@calender/web-component/auto-register` runs in the browser.
+`@anil-labs/web-component/auto-register` runs in the browser.
 
 To avoid a flash of unstyled custom element:
 
 ```tsx
 // app/layout.tsx
-import '@calender/styles';
+import '@anil-labs/styles';
 import Script from 'next/script';
 
 export default function Layout({ children }) {
@@ -80,7 +80,7 @@ export default function Layout({ children }) {
 Then `/public/calender-auto-register.js`:
 
 ```js
-import '@calender/web-component/auto-register';
+import '@anil-labs/web-component/auto-register';
 ```
 
 ## Nuxt (Vue)
@@ -111,8 +111,8 @@ Each adapter works as an Astro island — pass `client:visible` or
 
 ```astro
 ---
-import { DatePicker } from '@calender/react';
-import '@calender/styles';
+import { DatePicker } from '@anil-labs/react';
+import '@anil-labs/styles';
 ---
 
 <DatePicker client:visible mode="range" />

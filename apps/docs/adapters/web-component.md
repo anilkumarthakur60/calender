@@ -4,12 +4,12 @@ Framework-free. Just an import and a custom element. Works in plain HTML, any
 framework, any platform.
 
 ```bash
-npm install @calender/web-component @calender/styles
+npm install @anil-labs/web-component @anil-labs/styles
 ```
 
 ```ts
-import '@calender/styles';
-import '@calender/web-component/auto-register';
+import '@anil-labs/styles';
+import '@anil-labs/web-component/auto-register';
 ```
 
 Now use `<calender-picker>` or `<calender-input>` anywhere:
@@ -96,7 +96,7 @@ picker.addEventListener('cal-change', e => {
 If `calender-picker` collides with something else:
 
 ```ts
-import { defineCalenderPicker, defineCalenderInput } from '@calender/web-component';
+import { defineCalenderPicker, defineCalenderInput } from '@anil-labs/web-component';
 
 defineCalenderPicker('my-date-picker');
 defineCalenderInput('my-date-input');

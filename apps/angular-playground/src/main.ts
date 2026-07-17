@@ -1,5 +1,5 @@
 import 'zone.js';
-import '@calender/styles';
+import '@anil-labs/styles';
 import './styles.css';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app.component';

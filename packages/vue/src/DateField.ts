@@ -25,7 +25,7 @@ import {
   formatSelection,
   isMaskable,
   parseSelection,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { DatePicker } from './DatePicker.js';
 
 const HINT_BY_PATTERN: Record<string, string> = {

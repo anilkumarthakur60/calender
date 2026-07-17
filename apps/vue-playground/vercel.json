@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
-  "buildCommand": "cd ../.. && pnpm -r --filter \"./packages/**\" run build && pnpm --filter @calender/vue-playground run build",
+  "buildCommand": "cd ../.. && pnpm -r --filter \"./packages/**\" run build && pnpm --filter @anil-labs/vue-playground run build",
   "outputDirectory": "dist",
   "cleanUrls": true
 }

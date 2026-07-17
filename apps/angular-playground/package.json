@@ -1,8 +1,8 @@
 {
-  "name": "@calender/angular-playground",
+  "name": "@anil-labs/angular-playground",
   "private": true,
   "version": "0.0.0",
-  "description": "Reference Angular integration snippets for @calender/angular. Use Angular CLI (ng new) to run.",
+  "description": "Reference Angular integration snippets for @anil-labs/angular. Use Angular CLI (ng new) to run.",
   "type": "module",
   "scripts": {
     "dev": "echo 'Angular playground: copy src/ into an `ng new` app, see README.md' && exit 1",

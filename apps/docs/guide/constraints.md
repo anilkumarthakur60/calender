@@ -43,7 +43,7 @@ Multiple constraint shapes, layered through `CompositeConstraint`. `engine.isDis
 ## Custom predicate
 
 ```ts
-import { FilterConstraint } from '@calender/core';
+import { FilterConstraint } from '@anil-labs/core';
 
 const blockHolidays = new FilterConstraint(d => !isHoliday(d), 'holiday');
 

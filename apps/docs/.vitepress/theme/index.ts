@@ -1,8 +1,8 @@
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { h } from 'vue';
-import '@calender/styles';
-import '@calender/web-component/auto-register';
+import '@anil-labs/styles';
+import '@anil-labs/web-component/auto-register';
 import './custom.css';
 
 const theme: Theme = {

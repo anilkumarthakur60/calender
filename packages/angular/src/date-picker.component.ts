@@ -13,7 +13,7 @@ import {
   type DatePickerEngineOptions,
   isInRange,
   isSameDay,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { DatePickerService } from './date-picker.service.js';
 
 @Component({

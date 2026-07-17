@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2022',
-  external: ['@angular/core', '@angular/common', '@calender/core', 'rxjs', 'zone.js'],
+  external: ['@angular/core', '@angular/common', '@anil-labs/core', 'rxjs', 'zone.js'],
 });

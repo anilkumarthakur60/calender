@@ -1,4 +1,4 @@
-# @calender/core
+# @anil-labs/core
 
 Headless, framework-agnostic calendar/date-picker state engine. Zero runtime
 dependencies. Drives the React, Vue, Svelte, Solid, Angular, and Web Component
@@ -6,7 +6,7 @@ renderers in this monorepo, but you can build your own renderer against the
 same public API.
 
 ```ts
-import { DatePickerEngine, createCalendarDate } from '@calender/core';
+import { DatePickerEngine, createCalendarDate } from '@anil-labs/core';
 
 const engine = new DatePickerEngine({
   mode: 'range',

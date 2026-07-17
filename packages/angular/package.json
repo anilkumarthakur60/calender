@@ -1,7 +1,7 @@
 {
-  "name": "@calender/angular",
+  "name": "@anil-labs/angular",
   "version": "0.1.0",
-  "description": "Angular 17+ adapter for @calender/core.",
+  "description": "Angular 17+ adapter for @anil-labs/core.",
   "private": true,
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
@@ -48,7 +48,7 @@
     "test": "echo 'no tests'"
   },
   "dependencies": {
-    "@calender/core": "workspace:*"
+    "@anil-labs/core": "workspace:*"
   },
   "peerDependencies": {
     "@angular/core": ">=17",

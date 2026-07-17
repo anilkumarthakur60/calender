@@ -8,7 +8,7 @@ import {
   createCalendarSystem,
   fromIso,
   parseSelection,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { DateField, type DateFieldProps } from './date-field.js';
 
 export interface DateRangeFieldProps {

@@ -54,23 +54,23 @@ features:
 ::: code-group
 
 ```html [HTML]
-<link rel="stylesheet" href="@calender/styles" />
+<link rel="stylesheet" href="@anil-labs/styles" />
 <script type="module">
-  import '@calender/web-component/auto-register';
+  import '@anil-labs/web-component/auto-register';
 </script>
 
 <calender-picker mode="range" header-selectors></calender-picker>
 ```
 
 ```tsx [React]
-import { DatePicker } from '@calender/react';
+import { DatePicker } from '@anil-labs/react';
 
 <DatePicker mode="range" headerSelectors months={2} presets={['today', 'last7days']} />;
 ```
 
 ```vue [Vue]
 <script setup>
-import { DatePicker } from '@calender/vue';
+import { DatePicker } from '@anil-labs/vue';
 </script>
 <template>
   <DatePicker mode="range" :header-selectors="true" :months="2" />
@@ -78,7 +78,7 @@ import { DatePicker } from '@calender/vue';
 ```
 
 ```ts [Engine (any framework)]
-import { DatePickerEngine } from '@calender/core';
+import { DatePickerEngine } from '@anil-labs/core';
 
 const engine = new DatePickerEngine({ mode: 'range', calendar: 'bikram-sambat' });
 engine.on('change', ({ state }) => render(state));

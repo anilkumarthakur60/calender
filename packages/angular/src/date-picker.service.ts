@@ -6,7 +6,7 @@ import {
   DestroyRef,
   inject,
 } from '@angular/core';
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@calender/core';
+import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
 
 /**
  * Injectable factory wrapper. Use `provideDatePicker(options)` (see index.ts)

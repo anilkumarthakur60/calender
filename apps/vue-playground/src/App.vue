@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { DateField, DatePicker } from "@calender/vue";
-import { createCalendarDate, type CalendarDate } from "@calender/core";
+import { DateField, DatePicker } from "@anil-labs/vue";
+import { createCalendarDate, type CalendarDate } from "@anil-labs/core";
 
 const fmt = (d: CalendarDate | null) =>
   d ? `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}` : "(none)";

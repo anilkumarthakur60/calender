@@ -14,7 +14,7 @@ import {
   isSameDay,
   isoWeekOfYear,
   resolvePresets,
-} from '@calender/core';
+} from '@anil-labs/core';
 
 export class PickerRenderer {
   readonly #host: HTMLElement;

@@ -13,16 +13,16 @@ package — see `packages/<name>/CHANGELOG.md`.
 
 Initial 0.1 release scaffolding. See per-package CHANGELOGs once published.
 
-- `@calender/core` — headless engine with selection strategies, constraints,
+- `@anil-labs/core` — headless engine with selection strategies, constraints,
   calendar systems (AD + BS), formatter, keyboard controller, event bus.
-- `@calender/styles` — SCSS source + compiled CSS theme.
-- `@calender/web-component` — `<calender-picker>` and `<calender-input>`
+- `@anil-labs/styles` — SCSS source + compiled CSS theme.
+- `@anil-labs/web-component` — `<calender-picker>` and `<calender-input>`
   custom elements.
-- `@calender/react` — hook + `DatePicker` + `DateField`.
-- `@calender/vue` — composable + `DatePicker` + `DateField`.
-- `@calender/svelte` — `createDatePicker` factory.
-- `@calender/solid` — `createDatePicker` factory.
-- `@calender/angular` — standalone `DatePickerComponent` + `DatePickerService`.
+- `@anil-labs/react` — hook + `DatePicker` + `DateField`.
+- `@anil-labs/vue` — composable + `DatePicker` + `DateField`.
+- `@anil-labs/svelte` — `createDatePicker` factory.
+- `@anil-labs/solid` — `createDatePicker` factory.
+- `@anil-labs/angular` — standalone `DatePickerComponent` + `DatePickerService`.
 
 Features: range hover preview, multi-month layout, time picker, week numbers,
 highlighted dates, configurable presets, month/year granularity, header

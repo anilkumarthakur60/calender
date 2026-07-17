@@ -1,5 +1,5 @@
-import '@calender/styles';
-import '@calender/web-component/auto-register';
+import '@anil-labs/styles';
+import '@anil-labs/web-component/auto-register';
 
 const setStatus = (id: string, value: string | null): void => {
   const el = document.getElementById(id);

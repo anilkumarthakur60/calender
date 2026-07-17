@@ -1,7 +1,7 @@
 # Presets
 
 ```ts
-import { BUILTIN_PRESETS, resolvePreset, resolvePresets } from '@calender/core';
+import { BUILTIN_PRESETS, resolvePreset, resolvePresets } from '@anil-labs/core';
 ```
 
 ## DatePreset
@@ -53,7 +53,7 @@ resolvePresets(['today', 'last7days', myCustomPreset]);
 ## Writing your own
 
 ```ts
-import { type DatePreset, type DatePickerEngine, createCalendarDate } from '@calender/core';
+import { type DatePreset, type DatePickerEngine, createCalendarDate } from '@anil-labs/core';
 
 const Easter: DatePreset = {
   id: 'easter',

@@ -10,7 +10,7 @@ import {
   createCalendarSystem,
   formatSelection,
   parseSelection,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { PickerRenderer } from './picker-renderer.js';
 import {
   readEngineOptionsFromAttributes,

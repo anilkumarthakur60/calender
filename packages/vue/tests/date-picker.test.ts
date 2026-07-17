@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
-import { createCalendarDate } from '@calender/core';
+import { createCalendarDate } from '@anil-labs/core';
 import { DatePicker } from '../src/DatePicker.js';
 
 describe('<DatePicker>', () => {

@@ -1,5 +1,5 @@
 {
-  "name": "@calender/svelte-playground",
+  "name": "@anil-labs/svelte-playground",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,9 +9,9 @@
     "preview": "vite preview --port 5175"
   },
   "dependencies": {
-    "@calender/core": "workspace:*",
-    "@calender/styles": "workspace:*",
-    "@calender/svelte": "workspace:*",
+    "@anil-labs/core": "workspace:*",
+    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/svelte": "workspace:*",
     "svelte": "^5.16.0"
   },
   "devDependencies": {
