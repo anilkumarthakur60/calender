@@ -46,6 +46,63 @@ export interface DecodedSelection {
 }
 
 /**
+ * Separator-safe range splitting. `/` and `-` also appear INSIDE dates
+ * ("01/01/2025", "2025-01-01"), so a naive split garbles them. Instead, try
+ * every occurrence of each candidate separator (in priority order) and accept
+ * the first split position where BOTH halves parse.
+ */
+const splitRangeText = (
+  text: string,
+  separators: ReadonlyArray<string>,
+  parse: (s: string) => CalendarDate | null,
+): readonly [CalendarDate, CalendarDate] | null => {
+  const lower = text.toLowerCase();
+  for (const sep of separators) {
+    const needle = sep.toLowerCase();
+    let idx = lower.indexOf(needle);
+    while (idx !== -1) {
+      if (idx > 0 && idx + needle.length < text.length) {
+        const a = parse(text.slice(0, idx).trim());
+        const b = parse(text.slice(idx + needle.length).trim());
+        if (a && b) return [a, b];
+      }
+      idx = lower.indexOf(needle, idx + 1);
+    }
+  }
+  return null;
+};
+
+/**
+ * Separator-safe multi splitting. Commas appear inside "Apr 7, 2025", so a
+ * separator only counts when EVERY resulting part parses. Falls back to the
+ * lenient keep-what-parses behaviour when no candidate splits cleanly.
+ */
+const splitMultiText = (
+  text: string,
+  separators: ReadonlyArray<string>,
+  parse: (s: string) => CalendarDate | null,
+): CalendarDate[] | null => {
+  for (const sep of separators) {
+    const parts = text.split(sep);
+    if (parts.length < 2) continue;
+    const dates = parts.map(p => parse(p.trim()));
+    if (dates.every((d): d is CalendarDate => d !== null)) return dates;
+  }
+  const single = parse(text);
+  if (single) return [single];
+  // Lenient fallback: split on any , or ; and keep what parses.
+  const dates: CalendarDate[] = [];
+  for (const part of text.split(/\s*[,;]\s*/)) {
+    const d = parse(part);
+    if (d) dates.push(d);
+  }
+  return dates.length > 0 ? dates : null;
+};
+
+/** Range separator candidates, most explicit first. Bare `-`/`/` last. */
+const RANGE_SEPARATORS: ReadonlyArray<string> = [' – ', ' — ', ' - ', ' to ', '–', '—', '/', '-'];
+
+/**
  * Lenient decoder. Accepts ISO (`YYYY-MM-DD`) and locale-formatted strings;
  * returns null for empty input, throws nothing on malformed input — instead
  * leaves the corresponding field undefined and returns whatever it could parse.
@@ -57,28 +114,21 @@ export const decodeSelectionValue = (
 ): DecodedSelection | null => {
   const trimmed = text.trim();
   if (!trimmed) return null;
+  const parse = (s: string): CalendarDate | null => parseDate(s, locale);
 
   switch (mode) {
     case 'single': {
-      const d = parseDate(trimmed, locale);
+      const d = parse(trimmed);
       return d ? { mode, single: d } : null;
     }
     case 'range': {
-      const parts = trimmed.split(/\s*(?:\/|[–—-]{1,2}|\sto\s)\s*/i);
-      if (parts.length < 2) return null;
-      const a = parseDate(parts[0] as string, locale);
-      const b = parseDate(parts[1] as string, locale);
-      if (!a || !b) return null;
-      return { mode, range: createRange(a, b) };
+      const pair = splitRangeText(trimmed, RANGE_SEPARATORS, parse);
+      if (!pair) return null;
+      return { mode, range: createRange(pair[0], pair[1]) };
     }
     case 'multi': {
-      const parts = trimmed.split(/\s*[,;]\s*/);
-      const dates: CalendarDate[] = [];
-      for (const part of parts) {
-        const d = parseDate(part, locale);
-        if (d) dates.push(d);
-      }
-      return dates.length > 0 ? { mode, multi: dates } : null;
+      const dates = splitMultiText(trimmed, [';', ','], parse);
+      return dates ? { mode, multi: dates } : null;
     }
   }
 };
@@ -125,8 +175,6 @@ export const formatSelection = (
   }
 };
 
-const escapeRegex = (s: string): string => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
 export const parseSelection = (
   text: string,
   mode: SelectionMode,
@@ -153,23 +201,16 @@ export const parseSelection = (
       return d ? { mode, single: d } : null;
     }
     case 'range': {
-      const re = new RegExp(`\\s*(?:${escapeRegex(rangeSep)}|\\/|[–—-]{1,2}|\\sto\\s)\\s*`, 'i');
-      const parts = trimmed.split(re);
-      if (parts.length < 2) return null;
-      const a = parseOne(parts[0] as string);
-      const b = parseOne(parts[1] as string);
-      if (!a || !b) return null;
-      return { mode, range: createRange(a, b) };
+      // Configured separator first, then the shared candidates.
+      const separators = [rangeSep, ...RANGE_SEPARATORS.filter(s => s !== rangeSep)];
+      const pair = splitRangeText(trimmed, separators, parseOne);
+      if (!pair) return null;
+      return { mode, range: createRange(pair[0], pair[1]) };
     }
     case 'multi': {
-      const re = new RegExp(`\\s*(?:${escapeRegex(multiSep)}|[,;])\\s*`);
-      const parts = trimmed.split(re);
-      const dates: CalendarDate[] = [];
-      for (const part of parts) {
-        const d = parseOne(part);
-        if (d) dates.push(d);
-      }
-      return dates.length > 0 ? { mode, multi: dates } : null;
+      const separators = [multiSep, ...[';', ','].filter(s => s !== multiSep)];
+      const dates = splitMultiText(trimmed, separators, parseOne);
+      return dates ? { mode, multi: dates } : null;
     }
   }
 };

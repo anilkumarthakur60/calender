@@ -3,6 +3,23 @@
   "version": "0.1.0",
   "description": "SCSS source and compiled CSS theme for the @calender renderers.",
   "license": "MIT",
+  "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
+  "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/styles#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anilkumarthakur60/calender.git",
+    "directory": "packages/styles"
+  },
+  "bugs": "https://github.com/anilkumarthakur60/calender/issues",
+  "keywords": [
+    "calendar",
+    "date-picker",
+    "datepicker",
+    "css",
+    "scss",
+    "theme",
+    "styles"
+  ],
   "sideEffects": [
     "*.css",
     "*.scss"
@@ -15,7 +32,11 @@
   "main": "./dist/calender.css",
   "style": "./dist/calender.css",
   "exports": {
-    ".": "./dist/calender.css",
+    ".": {
+      "sass": "./src/scss/calender.scss",
+      "style": "./dist/calender.css",
+      "default": "./dist/calender.css"
+    },
     "./scss/*": "./src/scss/*",
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
@@ -31,5 +52,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

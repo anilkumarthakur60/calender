@@ -1,7 +1,8 @@
 import {
   type CalendarDate,
+  fromEpochDay,
+  toEpochDay,
   todayCalendarDate as todayGregorian,
-  toJsDate,
   usWeekday,
 } from '../domain/calendar-date.js';
 import type { CalendarSystem } from './calendar-system.js';
@@ -134,9 +135,9 @@ export class BikramSambatCalendar implements CalendarSystem {
   }
 
   toGregorian(date: CalendarDate): CalendarDate {
-    const epochJs = toJsDate(BS_EPOCH_GREGORIAN);
-    const targetJs = new Date(epochJs.getTime() + bsDaysFromEpoch(date) * 86_400_000);
-    return makeBsDate(targetJs.getFullYear(), targetJs.getMonth() + 1, targetJs.getDate());
+    // Pure UTC epoch-day arithmetic: identical result in every host time zone
+    // (local-time Date math shifted a day across the Samoa 2011 dateline jump).
+    return fromEpochDay(toEpochDay(BS_EPOCH_GREGORIAN) + bsDaysFromEpoch(date));
   }
 
   fromGregorian(date: CalendarDate): CalendarDate {

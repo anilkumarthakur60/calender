@@ -1,12 +1,19 @@
 export type EventListener<P> = (payload: P) => void;
 export type Unsubscribe = () => void;
 
+/** One registration. The same function may be registered multiple times. */
+interface ListenerEntry {
+  readonly fn: EventListener<unknown>;
+}
+
 /**
  * Typed pub/sub keyed by an event-map interface. Tiny, dependency-free, and
  * safe against listener mutation during emit (snapshots before iterating).
+ * Duplicate registrations of the same function are kept separately — each
+ * unsubscribe removes only its own registration.
  */
 export class EventBus<EventMap> {
-  readonly #listeners: Map<keyof EventMap, Set<EventListener<unknown>>> = new Map();
+  readonly #listeners: Map<keyof EventMap, ListenerEntry[]> = new Map();
 
   on<K extends keyof EventMap & string>(
     event: K,
@@ -14,20 +21,22 @@ export class EventBus<EventMap> {
   ): Unsubscribe {
     let bucket = this.#listeners.get(event);
     if (!bucket) {
-      bucket = new Set();
+      bucket = [];
       this.#listeners.set(event, bucket);
     }
-    bucket.add(listener as EventListener<unknown>);
+    const entry: ListenerEntry = { fn: listener as EventListener<unknown> };
+    bucket.push(entry);
     return () => {
-      bucket?.delete(listener as EventListener<unknown>);
+      const idx = bucket.indexOf(entry);
+      if (idx !== -1) bucket.splice(idx, 1);
     };
   }
 
   emit<K extends keyof EventMap & string>(event: K, payload: EventMap[K]): void {
     const bucket = this.#listeners.get(event);
-    if (!bucket || bucket.size === 0) return;
-    for (const listener of [...bucket]) {
-      (listener as EventListener<EventMap[K]>)(payload);
+    if (!bucket || bucket.length === 0) return;
+    for (const entry of [...bucket]) {
+      (entry.fn as EventListener<EventMap[K]>)(payload);
     }
   }
 

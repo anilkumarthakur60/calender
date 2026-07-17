@@ -72,6 +72,23 @@ export const toIso = (date: CalendarDate): string => {
   return `${date.year}-${m}-${d}`;
 };
 
+/**
+ * Days since the Unix epoch for a Gregorian date, computed purely in UTC so
+ * the result never depends on the host time zone (Samoa/Kiribati safe).
+ */
+export const toEpochDay = (date: CalendarDate): number => {
+  // Date.UTC maps years 0-99 to 1900+y; setUTCFullYear avoids that pitfall.
+  const d = new Date(0);
+  d.setUTCFullYear(date.year, date.month - 1, date.day);
+  return d.getTime() / 86_400_000;
+};
+
+/** Inverse of {@link toEpochDay}: epoch-day number → Gregorian CalendarDate (UTC). */
+export const fromEpochDay = (epochDay: number): CalendarDate => {
+  const d = new Date(epochDay * 86_400_000);
+  return createCalendarDate(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate());
+};
+
 export const compareDates = (a: CalendarDate, b: CalendarDate): number => {
   if (a.year !== b.year) return a.year - b.year;
   if (a.month !== b.month) return a.month - b.month;

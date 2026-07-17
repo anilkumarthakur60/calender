@@ -6,9 +6,9 @@ import {
   compareDates,
   createCalendarDate,
   daysInMonth as gDaysInMonth,
+  toEpochDay,
   todayCalendarDate,
   toIso as gToIso,
-  toJsDate,
   usWeekday,
 } from '../domain/calendar-date.js';
 import type { CalendarSystem } from './calendar-system.js';
@@ -72,9 +72,8 @@ export class GregorianCalendar implements CalendarSystem {
     return gToIso(date);
   }
 
-  /** Cross-calendar helper: days between two Gregorian dates, using UTC noon. */
+  /** Cross-calendar helper: days between two Gregorian dates, via UTC epoch-day math. */
   static daysBetween(a: CalendarDate, b: CalendarDate): number {
-    const MS_PER_DAY = 86_400_000;
-    return Math.round((toJsDate(b).getTime() - toJsDate(a).getTime()) / MS_PER_DAY);
+    return toEpochDay(b) - toEpochDay(a);
   }
 }

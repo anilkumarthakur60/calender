@@ -3,6 +3,26 @@
   "version": "0.1.0",
   "description": "Vue 3 adapter for @calender/core.",
   "license": "MIT",
+  "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
+  "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/vue#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anilkumarthakur60/calender.git",
+    "directory": "packages/vue"
+  },
+  "bugs": "https://github.com/anilkumarthakur60/calender/issues",
+  "keywords": [
+    "calendar",
+    "date-picker",
+    "datepicker",
+    "date-range",
+    "date",
+    "headless",
+    "typescript",
+    "vue",
+    "vue3",
+    "composable"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -15,9 +35,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -46,5 +71,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

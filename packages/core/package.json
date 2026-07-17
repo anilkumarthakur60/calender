@@ -3,6 +3,25 @@
   "version": "0.1.0",
   "description": "Headless, framework-agnostic calendar/date-picker state engine.",
   "license": "MIT",
+  "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
+  "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anilkumarthakur60/calender.git",
+    "directory": "packages/core"
+  },
+  "bugs": "https://github.com/anilkumarthakur60/calender/issues",
+  "keywords": [
+    "calendar",
+    "date-picker",
+    "datepicker",
+    "date-range",
+    "date",
+    "headless",
+    "typescript",
+    "i18n",
+    "framework-agnostic"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -15,9 +34,14 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -25,14 +49,21 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
     "typescript": "~6.0.3",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.8",
+    "@vitest/coverage-v8": "^2.1.8"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "unpkg": "./dist/index.global.js",
+  "jsdelivr": "./dist/index.global.js"
 }

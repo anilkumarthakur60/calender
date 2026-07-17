@@ -1,6 +1,7 @@
 import type { CalendarSystem } from '../calendar/calendar-system.js';
 import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
 import type { CalendarDate } from './calendar-date.js';
+import { isoWeekOfYear } from './iso-week.js';
 
 export type WeekdayStart = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
@@ -16,6 +17,11 @@ export interface MonthGrid {
   readonly year: number;
   readonly weeks: ReadonlyArray<ReadonlyArray<MonthGridCell>>;
   readonly weekdayHeaders: ReadonlyArray<number>;
+  /**
+   * ISO week number per row (index-aligned with `weeks`), computed from each
+   * row's first cell. Present only when the `weekNumbers` option is on.
+   */
+  readonly weekNumbers?: ReadonlyArray<number>;
 }
 
 export interface MonthGridOptions {
@@ -29,12 +35,15 @@ export interface MonthGridOptions {
   readonly weekendDays?: ReadonlyArray<number>;
   /** Calendar system to interpret arithmetic in. Defaults to Gregorian. */
   readonly calendar?: CalendarSystem;
+  /** Compute an ISO week number per row (exposed as `grid.weekNumbers`). */
+  readonly weekNumbers?: boolean;
 }
 
 const DEFAULT_OPTIONS: Required<Omit<MonthGridOptions, 'today' | 'calendar'>> = {
   firstDayOfWeek: 0,
   fixedWeeks: true,
   weekendDays: [0, 6],
+  weekNumbers: false,
 };
 
 export const buildMonthGrid = (
@@ -75,10 +84,16 @@ export const buildMonthGrid = (
 
   const weekdayHeaders = Array.from({ length: 7 }, (_, i) => (opts.firstDayOfWeek + i) % 7);
 
+  // Week numbers are ISO/Gregorian by definition — project non-Gregorian cells.
+  const weekNumbers = opts.weekNumbers
+    ? weeks.map(w => isoWeekOfYear(calendar.toGregorian((w[0] as MonthGridCell).date)))
+    : undefined;
+
   return Object.freeze({
     month: focusedMonth.month,
     year: focusedMonth.year,
     weeks: Object.freeze(weeks.map(w => Object.freeze(w))),
     weekdayHeaders: Object.freeze(weekdayHeaders),
+    ...(weekNumbers ? { weekNumbers: Object.freeze(weekNumbers) } : {}),
   });
 };

@@ -34,4 +34,22 @@ module.exports = [
     import: '{ DatePicker, DateField, useDatePicker }',
     ignore: ['vue'],
   },
+  {
+    name: '@calender/svelte (ESM, excl. core)',
+    path: 'packages/svelte/dist/index.js',
+    limit: '2 KB',
+    ignore: ['@calender/core'],
+  },
+  {
+    name: '@calender/solid (ESM, excl. core & solid-js)',
+    path: 'packages/solid/dist/index.js',
+    limit: '2 KB',
+    ignore: ['@calender/core', 'solid-js'],
+  },
+  {
+    // The CDN drop-in script — minified IIFE with core bundled.
+    name: '@calender/web-component (CDN auto-register, minified)',
+    path: 'packages/web-component/dist/auto-register.global.js',
+    limit: '40 KB',
+  },
 ];

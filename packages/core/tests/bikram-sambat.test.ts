@@ -44,6 +44,35 @@ describe('BikramSambatCalendar — epoch + conversion', () => {
   });
 });
 
+describe('BikramSambatCalendar — UTC-pure conversion', () => {
+  // toGregorian is pure UTC epoch-day arithmetic, so these hold in EVERY host
+  // time zone (the old local-Date math drifted a day around e.g. the Samoa
+  // 2011 dateline jump). vitest cannot switch TZ in-process; the table plus
+  // the UTC-only implementation is the guarantee.
+  it('matches a precomputed table', () => {
+    expect(bs.toGregorian(createCalendarDate(2000, 1, 1))).toEqual({
+      year: 1943,
+      month: 4,
+      day: 14,
+    });
+    expect(bs.toGregorian(createCalendarDate(2000, 1, 2))).toEqual({
+      year: 1943,
+      month: 4,
+      day: 15,
+    });
+    expect(bs.toGregorian(createCalendarDate(2001, 1, 1))).toEqual({
+      year: 1944,
+      month: 4,
+      day: 13,
+    });
+    // Round-trip invariance across a span of years.
+    for (const y of [2010, 2040, 2068, 2080, 2090]) {
+      const d = createCalendarDate(y, 6, 10);
+      expect(bs.fromGregorian(bs.toGregorian(d))).toEqual(d);
+    }
+  });
+});
+
 describe('BikramSambatCalendar — arithmetic', () => {
   it('addDays crosses irregular BS month boundaries', () => {
     // BS 2080 month 1 has 31 days (per table)

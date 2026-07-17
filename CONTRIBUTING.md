@@ -7,12 +7,11 @@ workflow.
 ## TL;DR
 
 ```bash
-git clone https://github.com/your-org/calender.git
+git clone https://github.com/anilkumarthakur60/calender.git
 cd calender
 pnpm install --frozen-lockfile
 pnpm dev:wc        # see something render
-pnpm test          # 47 tests should pass
-pnpm lint && pnpm format:check
+pnpm check         # lint + format:check + typecheck + test
 ```
 
 ## What gets accepted
@@ -42,8 +41,9 @@ PRs that get pushback:
 
 Every PR runs `.github/workflows/ci.yml` — see [`README.md` → CI/CD](./README.md#cicd-with-github-actions).
 
-That's: `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm test`,
-`pnpm build:apps`. All must pass.
+That's: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm build`,
+`pnpm test`, package checks (publint + arethetypeswrong), `pnpm build:apps`,
+and `pnpm size`. All must pass.
 
 Preview deployments for every adapter playground + the docs site are posted
 to the PR run summary by `.github/workflows/preview.yml`.

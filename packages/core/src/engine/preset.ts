@@ -13,13 +13,14 @@ export interface DatePreset {
 
 export type PresetSpec = string | DatePreset;
 
+// Atomic range application: clamps into min/max and applies nothing when the
+// clamped range is empty — no dangling anchor from a half-applied preset.
 const selectRange = (engine: DatePickerEngine, start: CalendarDate, end: CalendarDate): void => {
-  engine.clearSelection();
-  engine.select(start);
-  engine.select(end);
+  engine.selectRange(start, end);
 };
 
-const today = (engine: DatePickerEngine): CalendarDate => engine.calendar.today();
+// The engine's tz-aware today (honours locale.timeZone).
+const today = (engine: DatePickerEngine): CalendarDate => engine.today();
 
 export const BUILTIN_PRESETS: Readonly<Record<string, DatePreset>> = {
   today: {

@@ -2,7 +2,27 @@
   "name": "@calender/angular",
   "version": "0.1.0",
   "description": "Angular 17+ adapter for @calender/core.",
+  "private": true,
   "license": "MIT",
+  "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
+  "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/angular#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anilkumarthakur60/calender.git",
+    "directory": "packages/angular"
+  },
+  "bugs": "https://github.com/anilkumarthakur60/calender/issues",
+  "keywords": [
+    "calendar",
+    "date-picker",
+    "datepicker",
+    "date-range",
+    "date",
+    "headless",
+    "typescript",
+    "angular",
+    "standalone-component"
+  ],
   "type": "module",
   "sideEffects": false,
   "files": [

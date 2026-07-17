@@ -4,8 +4,11 @@ import {
   createCalendarDate,
   formatSelection,
   formatWithPattern,
+  parseDate,
+  parseDateTimeWithPattern,
   parseSelection,
   parseWithPattern,
+  resolveTwoDigitYear,
 } from '../src/index.js';
 
 describe('formatWithPattern', () => {
@@ -64,6 +67,84 @@ describe('parseWithPattern', () => {
   });
   it('rejects invalid date-for-calendar', () => {
     expect(parseWithPattern('2025-02-30', 'iso')).toBeNull();
+  });
+});
+
+describe('quoted literals (TR35 single-quote escaping)', () => {
+  const d = createCalendarDate(2025, 4, 7);
+  const time = { hour: 13, minute: 5, second: 0 };
+
+  it("format: letters in 'at' stay literal", () => {
+    expect(formatWithPattern(d, "MMMM d, yyyy 'at' HH:mm", 'en-US', undefined, time)).toBe(
+      'April 7, 2025 at 13:05',
+    );
+  });
+
+  it("parse: 'at' literal round-trips with time", () => {
+    const parsed = parseDateTimeWithPattern('April 7, 2025 at 13:05', "MMMM d, yyyy 'at' HH:mm");
+    expect(parsed?.date).toEqual({ year: 2025, month: 4, day: 7 });
+    expect(parsed?.time).toEqual({ hour: 13, minute: 5, second: 0 });
+  });
+
+  it("format: Spanish d 'de' MMMM 'de' yyyy", () => {
+    expect(formatWithPattern(d, "d 'de' MMMM 'de' yyyy", 'es-ES')).toBe('7 de abril de 2025');
+  });
+
+  it("parse: Spanish d 'de' MMMM 'de' yyyy", () => {
+    expect(parseWithPattern('7 de abril de 2025', "d 'de' MMMM 'de' yyyy", 'es-ES')).toEqual({
+      year: 2025,
+      month: 4,
+      day: 7,
+    });
+  });
+
+  it("'' renders a literal quote in both directions", () => {
+    expect(formatWithPattern(d, "yyyy''MM")).toBe("2025'04");
+    expect(parseWithPattern("2025'04'07", "yyyy''MM''dd")).toEqual({
+      year: 2025,
+      month: 4,
+      day: 7,
+    });
+  });
+});
+
+describe('time field range validation', () => {
+  it("rejects '99:99'", () => {
+    expect(parseDateTimeWithPattern('2025-01-01 99:99', 'yyyy-MM-dd HH:mm')).toBeNull();
+  });
+  it('accepts 23:59, rejects 24:00', () => {
+    expect(parseDateTimeWithPattern('2025-01-01 23:59', 'yyyy-MM-dd HH:mm')?.time).toEqual({
+      hour: 23,
+      minute: 59,
+      second: 0,
+    });
+    expect(parseDateTimeWithPattern('2025-01-01 24:00', 'yyyy-MM-dd HH:mm')).toBeNull();
+  });
+  it('12-hour tokens require 1-12', () => {
+    expect(parseDateTimeWithPattern('2025-01-01 13:00 PM', 'yyyy-MM-dd h:mm a')).toBeNull();
+    expect(parseDateTimeWithPattern('2025-01-01 12:30 AM', 'yyyy-MM-dd h:mm a')?.time).toEqual({
+      hour: 0,
+      minute: 30,
+      second: 0,
+    });
+  });
+  it('rejects seconds > 59', () => {
+    expect(parseDateTimeWithPattern('2025-01-01 10:00:61', 'yyyy-MM-dd HH:mm:ss')).toBeNull();
+  });
+});
+
+describe('two-digit-year pivot (shared 70 rule)', () => {
+  it('helper: 00-69 → 20xx, 70-99 → 19xx', () => {
+    expect(resolveTwoDigitYear(0)).toBe(2000);
+    expect(resolveTwoDigitYear(69)).toBe(2069);
+    expect(resolveTwoDigitYear(70)).toBe(1970);
+    expect(resolveTwoDigitYear(99)).toBe(1999);
+  });
+  it('lenient parser and pattern parser agree', () => {
+    expect(parseDate('12/31/99', 'en-US')?.year).toBe(1999);
+    expect(parseWithPattern('12/31/99', 'MM/dd/yy')?.year).toBe(1999);
+    expect(parseDate('12/31/69', 'en-US')?.year).toBe(2069);
+    expect(parseWithPattern('12/31/69', 'MM/dd/yy')?.year).toBe(2069);
   });
 });
 

@@ -43,3 +43,27 @@ describe('applyMask', () => {
     expect(applyMask('Apr 15, 2025', 'medium').value).toBe('Apr 15, 2025');
   });
 });
+
+describe('applyMask — single-digit tokens (M/d in "short")', () => {
+  it('regression: 12/3/2025 stays 12/3/2025 (was 1/2/3202)', () => {
+    expect(applyMask('12/3/2025', 'short')).toEqual({ value: '12/3/2025', caret: 9 });
+  });
+
+  it('separator commits a 1-digit month', () => {
+    expect(applyMask('1/3/2025', 'short').value).toBe('1/3/2025');
+  });
+
+  it('digit stream without separators still splits on max values', () => {
+    // "1232025" → M=12 (≤12), d=3 ("32" > 31), yyyy=2025
+    expect(applyMask('1232025', 'short').value).toBe('12/3/2025');
+  });
+
+  it('auto-commits when no second digit can fit (M=3 → 30 > 12)', () => {
+    expect(applyMask('342025', 'short').value).toBe('3/4/2025');
+  });
+
+  it('partial input never gains a trailing separator', () => {
+    expect(applyMask('12', 'short').value).toBe('12');
+    expect(applyMask('12/3', 'short').value).toBe('12/3');
+  });
+});

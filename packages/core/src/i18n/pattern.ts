@@ -1,6 +1,7 @@
 import type { CalendarSystem } from '../calendar/calendar-system.js';
 import type { CalendarDate } from '../domain/calendar-date.js';
 import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
+import { resolveTwoDigitYear } from './parser.js';
 
 /**
  * Token-based date formatting + parsing.
@@ -17,7 +18,10 @@ import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
  *   EEEE  long weekday             "Monday"
  *   EEE   short weekday            "Mon"
  *
- * Anything else (spaces, separators) is taken literally.
+ * Anything else (spaces, separators) is taken literally. Text wrapped in
+ * single quotes is always literal (TR35-style), so token letters can appear
+ * in prose: `MMMM d, yyyy 'at' HH:mm`, `d 'de' MMMM`. Two single quotes
+ * (`''`) produce one literal quote.
  *
  * Calendar-system aware: uses the calendar's `monthName` and `formatDay` for
  * year/month/day rendering, so BS month names and Devanagari numerals work.
@@ -66,11 +70,46 @@ export const resolvePattern = (input: string | FormatPreset | undefined): string
   return input;
 };
 
-/** Split a pattern into a sequence of tokens and literal segments. */
+/**
+ * Split a pattern into a sequence of tokens and literal segments. Single-quoted
+ * runs are literal ('' escapes a quote), so letters inside them never tokenize.
+ */
 const tokenize = (pattern: string): ReadonlyArray<{ kind: 'token' | 'literal'; value: string }> => {
   const out: { kind: 'token' | 'literal'; value: string }[] = [];
+  const pushLiteral = (value: string): void => {
+    if (!value) return;
+    const last = out[out.length - 1];
+    if (last && last.kind === 'literal') last.value += value;
+    else out.push({ kind: 'literal', value });
+  };
   let i = 0;
   while (i < pattern.length) {
+    if (pattern[i] === "'") {
+      // '' outside a quoted run is a single literal quote.
+      if (pattern[i + 1] === "'") {
+        pushLiteral("'");
+        i += 2;
+        continue;
+      }
+      // Quoted literal run: consume until the (unescaped) closing quote.
+      let j = i + 1;
+      let text = '';
+      while (j < pattern.length) {
+        if (pattern[j] === "'") {
+          if (pattern[j + 1] === "'") {
+            text += "'";
+            j += 2;
+            continue;
+          }
+          break;
+        }
+        text += pattern[j];
+        j += 1;
+      }
+      pushLiteral(text);
+      i = j + 1; // past the closing quote (or end for an unterminated run)
+      continue;
+    }
     let matched: string | null = null;
     for (const t of TOKENS) {
       if (pattern.startsWith(t, i)) {
@@ -83,9 +122,10 @@ const tokenize = (pattern: string): ReadonlyArray<{ kind: 'token' | 'literal'; v
       i += matched.length;
       continue;
     }
-    // Take literal up to next token-start
+    // Take literal up to next token-start or quote
     let j = i;
     while (j < pattern.length) {
+      if (pattern[j] === "'") break;
       let nextTokenAt = -1;
       for (const t of TOKENS) {
         if (pattern.startsWith(t, j)) {
@@ -96,11 +136,14 @@ const tokenize = (pattern: string): ReadonlyArray<{ kind: 'token' | 'literal'; v
       if (nextTokenAt === j) break;
       j += 1;
     }
-    out.push({ kind: 'literal', value: pattern.slice(i, j) });
+    pushLiteral(pattern.slice(i, j));
     i = j;
   }
   return out;
 };
+
+/** Internal (non-barrel) export so the mask helper shares the exact tokenizer. */
+export const tokenizePattern = tokenize;
 
 const WEEKDAY_NAMES_REF = new Date(2024, 0, 7); // Sunday Jan 7, 2024
 const weekdayName = (weekdayUS: number, style: 'long' | 'short', locale: string): string => {
@@ -256,6 +299,16 @@ export const parseDateTimeWithPattern = (
   }
   if (!calendar.isValidDate(fields.year, fields.month, fields.day)) return null;
 
+  // Range-validate time fields: '99:99' must not parse as hour 99.
+  if (fields.hour !== undefined) {
+    const twelveHour = fields.hour12 === true || fields.period !== undefined;
+    if (twelveHour ? fields.hour < 1 || fields.hour > 12 : fields.hour < 0 || fields.hour > 23) {
+      return null;
+    }
+  }
+  if (fields.minute !== undefined && (fields.minute < 0 || fields.minute > 59)) return null;
+  if (fields.second !== undefined && (fields.second < 0 || fields.second > 59)) return null;
+
   let hour = fields.hour ?? 0;
   if (fields.period !== undefined && fields.hour !== undefined) {
     // 12-hour clock with AM/PM → normalise to 24h
@@ -276,6 +329,8 @@ interface ParseFields {
   month?: number;
   day?: number;
   hour?: number;
+  /** True when the hour came from a 12-hour token (h/hh) — validated 1-12. */
+  hour12?: boolean;
   minute?: number;
   second?: number;
   period?: 'am' | 'pm';
@@ -299,8 +354,7 @@ const consumeToken = (
     case 'yy': {
       const m = /^\d{2}/.exec(input.slice(start));
       if (!m) return null;
-      const yy = Number(m[0]);
-      fields.year = yy < 70 ? 2000 + yy : 1900 + yy;
+      fields.year = resolveTwoDigitYear(Number(m[0]));
       return start + 2;
     }
     case 'MMMM':
@@ -356,6 +410,7 @@ const consumeToken = (
       const m = /^\d{2}/.exec(input.slice(start));
       if (!m) return null;
       fields.hour = Number(m[0]);
+      if (t === 'hh') fields.hour12 = true;
       return start + 2;
     }
     case 'H':
@@ -363,6 +418,7 @@ const consumeToken = (
       const m = /^\d{1,2}/.exec(input.slice(start));
       if (!m) return null;
       fields.hour = Number(m[0]);
+      if (t === 'h') fields.hour12 = true;
       return start + m[0].length;
     }
     case 'mm': {

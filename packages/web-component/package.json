@@ -3,10 +3,33 @@
   "version": "0.1.0",
   "description": "Framework-free <calender-picker> custom element built on @calender/core.",
   "license": "MIT",
+  "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
+  "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/web-component#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anilkumarthakur60/calender.git",
+    "directory": "packages/web-component"
+  },
+  "bugs": "https://github.com/anilkumarthakur60/calender/issues",
+  "keywords": [
+    "calendar",
+    "date-picker",
+    "datepicker",
+    "date-range",
+    "date",
+    "headless",
+    "typescript",
+    "web-component",
+    "custom-element",
+    "shadow-dom"
+  ],
   "type": "module",
   "sideEffects": [
     "./dist/index.js",
     "./dist/index.cjs",
+    "./dist/auto-register.js",
+    "./dist/auto-register.cjs",
+    "./dist/auto-register.global.js",
     "./src/auto-register.ts"
   ],
   "files": [
@@ -19,14 +42,24 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./auto-register": {
-      "types": "./dist/auto-register.d.ts",
-      "import": "./dist/auto-register.js",
-      "require": "./dist/auto-register.cjs"
+      "import": {
+        "types": "./dist/auto-register.d.ts",
+        "default": "./dist/auto-register.js"
+      },
+      "require": {
+        "types": "./dist/auto-register.d.cts",
+        "default": "./dist/auto-register.cjs"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -47,5 +80,17 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "unpkg": "./dist/auto-register.global.js",
+  "jsdelivr": "./dist/auto-register.global.js",
+  "typesVersions": {
+    "*": {
+      "auto-register": [
+        "./dist/auto-register.d.ts"
+      ]
+    }
   }
 }

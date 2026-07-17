@@ -13,9 +13,13 @@ concurrency:
 
 jobs:
   verify:
-    name: Lint • Test • Build
+    name: Lint • Test • Build (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
 
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +30,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ matrix.node }}
           cache: pnpm
 
       - name: Install
@@ -38,11 +42,34 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: Typecheck
+        run: pnpm typecheck
+
       - name: Build packages
         run: pnpm build
 
       - name: Test
         run: pnpm test
+
+      # Validates package.json exports/types resolution for every publishable
+      # package (publint) and TypeScript resolution across module systems (attw).
+      - name: Package checks (publint + arethetypeswrong)
+        run: |
+          for d in core react vue svelte solid web-component styles; do
+            npx --yes publint "packages/$d"
+          done
+          for d in core react vue svelte solid web-component; do
+            npx --yes @arethetypeswrong/cli --pack "packages/$d" --profile node16
+          done
+
+      # Smoke-test that every publishable JS package loads in plain Node,
+      # both require() and import — catches SSR-hostile module-scope DOM access.
+      - name: Node import smoke test
+        run: |
+          for d in core react vue svelte solid web-component; do
+            node -e "require('./packages/$d/dist/index.cjs')"
+            node --input-type=module -e "import('./packages/$d/dist/index.js').then(() => {})"
+          done
 
       - name: Build apps
         run: pnpm build:apps

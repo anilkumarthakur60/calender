@@ -1,5 +1,9 @@
 # @calender
 
+[![CI](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml/badge.svg)](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/%40calender%2Fcore.svg)](https://www.npmjs.com/package/@calender/core)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 A headless, framework-agnostic calendar / date-picker for **React, Vue, Svelte,
 Solid, Angular and Web Components**. One TypeScript state engine drives all of
 them. Ships **AD (Gregorian) and BS (Bikram Sambat / Nepali)** calendars out of
@@ -55,16 +59,16 @@ import { DatePicker } from '@calender/react';
 
 ## Packages
 
-| Package                   | What it is                                                                                                                |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `@calender/core`          | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events. |
-| `@calender/styles`        | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.                                                       |
-| `@calender/web-component` | Framework-free `<calender-picker>` + `<calender-input>` custom elements. Form-associated.                                 |
-| `@calender/react`         | `useDatePicker` hook, `<DatePicker>`, `<DateField>` (React 18+).                                                          |
-| `@calender/vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>` (Vue 3).                                                        |
-| `@calender/svelte`        | `createDatePicker` factory satisfying the Svelte store contract.                                                          |
-| `@calender/solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                  |
-| `@calender/angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+).                                            |
+| Package                   | What it is                                                                                                                                       |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@calender/core`          | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events.                        |
+| `@calender/styles`        | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.                                                                              |
+| `@calender/web-component` | Framework-free `<calender-picker>` + `<calender-input>` custom elements. Form-associated.                                                        |
+| `@calender/react`         | `useDatePicker` hook, `<DatePicker>`, `<DateField>` (React 18+).                                                                                 |
+| `@calender/vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>` (Vue 3).                                                                               |
+| `@calender/svelte`        | `createDatePicker` factory satisfying the Svelte store contract.                                                                                 |
+| `@calender/solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                                         |
+| `@calender/angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). **In-repo only — not yet on npm** (awaiting an ng-packagr build). |
 
 ## Apps
 
@@ -84,9 +88,9 @@ import { DatePicker } from '@calender/react';
 
 Pick a framework adapter, install it + the styles, render:
 
-::: code-group
+**React**
 
-```tsx [React]
+```tsx
 import '@calender/styles';
 import { DatePicker, DateField } from '@calender/react';
 
@@ -95,7 +99,9 @@ import { DatePicker, DateField } from '@calender/react';
 <DateField name="bookingDate" defaultValue="2025-04-15" />
 ```
 
-```vue [Vue]
+**Vue**
+
+```vue
 <script setup>
 import '@calender/styles';
 import { DatePicker, DateField } from '@calender/vue';
@@ -106,7 +112,9 @@ import { DatePicker, DateField } from '@calender/vue';
 </template>
 ```
 
-```html [Web Component]
+**Web Component**
+
+```html
 <link rel="stylesheet" href="@calender/styles" />
 <script type="module">
   import '@calender/web-component/auto-register';
@@ -116,14 +124,14 @@ import { DatePicker, DateField } from '@calender/vue';
 <calender-input name="bookingDate" value="2025-04-15"></calender-input>
 ```
 
-```ts [Engine (any framework)]
+**Engine (any framework)**
+
+```ts
 import { DatePickerEngine } from '@calender/core';
 
 const engine = new DatePickerEngine({ mode: 'range', calendar: 'bikram-sambat' });
 engine.on('change', ({ state }) => render(state));
 ```
-
-:::
 
 Full guides, every API, every option: **the [VitePress docs site](https://calender.dev)** (or run `pnpm dev:docs` locally).
 
@@ -162,7 +170,7 @@ That's it. No system-level deps.
 ### Clone & install
 
 ```bash
-git clone https://github.com/your-org/calender.git
+git clone https://github.com/anilkumarthakur60/calender.git
 cd calender
 pnpm install --frozen-lockfile
 ```
@@ -212,7 +220,8 @@ pnpm build:all     # both
 ### Test, lint, format
 
 ```bash
-pnpm test          # vitest on @calender/core (47 tests)
+pnpm test          # vitest across the workspace
+pnpm check         # lint + format:check + typecheck + test in one go
 pnpm lint          # eslint across the repo
 pnpm lint:fix      # auto-fix
 pnpm format        # prettier --write
@@ -407,7 +416,7 @@ The hard work is the engine, which the new adapter doesn't touch.
 ### Adding a test
 
 Tests live alongside the package they cover, under a `tests/` directory.
-Only `@calender/core` has tests today (47 of them). To run a single file:
+To run a single file:
 
 ```bash
 pnpm --filter @calender/core exec vitest run tests/engine.test.ts
@@ -492,11 +501,12 @@ pick Vercel/Cloudflare if you can.
 
 Three workflows ship in `.github/workflows/`:
 
-| Workflow      | Trigger         | Does                                                                |
-| ------------- | --------------- | ------------------------------------------------------------------- |
-| `ci.yml`      | Every push / PR | Lint + format-check + build packages + run tests + build apps.      |
-| `deploy.yml`  | Push to `main`  | Matrix-deploys all 6 apps to Vercel in parallel via the Vercel CLI. |
-| `preview.yml` | Every PR        | Deploys preview URLs for all 6 apps to the PR's run summary.        |
+| Workflow      | Trigger         | Does                                                                                                        |
+| ------------- | --------------- | ----------------------------------------------------------------------------------------------------------- |
+| `ci.yml`      | Every push / PR | Lint + format-check + typecheck + build + test + package checks (publint/attw) + build apps + size budgets. |
+| `release.yml` | Push to `main`  | Changesets: opens the version PR, or publishes to npm with provenance when it merges.                       |
+| `deploy.yml`  | Push to `main`  | Matrix-deploys all 6 apps to Vercel in parallel via the Vercel CLI.                                         |
+| `preview.yml` | Every PR        | Deploys preview URLs for all 6 apps to the PR's run summary.                                                |
 
 To enable the deploy + preview workflows, add these GitHub repo secrets
 (Settings → Secrets and variables → Actions):
@@ -520,32 +530,25 @@ preview URLs on every PR.
 
 ## Publishing to npm
 
-The packages live under the `@calender/` scope. To publish:
+The packages live under the `@calender/` scope and release through
+[Changesets](https://github.com/changesets/changesets), fully automated by
+`.github/workflows/release.yml`:
 
-1. Bump versions across the packages. Recommended: use [`changesets`](https://github.com/changesets/changesets)
-   (not yet wired in this repo — add it when the org is ready).
-2. Make sure everything builds and tests pass:
+1. Land your change with a changeset (`pnpm changeset` — pick the bump, write
+   the summary). CI on `main` then opens/updates a **"chore: version packages"**
+   PR.
+2. Merge that PR → the workflow builds, tests, and publishes every changed
+   package to npm with **provenance attestation** (requires the `NPM_TOKEN`
+   repo secret).
 
-   ```bash
-   pnpm install --frozen-lockfile
-   pnpm lint && pnpm test && pnpm build
-   ```
+Manual escape hatch (rarely needed):
 
-3. Login (once per machine):
+```bash
+pnpm build && pnpm -r --filter "./packages/**" publish --access public
+```
 
-   ```bash
-   npm login --scope=@calender
-   ```
-
-4. Publish each public package:
-
-   ```bash
-   pnpm -r --filter "./packages/**" publish --access public
-   ```
-
-   pnpm's `-r` walks the workspace in topological order.
-
-The `apps/*` are marked `"private": true` and won't be published.
+The `apps/*` are `"private": true` and never publish; `@calender/angular` is
+also private until its build moves to ng-packagr.
 
 ---
 

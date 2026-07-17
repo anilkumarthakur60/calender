@@ -1,7 +1,8 @@
 import { createCalendarSystem } from '../calendar/calendar-factory.js';
 import type { CalendarSystem } from '../calendar/calendar-system.js';
 import type { CalendarDate } from '../domain/calendar-date.js';
-import { clamp, isSameDay } from '../domain/calendar-date.js';
+import { clamp, isSameDay, toEpochDay } from '../domain/calendar-date.js';
+import { createRange } from '../domain/date-range.js';
 import { buildMonthGrid } from '../domain/month-grid.js';
 import { CompositeConstraint } from '../constraints/composite-constraint.js';
 import { MinMaxConstraint } from '../constraints/min-max-constraint.js';
@@ -18,6 +19,7 @@ import type { SelectionStrategy, SelectionValue } from '../selection/selection-s
 import type {
   DateHighlight,
   DatePickerEngineOptions,
+  InitialSelected,
   SelectionGranularity,
 } from './engine-options.js';
 import type { EngineState, TimeOfDay } from './engine-state.js';
@@ -55,49 +57,115 @@ const GRANULARITY_VIEW: Record<SelectionGranularity, ViewMode> = {
   year: 'year',
 };
 
-const daysBetween = (calendar: CalendarSystem, a: CalendarDate, b: CalendarDate): number => {
-  // Forward iterate from min to max to honour calendar-specific month lengths.
-  const cmp = calendar.compare(a, b);
-  if (cmp === 0) return 0;
-  const [lo, hi] = cmp < 0 ? [a, b] : [b, a];
-  let n = 0;
-  let cursor = lo;
-  // Bound to keep us safe on bogus input; pickers never need huge spans.
-  for (let i = 0; i < 5000; i += 1) {
-    if (calendar.compare(cursor, hi) === 0) return cmp < 0 ? n : -n;
-    cursor = calendar.addDays(cursor, 1);
-    n += 1;
+/**
+ * Columns in the month/year/decade period grids (matches the 4-column
+ * `cal-picker__grid--period` layout every renderer uses).
+ */
+const PERIOD_GRID_COLUMNS = 4;
+
+const decadeStart = (year: number): number => Math.floor(year / 10) * 10;
+const centuryStart = (year: number): number => Math.floor(year / 100) * 100;
+
+/**
+ * Signed day count from `a` to `b` (positive when a < b). O(1) via UTC
+ * epoch-day subtraction through the Gregorian projection — no iteration,
+ * no span cap.
+ */
+const daysBetween = (calendar: CalendarSystem, a: CalendarDate, b: CalendarDate): number =>
+  toEpochDay(calendar.toGregorian(b)) - toEpochDay(calendar.toGregorian(a));
+
+/**
+ * Freeze a selection value AND everything reachable through it (arrays,
+ * ranges, dates) so `engine.state.selection.value` can never be mutated live.
+ */
+const deepFreezeSelection = (selection: SelectionValue): SelectionValue => {
+  switch (selection.mode) {
+    case 'single':
+      if (selection.value) Object.freeze(selection.value);
+      break;
+    case 'range':
+      if (selection.value) {
+        Object.freeze(selection.value.start);
+        Object.freeze(selection.value.end);
+        Object.freeze(selection.value);
+      }
+      if (selection.anchor) Object.freeze(selection.anchor);
+      break;
+    case 'multi':
+      for (const d of selection.value) Object.freeze(d);
+      Object.freeze(selection.value);
+      break;
   }
-  return cmp < 0 ? n : -n;
+  return Object.freeze(selection);
 };
 
 export class DatePickerEngine {
   readonly #bus = new EventBus<DatePickerEvents>();
-  readonly #strategy: SelectionStrategy;
-  readonly #constraint: DateConstraint;
-  readonly #locale: LocaleConfig;
-  readonly #formatter: DateFormatter;
-  readonly #calendar: CalendarSystem;
-  readonly #min: CalendarDate | undefined;
-  readonly #max: CalendarDate | undefined;
-  readonly #fixedWeeks: boolean;
-  readonly #granularity: SelectionGranularity;
-  readonly #minRangeDays: number | undefined;
-  readonly #maxRangeDays: number | undefined;
-  readonly #highlights: HighlightIndex;
-  readonly #months: number;
-  readonly #weekNumbers: boolean;
-  readonly #headerSelectors: boolean;
-  readonly #yearRange: readonly [number, number] | undefined;
-  readonly #withTime: boolean;
-  readonly #timeStep: number;
-  readonly #use12HourClock: boolean;
-  readonly #showSeconds: boolean;
-  readonly #minTime: TimeOfDay | undefined;
-  readonly #maxTime: TimeOfDay | undefined;
-  #state: EngineState;
+  #options: DatePickerEngineOptions;
+  #strategy!: SelectionStrategy;
+  #constraint!: DateConstraint;
+  #locale!: LocaleConfig;
+  #formatter!: DateFormatter;
+  #calendar!: CalendarSystem;
+  #min: CalendarDate | undefined;
+  #max: CalendarDate | undefined;
+  #fixedWeeks = true;
+  #granularity: SelectionGranularity = 'day';
+  #minRangeDays: number | undefined;
+  #maxRangeDays: number | undefined;
+  #rangeOverDisabled: 'allow' | 'reject' | 'clamp' = 'allow';
+  #highlights!: HighlightIndex;
+  #months = 1;
+  #weekNumbers = false;
+  #headerSelectors = false;
+  #yearRange: readonly [number, number] | undefined;
+  #withTime = false;
+  #timeStep = 1;
+  #use12HourClock = false;
+  #showSeconds = false;
+  #minTime: TimeOfDay | undefined;
+  #maxTime: TimeOfDay | undefined;
+  #state!: EngineState;
 
   constructor(options: DatePickerEngineOptions = {}) {
+    this.#options = options;
+    this.#configure(options);
+
+    const seeded =
+      options.initialSelected !== undefined
+        ? this.#seedSelection(options.initialSelected)
+        : (this.#strategy.initial() as SelectionValue);
+
+    const initial = options.initialFocused
+      ? clamp(options.initialFocused, options.min, options.max)
+      : clamp(
+          seededFocus(seeded) ?? this.#calendar.today(this.#locale.timeZone),
+          options.min,
+          options.max,
+        );
+
+    const initialView: ViewMode = options.initialView ?? GRANULARITY_VIEW[this.#granularity];
+
+    const initialTime: TimeOfDay | null = this.#withTime
+      ? {
+          hour: options.initialTime?.hour ?? 0,
+          minute: options.initialTime?.minute ?? 0,
+          second: options.initialTime?.second ?? 0,
+        }
+      : null;
+
+    this.#state = this.#buildState({
+      focused: initial,
+      view: initialView,
+      selection: seeded,
+      isOpen: false,
+      hovered: null,
+      time: initialTime,
+    });
+  }
+
+  /** Resolve every option field. Called at construction and from setOptions(). */
+  #configure(options: DatePickerEngineOptions): void {
     this.#calendar = createCalendarSystem(options.calendar ?? 'gregorian');
     this.#locale = resolveLocaleConfig(options.locale ?? {});
     this.#formatter = new DateFormatter(this.#locale, this.#calendar);
@@ -113,6 +181,7 @@ export class DatePickerEngine {
     this.#granularity = options.granularity ?? 'day';
     this.#minRangeDays = options.minRangeDays;
     this.#maxRangeDays = options.maxRangeDays;
+    this.#rangeOverDisabled = options.rangeOverDisabled ?? 'allow';
     this.#highlights = new HighlightIndex(options.highlights ?? []);
     this.#months = Math.max(1, options.months ?? 1);
     this.#weekNumbers = options.weekNumbers ?? false;
@@ -146,29 +215,62 @@ export class DatePickerEngine {
       constraints.push(new DisabledWeekdayConstraint(options.disabledWeekdays, this.#calendar));
     if (options.extraConstraints?.length) constraints.push(...options.extraConstraints);
     this.#constraint = new CompositeConstraint(constraints);
+  }
 
-    const initial = options.initialFocused
-      ? clamp(options.initialFocused, options.min, options.max)
-      : clamp(this.#calendar.today(this.#locale.timeZone), options.min, options.max);
-
-    const initialView: ViewMode = options.initialView ?? GRANULARITY_VIEW[this.#granularity];
-
-    const initialTime: TimeOfDay | null = this.#withTime
-      ? {
-          hour: options.initialTime?.hour ?? 0,
-          minute: options.initialTime?.minute ?? 0,
-          second: options.initialTime?.second ?? 0,
+  /** Build the initial selection value from `initialSelected`, dropping invalid parts. */
+  #seedSelection(seed: InitialSelected): SelectionValue {
+    switch (this.#strategy.mode) {
+      case 'single': {
+        const d = Array.isArray(seed)
+          ? (seed[0] as CalendarDate | undefined)
+          : 'start' in seed
+            ? seed.start
+            : (seed as CalendarDate);
+        return d && !this.isDisabled(d)
+          ? { mode: 'single', value: d }
+          : (this.#strategy.initial() as SelectionValue);
+      }
+      case 'range': {
+        const [a, b] = Array.isArray(seed)
+          ? [seed[0], seed[seed.length - 1]]
+          : 'start' in seed
+            ? [seed.start, seed.end]
+            : [seed as CalendarDate, seed as CalendarDate];
+        if (!a || !b) return this.#strategy.initial() as SelectionValue;
+        const range = this.#clampRangeToBounds(a, b);
+        if (!range || this.isDisabled(range.start) || this.isDisabled(range.end)) {
+          return this.#strategy.initial() as SelectionValue;
         }
-      : null;
+        return { mode: 'range', value: range, anchor: range.start };
+      }
+      case 'multi': {
+        const list = Array.isArray(seed)
+          ? seed
+          : 'start' in seed
+            ? [seed.start, seed.end]
+            : [seed as CalendarDate];
+        let s = this.#strategy.initial() as SelectionValue;
+        for (const d of list) {
+          if (!this.isDisabled(d)) s = this.#strategy.select(s as never, d) as SelectionValue;
+        }
+        return s;
+      }
+    }
+  }
 
-    this.#state = this.#buildState({
-      focused: initial,
-      view: initialView,
-      selection: this.#strategy.initial(),
-      isOpen: false,
-      hovered: null,
-      time: initialTime,
-    });
+  /**
+   * Order + clamp a candidate range into `[min, max]`. Returns null when the
+   * candidate lies entirely outside the bounds (empty intersection).
+   */
+  #clampRangeToBounds(
+    a: CalendarDate,
+    b: CalendarDate,
+  ): { start: CalendarDate; end: CalendarDate } | null {
+    const cal = this.#calendar;
+    const [lo, hi] = cal.compare(a, b) <= 0 ? [a, b] : [b, a];
+    if (this.#min && cal.compare(hi, this.#min) < 0) return null;
+    if (this.#max && cal.compare(lo, this.#max) > 0) return null;
+    return createRange(clamp(lo, this.#min, this.#max), clamp(hi, this.#min, this.#max));
   }
 
   // --- public read API -----------------------------------------------------
@@ -203,6 +305,11 @@ export class DatePickerEngine {
 
   get headerSelectors(): boolean {
     return this.#headerSelectors;
+  }
+
+  /** The engine's "today" in the configured calendar + locale time zone. */
+  today(): CalendarDate {
+    return this.#calendar.today(this.#locale.timeZone);
   }
 
   /**
@@ -282,6 +389,66 @@ export class DatePickerEngine {
 
   // --- commands ------------------------------------------------------------
 
+  /**
+   * Reconfigure a live engine. `partial` is merged over the options the engine
+   * was constructed with; constraints, locale, calendar, months etc. are all
+   * rebuilt. The current selection and focus are preserved where still valid
+   * (selection parts that violate the new constraints are dropped; focus is
+   * clamped into the new min/max), then the new state is committed and a
+   * 'change' event is emitted. `initialFocused`/`initialView`/`initialSelected`
+   * are construction-time-only and ignored here.
+   */
+  setOptions(partial: Partial<DatePickerEngineOptions>): void {
+    const previous = this.#state;
+    const merged: DatePickerEngineOptions = { ...this.#options, ...partial };
+    this.#options = merged;
+    this.#configure(merged);
+
+    const focused = clamp(previous.focused, this.#min, this.#max);
+    const selection = this.#pruneSelection(previous.selection);
+    const time: TimeOfDay | null = this.#withTime
+      ? this.#clampTime(this.#roundToStep(previous.time ?? { hour: 0, minute: 0, second: 0 }))
+      : null;
+
+    this.#commit({
+      focused,
+      view: previous.view,
+      selection,
+      isOpen: previous.isOpen,
+      hovered: null,
+      time,
+    });
+  }
+
+  /** Keep the parts of `previous` that survive the (re)configured constraints. */
+  #pruneSelection(previous: SelectionValue): SelectionValue {
+    if (previous.mode !== this.#strategy.mode) return this.#strategy.initial() as SelectionValue;
+    switch (previous.mode) {
+      case 'single':
+        return previous.value && !this.isDisabled(previous.value)
+          ? previous
+          : { mode: 'single', value: null };
+      case 'range': {
+        const anchor =
+          previous.anchor && !this.isDisabled(previous.anchor) ? previous.anchor : null;
+        if (!previous.value) return { mode: 'range', value: null, anchor };
+        const range = this.#clampRangeToBounds(previous.value.start, previous.value.end);
+        if (!range || this.isDisabled(range.start) || this.isDisabled(range.end)) {
+          return { mode: 'range', value: null, anchor };
+        }
+        return { mode: 'range', value: range, anchor };
+      }
+      case 'multi': {
+        // Re-run through the fresh strategy so a (new) max cap applies FIFO.
+        let s = this.#strategy.initial() as SelectionValue;
+        for (const d of previous.value) {
+          if (!this.isDisabled(d)) s = this.#strategy.select(s as never, d) as SelectionValue;
+        }
+        return s;
+      }
+    }
+  }
+
   open(): void {
     if (this.#state.isOpen) return;
     this.#commit({ ...this.#state, isOpen: true });
@@ -313,24 +480,76 @@ export class DatePickerEngine {
 
   select(date: CalendarDate): void {
     if (!this.isPickable(date)) return;
+    let effective = date;
+    const sel = this.#state.selection;
+    if (
+      sel.mode === 'range' &&
+      sel.anchor !== null &&
+      sel.value === null &&
+      this.#rangeOverDisabled !== 'allow' &&
+      !isSameDay(sel.anchor, date)
+    ) {
+      const resolved = this.#resolveRangeEnd(sel.anchor, date);
+      if (resolved === null) return; // 'reject': span contains a disabled date
+      effective = resolved;
+    }
     const nextSelection = this.#strategy.select(
       this.#state.selection as never,
-      date,
+      effective,
     ) as SelectionValue;
     this.#commit({
       ...this.#state,
-      focused: date,
+      focused: effective,
       selection: nextSelection,
       // Clear the hover once a range completes / a single picks; redundant otherwise.
       hovered: null,
     });
-    this.#bus.emit('select', { selection: nextSelection, focused: date });
+    this.#bus.emit('select', { selection: this.#state.selection, focused: effective });
+  }
+
+  /**
+   * Walk from `anchor` toward `date` checking every day in between.
+   * 'reject' → null when any is disabled; 'clamp' → the furthest date such
+   * that the whole span from the anchor is enabled.
+   */
+  #resolveRangeEnd(anchor: CalendarDate, date: CalendarDate): CalendarDate | null {
+    const cal = this.#calendar;
+    const dir = cal.compare(anchor, date) < 0 ? 1 : -1;
+    let last = anchor;
+    let cursor = cal.addDays(anchor, dir);
+    while (cal.compare(cursor, date) * dir <= 0) {
+      if (this.isDisabled(cursor)) {
+        return this.#rangeOverDisabled === 'reject' ? null : last;
+      }
+      last = cursor;
+      cursor = cal.addDays(cursor, dir);
+    }
+    return date;
+  }
+
+  /**
+   * Atomically apply a complete range (presets, adapters). The range is
+   * clamped into `min`/`max`; when the clamped range is empty — or violates
+   * `minRangeDays`/`maxRangeDays` — NOTHING is applied (no dangling anchor).
+   * Range mode only. Returns true when the range was applied.
+   */
+  selectRange(start: CalendarDate, end: CalendarDate): boolean {
+    if (this.#state.selection.mode !== 'range') return false;
+    const range = this.#clampRangeToBounds(start, end);
+    if (!range) return false;
+    const span = daysBetween(this.#calendar, range.start, range.end) + 1; // inclusive
+    if (this.#minRangeDays !== undefined && span < this.#minRangeDays) return false;
+    if (this.#maxRangeDays !== undefined && span > this.#maxRangeDays) return false;
+    const selection: SelectionValue = { mode: 'range', value: range, anchor: range.start };
+    this.#commit({ ...this.#state, focused: range.end, selection, hovered: null });
+    this.#bus.emit('select', { selection: this.#state.selection, focused: range.end });
+    return true;
   }
 
   clearSelection(): void {
     const next = this.#strategy.clear(this.#state.selection as never) as SelectionValue;
     this.#commit({ ...this.#state, selection: next, hovered: null });
-    this.#bus.emit('select', { selection: next, focused: this.#state.focused });
+    this.#bus.emit('select', { selection: this.#state.selection, focused: this.#state.focused });
   }
 
   setHovered(date: CalendarDate | null): void {
@@ -342,7 +561,8 @@ export class DatePickerEngine {
   }
 
   setTime(time: TimeOfDay | null): void {
-    const clamped = time !== null ? this.#clampTime(time) : null;
+    const stepped = time !== null ? this.#roundToStep(time) : null;
+    const clamped = stepped !== null ? this.#clampTime(stepped) : null;
     this.#commit({ ...this.#state, time: clamped });
     this.#bus.emit('time', { time: clamped });
   }
@@ -358,6 +578,16 @@ export class DatePickerEngine {
   /** True when `time` falls within `minTime`/`maxTime` (or both are unset). */
   isTimePickable(time: TimeOfDay): boolean {
     return compareTime(time, this.#minTime, this.#maxTime) === 0;
+  }
+
+  /** Round the minute to the nearest `timeStep` multiple (never past 23:59). */
+  #roundToStep(time: TimeOfDay): TimeOfDay {
+    const step = this.#timeStep;
+    if (step <= 1) return time;
+    const total = time.hour * 60 + time.minute;
+    let rounded = Math.round(total / step) * step;
+    if (rounded >= 24 * 60) rounded = Math.floor((24 * 60 - 1) / step) * step;
+    return { hour: Math.floor(rounded / 60), minute: rounded % 60, second: time.second };
   }
 
   #clampTime(time: TimeOfDay): TimeOfDay {
@@ -402,7 +632,7 @@ export class DatePickerEngine {
   }
 
   goToToday(): CalendarDate {
-    const today = this.#calendar.today(this.#locale.timeZone);
+    const today = this.today();
     this.focus(today);
     const terminalView = GRANULARITY_VIEW[this.#granularity];
     if (this.#state.view !== terminalView) this.setView(terminalView);
@@ -438,9 +668,37 @@ export class DatePickerEngine {
 
   // --- internals -----------------------------------------------------------
 
+  /** Move focus by `units` periods of the given (non-day) view. */
+  #addPeriods(view: 'month' | 'year' | 'decade', date: CalendarDate, units: number): CalendarDate {
+    const cal = this.#calendar;
+    switch (view) {
+      case 'month':
+        return cal.addMonths(date, units);
+      case 'year':
+        return cal.addYears(date, units);
+      case 'decade':
+        return cal.addYears(date, units * 10);
+    }
+  }
+
+  /** Focus a specific year keeping month/day (day clamped to month length). */
+  #focusYear(year: number): void {
+    const f = this.#state.focused;
+    const day = Math.min(f.day, this.#calendar.daysInMonth(year, f.month));
+    this.focus({ year, month: f.month, day });
+  }
+
+  /**
+   * View-aware key handling per ARIA APG grid semantics. Day view keeps the
+   * classic ±1 day / ±7 days moves; period views (month/year/decade) move by
+   * one period horizontally and one 4-column grid row vertically. PageUp/Down
+   * steps one containing period; Enter picks the focused period (drilling
+   * down in non-terminal views) exactly as a click does.
+   */
   #applyKeyAction(action: KeyboardAction): void {
     const cal = this.#calendar;
     const f = this.#state.focused;
+    const view = this.#state.view;
     switch (action.type) {
       case 'move': {
         const isRTL = this.#locale.direction === 'rtl';
@@ -454,37 +712,102 @@ export class DatePickerEngine {
                 ? 'left'
                 : 'right'
               : action.direction;
-        const delta = visual === 'left' ? -1 : visual === 'right' ? 1 : visual === 'up' ? -7 : 7;
-        this.focus(cal.addDays(f, delta * action.amount));
+        if (view === 'day') {
+          const delta = visual === 'left' ? -1 : visual === 'right' ? 1 : visual === 'up' ? -7 : 7;
+          this.focus(cal.addDays(f, delta * action.amount));
+          return;
+        }
+        const delta =
+          visual === 'left'
+            ? -1
+            : visual === 'right'
+              ? 1
+              : visual === 'up'
+                ? -PERIOD_GRID_COLUMNS
+                : PERIOD_GRID_COLUMNS;
+        this.focus(this.#addPeriods(view, f, delta * action.amount));
         return;
       }
       case 'jump': {
-        const weekdayInRow = cal.weekday(f);
-        const firstOfRowOffset = (weekdayInRow - this.#locale.firstDayOfWeek + 7) % 7;
+        if (view === 'day') {
+          const weekdayInRow = cal.weekday(f);
+          const firstOfRowOffset = (weekdayInRow - this.#locale.firstDayOfWeek + 7) % 7;
+          switch (action.target) {
+            case 'rowStart':
+              this.focus(cal.addDays(f, -firstOfRowOffset));
+              return;
+            case 'rowEnd':
+              this.focus(cal.addDays(f, 6 - firstOfRowOffset));
+              return;
+            case 'monthStart':
+              this.focus({ year: f.year, month: f.month, day: 1 });
+              return;
+            case 'monthEnd':
+              this.focus({ year: f.year, month: f.month, day: cal.daysInMonth(f.year, f.month) });
+              return;
+          }
+        }
+        if (view === 'month') {
+          // 12 months laid out 4 per row.
+          const row = Math.floor((f.month - 1) / PERIOD_GRID_COLUMNS);
+          switch (action.target) {
+            case 'rowStart':
+              this.setMonth(row * PERIOD_GRID_COLUMNS + 1);
+              return;
+            case 'rowEnd':
+              this.setMonth(Math.min(row * PERIOD_GRID_COLUMNS + 4, cal.monthsInYear));
+              return;
+            case 'monthStart':
+              this.setMonth(1);
+              return;
+            case 'monthEnd':
+              this.setMonth(cal.monthsInYear);
+              return;
+          }
+        }
+        // Year/decade views: a 12-cell grid (one buffer cell each side of the
+        // decade/century) laid out 4 per row, mirroring the period renderers.
+        const periodSpan = view === 'year' ? 1 : 10;
+        const bandStart = view === 'year' ? decadeStart(f.year) : centuryStart(f.year);
+        const focusedPeriod = view === 'year' ? f.year : decadeStart(f.year);
+        const gridIdx = (focusedPeriod - bandStart) / periodSpan + 1;
+        const row = Math.floor(gridIdx / PERIOD_GRID_COLUMNS);
         switch (action.target) {
           case 'rowStart':
-            this.focus(cal.addDays(f, -firstOfRowOffset));
+            this.#focusYear(bandStart + (row * PERIOD_GRID_COLUMNS - 1) * periodSpan);
             return;
           case 'rowEnd':
-            this.focus(cal.addDays(f, 6 - firstOfRowOffset));
+            this.#focusYear(bandStart + (row * PERIOD_GRID_COLUMNS + 2) * periodSpan);
             return;
           case 'monthStart':
-            this.focus({ year: f.year, month: f.month, day: 1 });
+            this.#focusYear(bandStart);
             return;
           case 'monthEnd':
-            this.focus({ year: f.year, month: f.month, day: cal.daysInMonth(f.year, f.month) });
+            this.#focusYear(bandStart + 9 * periodSpan);
             return;
         }
       }
-      case 'page':
-        if (action.direction === 'prev') {
-          this.focus(action.large ? cal.addYears(f, -1) : cal.addMonths(f, -1));
-        } else {
-          this.focus(action.large ? cal.addYears(f, 1) : cal.addMonths(f, 1));
+      case 'page': {
+        const dir = action.direction === 'prev' ? -1 : 1;
+        switch (view) {
+          case 'day':
+            this.focus(action.large ? cal.addYears(f, dir) : cal.addMonths(f, dir));
+            return;
+          case 'month':
+            this.focus(cal.addYears(f, (action.large ? 10 : 1) * dir));
+            return;
+          case 'year':
+            this.focus(cal.addYears(f, (action.large ? 100 : 10) * dir));
+            return;
+          case 'decade':
+            this.focus(cal.addYears(f, 100 * dir));
+            return;
         }
-        return;
+      }
       case 'select':
-        this.selectFocused();
+        // Day view selects; period views drill down (or select when the view
+        // is terminal for the configured granularity) — same as clicking.
+        this.pickInView(this.#state.focused);
         return;
       case 'cancel':
         this.close('cancel');
@@ -503,12 +826,17 @@ export class DatePickerEngine {
       firstDayOfWeek: this.#locale.firstDayOfWeek,
       fixedWeeks: this.#fixedWeeks,
       calendar: this.#calendar,
+      // tz-aware today + configured weekend, so isToday/isWeekend are correct
+      // in every host time zone and locale.
+      today: this.today(),
+      weekendDays: this.#locale.weekendDays ?? [0, 6],
+      weekNumbers: this.#weekNumbers,
     });
     return Object.freeze({
       mode: this.#strategy.mode,
       view: input.view,
       focused: input.focused,
-      selection: input.selection,
+      selection: deepFreezeSelection(input.selection),
       grid,
       isOpen: input.isOpen,
       hovered: input.hovered,
@@ -522,3 +850,15 @@ export class DatePickerEngine {
     this.#bus.emit('change', { state: this.#state, previous });
   }
 }
+
+/** Focus target implied by a seeded selection (single date / range start / first multi). */
+const seededFocus = (sel: SelectionValue): CalendarDate | null => {
+  switch (sel.mode) {
+    case 'single':
+      return sel.value;
+    case 'range':
+      return sel.value ? sel.value.start : sel.anchor;
+    case 'multi':
+      return sel.value[0] ?? null;
+  }
+};

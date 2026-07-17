@@ -1,6 +1,7 @@
 // @ts-check
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import pluginVue from 'eslint-plugin-vue';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
@@ -12,12 +13,17 @@ export default tseslint.config(
       '**/*.js.map',
       '**/coverage/**',
       'apps/playground/dist/**',
-      // Vue SFCs require vue-eslint-parser; vue-tsc handles their typing.
-      '**/*.vue',
     ],
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
+  ...pluginVue.configs['flat/recommended'],
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parserOptions: { parser: tseslint.parser },
+    },
+  },
   prettier,
   {
     languageOptions: {
@@ -36,6 +42,9 @@ export default tseslint.config(
         Event: 'readonly',
         KeyboardEvent: 'readonly',
         CustomEvent: 'readonly',
+        FormData: 'readonly',
+        HTMLFormElement: 'readonly',
+        URL: 'readonly',
       },
     },
     rules: {
@@ -66,6 +75,13 @@ export default tseslint.config(
     files: ['**/tests/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
     rules: {
       '@typescript-eslint/no-non-null-assertion': 'off',
+      'no-console': 'off',
+    },
+  },
+  {
+    // Build/maintenance scripts run in Node and report via stdout.
+    files: ['scripts/**/*.mjs'],
+    rules: {
       'no-console': 'off',
     },
   },

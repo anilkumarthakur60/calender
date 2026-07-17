@@ -2,6 +2,12 @@ import type { CalendarDate } from '../domain/calendar-date.js';
 import { createCalendarDate, fromIso } from '../domain/calendar-date.js';
 
 /**
+ * Two-digit-year pivot shared by every parser (lenient + pattern-based),
+ * TR35-style: 00-69 → 20xx, 70-99 → 19xx.
+ */
+export const resolveTwoDigitYear = (yy: number): number => (yy < 70 ? 2000 + yy : 1900 + yy);
+
+/**
  * Lenient string parser. Recognises ISO-8601 dates and falls back to
  * Intl-derived format tokens (yyyy/MM/dd, MM/dd/yyyy, dd/MM/yyyy) by inspecting
  * the locale's resolved format.
@@ -29,7 +35,7 @@ export const parseDate = (input: string, locale: string = 'en-US'): CalendarDate
     const role = order[i];
     const value = Number(parts[i]);
     if (!Number.isFinite(value)) return null;
-    if (role === 'year') year = value < 100 ? 2000 + value : value;
+    if (role === 'year') year = value < 100 ? resolveTwoDigitYear(value) : value;
     else if (role === 'month') month = value;
     else day = value;
   }

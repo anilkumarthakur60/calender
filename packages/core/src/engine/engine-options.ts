@@ -17,10 +17,27 @@ export interface DateHighlight {
 
 export type SelectionGranularity = 'day' | 'month' | 'year';
 
+/**
+ * Seed value for {@link DatePickerEngineOptions.initialSelected}: a single
+ * date, a `{start, end}` range, or an array of dates (multi mode).
+ */
+export type InitialSelected =
+  | CalendarDate
+  | { readonly start: CalendarDate; readonly end: CalendarDate }
+  | ReadonlyArray<CalendarDate>;
+
 export interface DatePickerEngineOptions {
   readonly mode?: SelectionMode;
   readonly initialFocused?: CalendarDate;
   readonly initialView?: ViewMode;
+  /**
+   * Seed the selection at construction. Shape follows `mode`: a CalendarDate
+   * for `single`, `{start, end}` for `range`, `CalendarDate[]` for `multi`
+   * (a bare date is also accepted for range/multi). Dates violating the
+   * configured constraints are dropped. Unless `initialFocused` is given,
+   * the focused date defaults near the seeded selection.
+   */
+  readonly initialSelected?: InitialSelected;
   readonly min?: CalendarDate;
   readonly max?: CalendarDate;
   readonly disabledDates?: ReadonlyArray<CalendarDate>;
@@ -48,6 +65,13 @@ export interface DatePickerEngineOptions {
   readonly minRangeDays?: number;
   /** Maximum number of days a range may span (inclusive). Range mode only. */
   readonly maxRangeDays?: number;
+  /**
+   * What happens when a completing range click would span disabled dates.
+   * `'allow'` (default) commits the range regardless; `'reject'` makes the
+   * second click a no-op; `'clamp'` shrinks the range to the longest fully
+   * enabled span reaching out from the anchor.
+   */
+  readonly rangeOverDisabled?: 'allow' | 'reject' | 'clamp';
   /** Per-date decorations (dots, tooltips). Cheap to evaluate — looked up by ISO key. */
   readonly highlights?: ReadonlyArray<DateHighlight>;
   /** Number of consecutive months to render. Default 1. */

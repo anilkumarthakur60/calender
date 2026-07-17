@@ -29,6 +29,8 @@ export {
   isLeapYear,
   isoWeekday,
   usWeekday,
+  toEpochDay,
+  fromEpochDay,
 } from './domain/calendar-date.js';
 
 export type { DateRange } from './domain/date-range.js';
@@ -68,7 +70,7 @@ export { stepBackward, stepForward, type NavigationBounds } from './navigation/v
 export type { LocaleConfig } from './i18n/locale-config.js';
 export { resolveLocaleConfig } from './i18n/locale-config.js';
 export { DateFormatter } from './i18n/formatter.js';
-export { parseDate } from './i18n/parser.js';
+export { parseDate, resolveTwoDigitYear } from './i18n/parser.js';
 export {
   encodeSelectionValue,
   decodeSelectionValue,
@@ -88,7 +90,11 @@ export {
 } from './i18n/pattern.js';
 export { applyMask, isMaskable, type MaskResult } from './i18n/mask.js';
 export { usHolidays, ukHolidays, npHolidays, composeHolidays } from './holidays/index.js';
-export type { DateHighlight, SelectionGranularity } from './engine/engine-options.js';
+export type {
+  DateHighlight,
+  InitialSelected,
+  SelectionGranularity,
+} from './engine/engine-options.js';
 export {
   BUILTIN_PRESETS,
   resolvePreset,

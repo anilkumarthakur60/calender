@@ -11,8 +11,8 @@ Only the latest released version receives security fixes.
 
 ## Reporting a vulnerability
 
-Please **do not** open a public issue. Instead, email the maintainers at
-`security@calender.dev` (replace with your team's address before publishing).
+Please **do not** open a public issue. Instead, use GitHub's private
+vulnerability reporting: [Report a vulnerability](https://github.com/anilkumarthakur60/calender/security/advisories/new).
 
 Include:
 
