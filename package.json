@@ -45,7 +45,7 @@
     "@size-limit/esbuild": "^11.1.6",
     "@size-limit/file": "^11.1.6",
     "@size-limit/preset-small-lib": "^11.1.6",
-    "@types/node": "^25.9.1",
+    "@types/node": "^26.1.1",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^7.1.1",
