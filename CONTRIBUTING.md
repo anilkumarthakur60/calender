@@ -10,7 +10,7 @@ workflow.
 git clone https://github.com/anilkumarthakur60/calender.git
 cd calender
 pnpm install --frozen-lockfile
-pnpm dev:wc        # see something render
+pnpm example:wc        # see something render
 pnpm check         # lint + format:check + typecheck + test
 ```
 
@@ -41,17 +41,17 @@ PRs that get pushback:
 
 Every PR runs `.github/workflows/ci.yml` — see [`README.md` → CI/CD](./README.md#cicd-with-github-actions).
 
-That's: `pnpm lint`, `pnpm format:check`, `pnpm typecheck`, `pnpm build`,
-`pnpm test`, package checks (publint + arethetypeswrong), `pnpm build:apps`,
-and `pnpm size`. All must pass.
+That's: `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm typecheck`,
+`pnpm test`, package checks (publint + arethetypeswrong), the Node import
+smoke test, `pnpm build:examples`, and `pnpm size`. All must pass.
 
-Preview deployments for every adapter playground + the docs site are posted
-to the PR run summary by `.github/workflows/preview.yml`.
+Vercel posts a preview URL for the demos site on every PR (via its native Git
+integration), and the docs deploy to GitHub Pages on merge.
 
 ## Adding a feature
 
 The README has a [9-step recipe](./README.md#adding-a-new-feature-end-to-end)
-for the typical engine → renderer → adapter → playground → docs flow. Follow
+for the typical engine → renderer → adapter → example → docs flow. Follow
 it and your PR will be easy to review.
 
 ## Releasing
