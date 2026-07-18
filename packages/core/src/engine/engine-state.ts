@@ -1,7 +1,6 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import type { MonthGrid } from '../domain/month-grid.js';
-import type { ViewMode } from '../navigation/view-mode.js';
-import type { SelectionValue } from '../selection/selection-strategy.js';
+import { type CalendarDate, type MonthGrid } from '../domain';
+import type { ViewMode } from '../navigation';
+import type { SelectionValue } from '../selection';
 
 export interface TimeOfDay {
   readonly hour: number;

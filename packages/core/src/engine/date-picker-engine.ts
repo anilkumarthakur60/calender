@@ -1,21 +1,23 @@
-import { createCalendarSystem } from '../calendar/calendar-factory.js';
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { clamp, isSameDay, toEpochDay } from '../domain/calendar-date.js';
-import { createRange } from '../domain/date-range.js';
-import { buildMonthGrid } from '../domain/month-grid.js';
-import { CompositeConstraint } from '../constraints/composite-constraint.js';
-import { MinMaxConstraint } from '../constraints/min-max-constraint.js';
-import { DisabledDatesConstraint } from '../constraints/disabled-dates-constraint.js';
-import { DisabledWeekdayConstraint } from '../constraints/weekday-constraint.js';
-import type { DateConstraint } from '../constraints/constraint.js';
-import { EventBus } from '../events/event-bus.js';
-import { DateFormatter } from '../i18n/formatter.js';
-import { resolveLocaleConfig, type LocaleConfig } from '../i18n/locale-config.js';
-import { drillDown, drillUp, type ViewMode } from '../navigation/view-mode.js';
-import { stepBackward, stepForward } from '../navigation/view-navigator.js';
-import { createSelectionStrategy } from '../selection/selection-factory.js';
-import type { SelectionStrategy, SelectionValue } from '../selection/selection-strategy.js';
+import { createCalendarSystem, type CalendarSystem } from '../calendar';
+import {
+  type CalendarDate,
+  clamp,
+  isSameDay,
+  toEpochDay,
+  createRange,
+  buildMonthGrid,
+} from '../domain';
+import {
+  CompositeConstraint,
+  MinMaxConstraint,
+  DisabledDatesConstraint,
+  DisabledWeekdayConstraint,
+  type DateConstraint,
+} from '../constraints';
+import { EventBus } from '../events';
+import { DateFormatter, resolveLocaleConfig, type LocaleConfig } from '../i18n';
+import { drillDown, drillUp, type ViewMode, stepBackward, stepForward } from '../navigation';
+import { createSelectionStrategy, type SelectionStrategy, type SelectionValue } from '../selection';
 import type {
   DateHighlight,
   DatePickerEngineOptions,
@@ -24,8 +26,7 @@ import type {
 } from './engine-options.js';
 import type { EngineState, TimeOfDay } from './engine-state.js';
 import { HighlightIndex } from './highlights.js';
-import type { KeyboardAction } from '../focus/keyboard-action.js';
-import { interpretKey, type KeyboardEventLike } from '../focus/keyboard-controller.js';
+import { type KeyboardAction, interpretKey, type KeyboardEventLike } from '../focus';
 
 const timeToSeconds = (t: TimeOfDay): number => t.hour * 3600 + t.minute * 60 + t.second;
 

@@ -10,7 +10,7 @@ import {
   todayCalendarDate,
   toIso as gToIso,
   usWeekday,
-} from '../domain/calendar-date.js';
+} from '../domain';
 import type { CalendarSystem } from './calendar-system.js';
 
 export class GregorianCalendar implements CalendarSystem {

@@ -1,6 +1,5 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { addDays, usWeekday } from '../domain/calendar-date.js';
-import type { DateHighlight } from '../engine/engine-options.js';
+import { type CalendarDate, addDays, usWeekday } from '../domain';
+import type { DateHighlight } from '../engine';
 
 /**
  * Per-country holiday calendars. Tree-shakeable — import only the function for

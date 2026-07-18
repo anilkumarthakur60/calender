@@ -1,6 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { isSameDay } from '../domain/calendar-date.js';
-import { createRange, isInRange } from '../domain/date-range.js';
+import { type CalendarDate, isSameDay, createRange, isInRange } from '../domain';
 import type { SelectionStrategy, SelectionValue } from './selection-strategy.js';
 
 type S = Extract<SelectionValue, { mode: 'range' }>;

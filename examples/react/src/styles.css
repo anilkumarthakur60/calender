@@ -77,6 +77,10 @@ body {
   gap: 1.5rem;
   align-items: start;
 }
+/* Wide cards (e.g. multi-month) span two columns so both months fit. */
+.grid section.wide {
+  grid-column: span 2;
+}
 section {
   background: var(--card-bg);
   border: 1px solid var(--card-border);

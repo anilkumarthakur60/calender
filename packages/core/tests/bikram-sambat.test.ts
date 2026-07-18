@@ -12,23 +12,50 @@ import {
 const bs = new BikramSambatCalendar();
 const greg = new GregorianCalendar();
 
+const toIso = (d: { year: number; month: number; day: number }): string =>
+  `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
+
 describe('BikramSambatCalendar — epoch + conversion', () => {
-  it('BS 2000-01-01 ↔ AD 1943-04-14 (canonical epoch)', () => {
-    const ad = bs.toGregorian(createCalendarDate(2000, 1, 1));
-    expect(ad).toEqual({ year: 1943, month: 4, day: 14 });
-    const round = bs.fromGregorian(ad);
-    expect(round).toEqual({ year: 2000, month: 1, day: 1 });
+  it('BS 1970-01-01 ↔ AD 1913-04-13 (anchor)', () => {
+    expect(bs.toGregorian(createCalendarDate(1970, 1, 1))).toEqual({
+      year: 1913,
+      month: 4,
+      day: 13,
+    });
+    expect(bs.fromGregorian(createCalendarDate(1913, 4, 13))).toEqual({
+      year: 1970,
+      month: 1,
+      day: 1,
+    });
   });
 
-  it('Round-trips a recent BS date (BS 2080-01-01 → AD → BS)', () => {
-    // BS 2080-01-01 should map to ~AD 2023-04-14 (mid-April Nepali new year).
-    // We assert the AD year + month plus an exact round-trip; the table has
-    // a documented small per-year drift away from the epoch, but any BS→AD→BS
-    // round-trip is invariant.
-    const ad = bs.toGregorian(createCalendarDate(2080, 1, 1));
-    expect(ad.year).toBe(2023);
-    expect(ad.month).toBe(4);
-    expect(bs.fromGregorian(ad)).toEqual({ year: 2080, month: 1, day: 1 });
+  it('BS 2000-01-01 ↔ AD 1943-04-14', () => {
+    const ad = bs.toGregorian(createCalendarDate(2000, 1, 1));
+    expect(ad).toEqual({ year: 1943, month: 4, day: 14 });
+    expect(bs.fromGregorian(ad)).toEqual({ year: 2000, month: 1, day: 1 });
+  });
+
+  // Authoritative Nepali New Year (Baishakh 1) mappings. These are the exact
+  // dates the old starter table got wrong (it drifted several days from the
+  // epoch, e.g. BS 2081-01-01 → AD 2024-04-17 instead of 04-13).
+  it('maps Baishakh 1 (Nepali New Year) to the correct AD date', () => {
+    expect(toIso(bs.toGregorian(createCalendarDate(2080, 1, 1)))).toBe('2023-04-14');
+    expect(toIso(bs.toGregorian(createCalendarDate(2081, 1, 1)))).toBe('2024-04-13');
+    expect(toIso(bs.toGregorian(createCalendarDate(2082, 1, 1)))).toBe('2025-04-14');
+    expect(toIso(bs.toGregorian(createCalendarDate(2083, 1, 1)))).toBe('2026-04-14');
+  });
+
+  it('maps AD Nepali New Year dates back to Baishakh 1', () => {
+    expect(bs.fromGregorian(createCalendarDate(2024, 4, 13))).toEqual({
+      year: 2081,
+      month: 1,
+      day: 1,
+    });
+    expect(bs.fromGregorian(createCalendarDate(2025, 4, 14))).toEqual({
+      year: 2082,
+      month: 1,
+      day: 1,
+    });
   });
 
   it('Round-trips an arbitrary AD date back to itself', () => {

@@ -1,5 +1,4 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
+import { type CalendarSystem, GregorianCalendar } from '../calendar';
 import type { CalendarDate } from './calendar-date.js';
 import { isoWeekOfYear } from './iso-week.js';
 
