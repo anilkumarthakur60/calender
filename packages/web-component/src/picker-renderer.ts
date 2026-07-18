@@ -22,6 +22,13 @@ export class PickerRenderer {
   hideFooter = false;
   presets: ReadonlyArray<PresetSpec> = ['today'];
 
+  // The grid's entry animation should play only when the displayed period
+  // actually changes (navigation / view change) — not on every re-render
+  // (select, hover, focus move), which would otherwise re-trigger the slide-in
+  // on each interaction and cause visible shifting/flicker.
+  #lastGridKey: string | undefined;
+  #animateGrid = true;
+
   constructor(host: HTMLElement, engine: DatePickerEngine) {
     this.#host = host;
     this.#engine = engine;
@@ -143,6 +150,11 @@ export class PickerRenderer {
     this.#host.dataset['view'] = state.view;
     this.#host.dataset['mode'] = state.mode;
 
+    // Animate the grid only when the displayed period changed since last render.
+    const gridKey = `${state.view}|${state.focused.year}|${state.focused.month}`;
+    this.#animateGrid = gridKey !== this.#lastGridKey;
+    this.#lastGridKey = gridKey;
+
     const header = this.#renderHeader(state);
     const body = state.view === 'day' ? this.#renderMonths(state) : this.#renderPeriodGrid(state);
     const children: Node[] = [header, body];
@@ -236,6 +248,7 @@ export class PickerRenderer {
     const useWeeks = this.#engine.weekNumbers;
     const grid = el('div', `cal-picker__grid${useWeeks ? ' cal-picker__grid--with-weeks' : ''}`);
     grid.setAttribute('role', 'grid');
+    if (!this.#animateGrid) grid.style.animation = 'none';
 
     const headRow = gridRow('cal-picker__row cal-picker__row--head');
     if (useWeeks) {
@@ -280,6 +293,7 @@ export class PickerRenderer {
   #renderPeriodGrid(state: EngineState): HTMLElement {
     const grid = el('div', 'cal-picker__grid cal-picker__grid--period');
     grid.setAttribute('role', 'grid');
+    if (!this.#animateGrid) grid.style.animation = 'none';
     const period = buildPeriodGrid(
       state.focused,
       state.view as 'month' | 'year' | 'decade',

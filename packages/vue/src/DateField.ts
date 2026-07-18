@@ -105,6 +105,32 @@ export const DateField = defineComponent({
     presets: { type: Array as PropType<ReadonlyArray<PresetSpec>>, default: undefined },
     /** Hide the popover picker's preset footer. */
     hideFooter: { type: Boolean, default: undefined },
+    // --- Feature options forwarded to the popover picker ---
+    months: { type: Number, default: undefined },
+    weekNumbers: { type: Boolean, default: undefined },
+    highlights: {
+      type: Array as unknown as PropType<DatePickerEngineOptions['highlights']>,
+      default: undefined,
+    },
+    disabledDates: {
+      type: Array as PropType<ReadonlyArray<CalendarDate>>,
+      default: undefined,
+    },
+    headerSelectors: { type: Boolean, default: undefined },
+    yearRange: {
+      type: Array as unknown as PropType<readonly [number, number]>,
+      default: undefined,
+    },
+    minRangeDays: { type: Number, default: undefined },
+    maxRangeDays: { type: Number, default: undefined },
+    withTime: { type: Boolean, default: undefined },
+    timeStep: { type: Number, default: undefined },
+    use12HourClock: { type: Boolean, default: undefined },
+    showSeconds: { type: Boolean, default: undefined },
+    granularity: {
+      type: String as unknown as PropType<DatePickerEngineOptions['granularity']>,
+      default: undefined,
+    },
   },
   emits: {
     'update:modelValue': (_value: string) => true,
@@ -367,6 +393,20 @@ export const DateField = defineComponent({
         pickerProps['disabledWeekdays'] = props.disabledWeekdays;
       if (props.presets !== undefined) pickerProps['presets'] = props.presets;
       if (props.hideFooter !== undefined) pickerProps['hideFooter'] = props.hideFooter;
+      if (props.months !== undefined) pickerProps['months'] = props.months;
+      if (props.weekNumbers !== undefined) pickerProps['weekNumbers'] = props.weekNumbers;
+      if (props.highlights !== undefined) pickerProps['highlights'] = props.highlights;
+      if (props.disabledDates !== undefined) pickerProps['disabledDates'] = props.disabledDates;
+      if (props.headerSelectors !== undefined)
+        pickerProps['headerSelectors'] = props.headerSelectors;
+      if (props.yearRange !== undefined) pickerProps['yearRange'] = props.yearRange;
+      if (props.minRangeDays !== undefined) pickerProps['minRangeDays'] = props.minRangeDays;
+      if (props.maxRangeDays !== undefined) pickerProps['maxRangeDays'] = props.maxRangeDays;
+      if (props.withTime !== undefined) pickerProps['withTime'] = props.withTime;
+      if (props.timeStep !== undefined) pickerProps['timeStep'] = props.timeStep;
+      if (props.use12HourClock !== undefined) pickerProps['use12HourClock'] = props.use12HourClock;
+      if (props.showSeconds !== undefined) pickerProps['showSeconds'] = props.showSeconds;
+      if (props.granularity !== undefined) pickerProps['granularity'] = props.granularity;
 
       return h(
         'div',

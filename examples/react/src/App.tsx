@@ -11,7 +11,7 @@ const Section = ({
 }: {
   title: string;
   children: React.ReactNode;
-}): JSX.Element => (
+}): React.JSX.Element => (
   <>
     <h2 className="section-title">{title}</h2>
     <div className="grid">{children}</div>
@@ -23,13 +23,15 @@ const Card = ({
   description,
   children,
   status,
+  wide,
 }: {
   title: string;
   description: React.ReactNode;
   children: React.ReactNode;
   status?: string | null;
-}): JSX.Element => (
-  <section>
+  wide?: boolean;
+}): React.JSX.Element => (
+  <section className={wide ? 'wide' : undefined}>
     <header>
       <h3>{title}</h3>
       <p>{description}</p>
@@ -39,7 +41,7 @@ const Card = ({
   </section>
 );
 
-export const App = (): JSX.Element => {
+export const App = (): React.JSX.Element => {
   const [single, setSingle] = useState<CalendarDate | null>(null);
   const [range, setRange] = useState<CalendarDate | null>(null);
   const [multi, setMulti] = useState<CalendarDate | null>(null);
@@ -51,6 +53,11 @@ export const App = (): JSX.Element => {
   const [yearPick, setYearPick] = useState<CalendarDate | null>(null);
   const [presetRange, setPresetRange] = useState('');
   const [bsValue, setBsValue] = useState('');
+  const [multiRangeVal, setMultiRangeVal] = useState('');
+  const [weekNumVal, setWeekNumVal] = useState('');
+  const [highlightVal, setHighlightVal] = useState('2026-12-25');
+  const [constrainedVal, setConstrainedVal] = useState('');
+  const [dropdownVal, setDropdownVal] = useState('');
 
   const onNativeSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -197,6 +204,94 @@ export const App = (): JSX.Element => {
         </Card>
       </Section>
 
+      <Section title="DateField — every feature as an input">
+        <Card
+          title="Multi-month — 2 months"
+          wide
+          description={
+            <>
+              <code>mode="range" months={2}</code>. The popover shows two months; range bands span
+              across them.
+            </>
+          }
+          status={`value = ${multiRangeVal || '(empty)'}`}
+        >
+          <DateField
+            mode="range"
+            months={2}
+            value={multiRangeVal}
+            onChange={setMultiRangeVal}
+            format="MMM d, yyyy"
+          />
+        </Card>
+
+        <Card
+          title="Week numbers"
+          description={
+            <>
+              <code>weekNumbers</code>. ISO week column in the popover.
+            </>
+          }
+          status={`value = ${weekNumVal || '(empty)'}`}
+        >
+          <DateField weekNumbers value={weekNumVal} onChange={setWeekNumVal} />
+        </Card>
+
+        <Card
+          title="Highlights — events / holidays"
+          description={
+            <>
+              <code>highlights</code>. Dots mark events; hover for the label.
+            </>
+          }
+          status={`value = ${highlightVal || '(empty)'}`}
+        >
+          <DateField
+            value={highlightVal}
+            onChange={setHighlightVal}
+            highlights={[
+              { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
+              { date: createCalendarDate(2026, 12, 31), color: '#f59e0b', label: 'NYE' },
+            ]}
+          />
+        </Card>
+
+        <Card
+          title="min / max constraint"
+          description={
+            <>
+              <code>min</code> / <code>max</code>. Out-of-range dates are rejected on type and
+              click.
+            </>
+          }
+          status={`value = ${constrainedVal || '(empty)'}`}
+        >
+          <DateField
+            value={constrainedVal}
+            onChange={setConstrainedVal}
+            min={createCalendarDate(2025, 4, 1)}
+            max={createCalendarDate(2025, 6, 30)}
+          />
+        </Card>
+
+        <Card
+          title="Header month/year dropdowns"
+          description={
+            <>
+              <code>headerSelectors yearRange={[2000, 2050]}</code>. Jump in one click.
+            </>
+          }
+          status={`value = ${dropdownVal || '(empty)'}`}
+        >
+          <DateField
+            value={dropdownVal}
+            onChange={setDropdownVal}
+            headerSelectors
+            yearRange={[2000, 2050]}
+          />
+        </Card>
+      </Section>
+
       <Section title="Navigation">
         <Card
           title="Header month/year dropdowns"
@@ -211,6 +306,7 @@ export const App = (): JSX.Element => {
 
         <Card
           title="Multi-month — 2 months"
+          wide
           description={
             <>
               <code>months={2}</code>. Range bands span across months.

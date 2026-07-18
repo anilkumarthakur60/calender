@@ -1,4 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
+import type { CalendarDate } from '../domain';
 
 export type CalendarId = 'gregorian' | 'bikram-sambat' | 'buddhist' | 'persian';
 

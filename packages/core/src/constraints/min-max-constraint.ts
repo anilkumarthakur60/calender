@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { isAfter, isBefore } from '../domain/calendar-date.js';
+import { type CalendarDate, isAfter, isBefore } from '../domain';
 import type { DateConstraint } from './constraint.js';
 
 export class MinMaxConstraint implements DateConstraint {

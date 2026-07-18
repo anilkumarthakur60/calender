@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import type { DateRange } from '../domain/date-range.js';
+import { type CalendarDate, type DateRange } from '../domain';
 
 export type SelectionMode = 'single' | 'range' | 'multi';
 

@@ -1,6 +1,5 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
-import type { CalendarDate } from '../domain/calendar-date.js';
+import { type CalendarSystem, GregorianCalendar } from '../calendar';
+import type { CalendarDate } from '../domain';
 import type { DateConstraint } from './constraint.js';
 
 export class DisabledWeekdayConstraint implements DateConstraint {

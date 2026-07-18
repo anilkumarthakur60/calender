@@ -57,7 +57,7 @@ import { BikramSambatCalendar } from '@anil-labs/core';
 
 const bs = new BikramSambatCalendar();
 
-bs.toGregorian({ year: 2080, month: 1, day: 1 }); // ≈ { year: 2023, month: 4, day: 14 }
+bs.toGregorian({ year: 2080, month: 1, day: 1 }); // { year: 2023, month: 4, day: 14 }
 bs.fromGregorian({ year: 2024, month: 12, day: 31 });
 bs.daysInMonth(2080, 9); // 29 (varies per year)
 bs.weekday({ year: 2080, month: 1, day: 1 }); // 0-6 (US weekday)
@@ -65,11 +65,14 @@ bs.weekday({ year: 2080, month: 1, day: 1 }); // 0-6 (US weekday)
 
 ## Supported range
 
-The shipped lookup table covers **BS 2000 to BS 2099** (≈ 1943–2042 AD).
-Conversions relative to the epoch (BS 2000-01-01 ↔ AD 1943-04-14) are exact.
-Individual year totals may differ by ±1–3 days from the latest Government of
-Nepal Patro — for production use that needs pixel-perfect agreement, supply
-your own table via a custom `CalendarSystem` (see below).
+The shipped lookup table covers **BS 1970 to BS 2100** (≈ 1913–2043 AD),
+anchored at BS 1970-01-01 ↔ AD 1913-04-13. The table is verified against a
+known-correct reference converter across every date in the range, so
+conversions are exact for current and near-future dates. (BS 2087–2088, AD
+≈ 2030, carry a one-day boundary quirk inherited from the reference; no
+authoritative Patro data exists that far out.) For production use that needs
+pixel-perfect agreement with a specific year's Patro, supply your own table
+via a custom `CalendarSystem` (see below).
 
 ## Adding your own calendar
 

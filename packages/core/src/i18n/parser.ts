@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { createCalendarDate, fromIso } from '../domain/calendar-date.js';
+import { type CalendarDate, createCalendarDate, fromIso } from '../domain';
 
 /**
  * Two-digit-year pivot shared by every parser (lenient + pattern-based),
