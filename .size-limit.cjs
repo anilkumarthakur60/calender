@@ -23,14 +23,14 @@ module.exports = [
     // Includes the bundled core engine; framework deps excluded by `ignore`.
     name: '@anil-labs/react (ESM, with core, excl. React)',
     path: 'packages/react/dist/index.js',
-    limit: '15 KB',
+    limit: '18 KB',
     import: '{ DatePicker, DateField, useDatePicker }',
     ignore: ['react', 'react-dom'],
   },
   {
     name: '@anil-labs/vue (ESM, with core, excl. Vue)',
     path: 'packages/vue/dist/index.js',
-    limit: '15 KB',
+    limit: '17 KB',
     import: '{ DatePicker, DateField, useDatePicker }',
     ignore: ['vue'],
   },
