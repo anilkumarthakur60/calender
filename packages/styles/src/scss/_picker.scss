@@ -801,6 +801,10 @@
   position: absolute;
   z-index: 50;
   left: 0;
+  // Size to the picker's natural width so a multi-month popover lays its
+  // months out side by side instead of wrapping to the narrow input width.
+  width: max-content;
+  max-width: calc(100vw - 1rem);
   margin-top: 0.375rem;
   background: var(--cal-color-surface);
   border: 1px solid var(--cal-color-border);
@@ -813,6 +817,9 @@
     border: 0;
     box-shadow: none;
     border-radius: 0;
+    // Fill the max-content popover so the header (and its edge-aligned nav
+    // arrows) span the full multi-month width instead of collapsing.
+    width: 100%;
   }
 
   &[data-flip='up'] {

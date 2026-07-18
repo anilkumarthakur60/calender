@@ -245,3 +245,16 @@ describe('bug #11 — value is the storage format; displayValue is the text', ()
     expect(commit?.value).toBe('2025-04-10');
   });
 });
+
+describe('input popover header is not tagged as a picker', () => {
+  it('keeps the header a flex row (nav arrows not stacked)', () => {
+    const el = mount('<calender-input value="2025-04-15"></calender-input>');
+    el.querySelector<HTMLInputElement>('.cal-field__input')!.focus();
+    const host = el.querySelector<HTMLElement>('.cal-field__popover > .cal-picker')!;
+    const header = host.firstElementChild as HTMLElement;
+    expect(header.classList.contains('cal-picker__header')).toBe(true);
+    // Regression: the header must NOT carry `.cal-picker` (flex-direction: column),
+    // which previously stacked the ‹ / › nav arrows vertically.
+    expect(header.classList.contains('cal-picker')).toBe(false);
+  });
+});

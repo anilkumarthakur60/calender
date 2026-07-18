@@ -23,6 +23,7 @@ import {
   type PresetSpec,
   type SelectionMode,
   CompositeConstraint,
+  DisabledDatesConstraint,
   DisabledWeekdayConstraint,
   MinMaxConstraint,
   activateFocusTrap,
@@ -86,6 +87,20 @@ export interface DateFieldProps {
   readonly showSeconds?: boolean;
   /** Selection granularity (e.g. `'day'`, `'minute'`). */
   readonly granularity?: DatePickerEngineOptions['granularity'];
+
+  // --- Feature options (forwarded to the popover picker) -----------------
+  /** Render N months side by side in the popover. */
+  readonly months?: DatePickerEngineOptions['months'];
+  /** Show an ISO week-number column. */
+  readonly weekNumbers?: DatePickerEngineOptions['weekNumbers'];
+  /** Highlighted dates (events, holidays) shown with a dot. */
+  readonly highlights?: DatePickerEngineOptions['highlights'];
+  /** Specific dates to disable. */
+  readonly disabledDates?: DatePickerEngineOptions['disabledDates'];
+  /** Use `<select>` month/year dropdowns in the popover header. */
+  readonly headerSelectors?: DatePickerEngineOptions['headerSelectors'];
+  /** Year range for the header year dropdown. */
+  readonly yearRange?: DatePickerEngineOptions['yearRange'];
 
   // --- Popover picker chrome ----------------------------------------------
   /** Preset specs passed through to the popover picker. */
@@ -176,6 +191,12 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>(
       use12HourClock,
       showSeconds,
       granularity,
+      months,
+      weekNumbers,
+      highlights,
+      disabledDates,
+      headerSelectors,
+      yearRange,
       presets,
       hideFooter,
       renderCell,
@@ -286,8 +307,9 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>(
       if (min || max) cs.push(new MinMaxConstraint(min, max));
       if (disabledWeekdays?.length)
         cs.push(new DisabledWeekdayConstraint(disabledWeekdays, calendarSystem));
+      if (disabledDates?.length) cs.push(new DisabledDatesConstraint(disabledDates));
       return new CompositeConstraint(cs);
-    }, [min, max, disabledWeekdays, calendarSystem]);
+    }, [min, max, disabledWeekdays, disabledDates, calendarSystem]);
 
     const violatesConstraints = useCallback(
       (decoded: NonNullable<ReturnType<typeof parseSelection>>): boolean => {
@@ -572,6 +594,12 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>(
               {...(use12HourClock !== undefined && { use12HourClock })}
               {...(showSeconds !== undefined && { showSeconds })}
               {...(granularity !== undefined && { granularity })}
+              {...(months !== undefined && { months })}
+              {...(weekNumbers !== undefined && { weekNumbers })}
+              {...(highlights !== undefined && { highlights })}
+              {...(disabledDates !== undefined && { disabledDates })}
+              {...(headerSelectors !== undefined && { headerSelectors })}
+              {...(yearRange !== undefined && { yearRange })}
               {...(presets !== undefined && { presets })}
               {...(hideFooter !== undefined && { hideFooter })}
               {...(renderCell !== undefined && { renderCell })}
