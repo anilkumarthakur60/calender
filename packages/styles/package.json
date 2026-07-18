@@ -27,12 +27,15 @@
   "files": [
     "dist",
     "src",
+    "index.d.ts",
     "README.md"
   ],
   "main": "./dist/calender.css",
   "style": "./dist/calender.css",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "sass": "./src/scss/calender.scss",
       "style": "./dist/calender.css",
       "default": "./dist/calender.css"

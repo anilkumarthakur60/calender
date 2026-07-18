@@ -75,6 +75,18 @@ export interface DateFieldProps {
   /** Maximum number of days a range may span. Forwarded to the popover picker. */
   readonly maxRangeDays?: number;
 
+  // --- Time picker (forwarded to the popover picker) ---------------------
+  /** Show a time row in the popover picker. */
+  readonly withTime?: boolean;
+  /** Minute increment for the time row. */
+  readonly timeStep?: number;
+  /** Use a 12-hour (AM/PM) clock instead of 24-hour. */
+  readonly use12HourClock?: boolean;
+  /** Show a seconds field in the time row. */
+  readonly showSeconds?: boolean;
+  /** Selection granularity (e.g. `'day'`, `'minute'`). */
+  readonly granularity?: DatePickerEngineOptions['granularity'];
+
   // --- Popover picker chrome ----------------------------------------------
   /** Preset specs passed through to the popover picker. */
   readonly presets?: ReadonlyArray<PresetSpec>;
@@ -158,6 +170,11 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>((props, ref
     disabledWeekdays,
     minRangeDays,
     maxRangeDays,
+    withTime,
+    timeStep,
+    use12HourClock,
+    showSeconds,
+    granularity,
     presets,
     hideFooter,
     renderCell,
@@ -540,6 +557,11 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>((props, ref
             {...(disabledWeekdays !== undefined && { disabledWeekdays })}
             {...(minRangeDays !== undefined && { minRangeDays })}
             {...(maxRangeDays !== undefined && { maxRangeDays })}
+            {...(withTime !== undefined && { withTime })}
+            {...(timeStep !== undefined && { timeStep })}
+            {...(use12HourClock !== undefined && { use12HourClock })}
+            {...(showSeconds !== undefined && { showSeconds })}
+            {...(granularity !== undefined && { granularity })}
             {...(presets !== undefined && { presets })}
             {...(hideFooter !== undefined && { hideFooter })}
             {...(renderCell !== undefined && { renderCell })}
