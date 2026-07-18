@@ -44,7 +44,7 @@ const monthDays = (year: number, month: number): number => {
 };
 
 /**
- * Count days from BS 2000-01-01 to the given BS date (exclusive of start).
+ * Count days from BS 1970-01-01 to the given BS date (exclusive of start).
  * Used as the canonical "days since epoch" for conversion to/from Gregorian.
  */
 const bsDaysFromEpoch = (date: CalendarDate): number => {
