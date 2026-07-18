@@ -199,6 +199,13 @@
   margin-top: 0.125rem;
 }
 
+// ARIA row wrappers (role="row") around the weekday header and each week.
+// `display: contents` removes the wrapper from layout so its cells become the
+// grid items directly, preserving the 7-column grid.
+.cal-picker__row {
+  display: contents;
+}
+
 .cal-picker__weekday {
   text-align: center;
   color: var(--cal-color-text-muted);
