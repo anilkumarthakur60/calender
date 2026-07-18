@@ -1,36 +1,54 @@
 # @anil-labs/angular
 
-Angular 17+ adapter for [`@anil-labs/core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a standalone `<cal-date-picker>` component and an injectable `DatePickerService`.
+Angular 17+ adapter for [`@anil-labs/core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a standalone `<cal-date-picker>` component, an injectable `DatePickerService`, and a `provideDatePicker(options)` helper.
 
-> **Status: not yet published to npm.** This package currently builds with tsup/esbuild rather than the Angular compiler, so it does not ship in the required partial-Ivy library format and would break consumer AOT builds. It is marked `private` until the build is migrated to [ng-packagr](https://github.com/ng-packagr/ng-packagr). It works fine when consumed from source inside this monorepo (see `apps/angular-playground`).
+> **Status: not yet published to npm.** The package builds with [ng-packagr](https://github.com/ng-packagr/ng-packagr) in the standard partial-Ivy library format (FESM2022 + type declarations), so it is AOT-safe; it stays `private` until the release workstream flips the flag. It works when consumed from source inside this monorepo.
 
 ## Usage (in-repo)
 
 ```ts
 import { Component } from '@angular/core';
-import { DatePickerComponent } from '@anil-labs/angular';
+import { DatePickerComponent, provideDatePicker } from '@anil-labs/angular';
 
 @Component({
   selector: 'app-demo',
   standalone: true,
   imports: [DatePickerComponent],
-  template: `<cal-date-picker />`,
+  providers: [provideDatePicker({ mode: 'range', locale: 'en-GB' })],
+  template: `<cal-date-picker (select)="onSelect($event)" />`,
 })
-export class DemoComponent {}
+export class DemoComponent {
+  onSelect(date: unknown): void {
+    console.log(date);
+  }
+}
 ```
 
-Or drive a custom UI through the service:
+Without `provideDatePicker`, the component creates its own service with engine
+defaults. The `[options]` input live-reconfigures the engine via
+`engine.setOptions(...)` — selection and focus are preserved where still valid.
+
+## Reactive forms
+
+`DatePickerComponent` implements `ControlValueAccessor`, so it binds to
+`formControl`/`ngModel`. The value shape follows the selection mode:
+`CalendarDate | null` (single), `DateRange | null` (range), or
+`readonly CalendarDate[]` (multi).
+
+```html
+<cal-date-picker [formControl]="date" />
+```
+
+## Custom UIs through the service
 
 ```ts
 import { Component, inject } from '@angular/core';
-import { DatePickerService } from '@anil-labs/angular';
+import { DatePickerService, provideDatePicker } from '@anil-labs/angular';
 
 @Component({
   selector: 'app-custom',
   standalone: true,
-  providers: [
-    { provide: DatePickerService, useFactory: () => new DatePickerService({ mode: 'range' }) },
-  ],
+  providers: [provideDatePicker({ mode: 'range' })],
   template: `...`,
 })
 export class CustomComponent {

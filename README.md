@@ -1,7 +1,7 @@
-# @calender
+# calender — @anil-labs calendar suite
 
 [![CI](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml/badge.svg)](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/%40calender%2Fcore.svg)](https://www.npmjs.com/package/@anil-labs/core)
+[![npm](https://img.shields.io/npm/v/%40anil-labs%2Fcore.svg)](https://www.npmjs.com/package/@anil-labs/core)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 A headless, framework-agnostic calendar / date-picker for **React, Vue, Svelte,
