@@ -1,13 +1,17 @@
-import { defineComponent, h, type PropType, type VNode } from 'vue';
+import { defineComponent, h, ref, watch, type PropType, type VNode } from 'vue';
 import {
   type CalendarDate,
   type DatePickerEngineOptions,
+  type DecodedSelection,
   type EngineState,
+  type InitialSelected,
   type PeriodCell,
   type PresetSpec,
   buildMonthGrid,
   buildPeriodGrid,
   createRange,
+  decodeSelectionValue,
+  encodeSelectionValue,
   isInRange,
   isSameDay,
   isoWeekOfYear,
@@ -15,11 +19,27 @@ import {
 } from '@anil-labs/core';
 import { useDatePicker } from './use-date-picker.js';
 
+/** Number of columns in the month/year/decade period grids. */
+const PERIOD_COLUMNS = 4;
+
+const decodedToInitial = (decoded: DecodedSelection | null): InitialSelected | undefined => {
+  if (!decoded) return undefined;
+  if (decoded.single) return decoded.single;
+  if (decoded.range) return { start: decoded.range.start, end: decoded.range.end };
+  return decoded.multi;
+};
+
 export const DatePicker = defineComponent({
   name: 'DatePicker',
   props: {
+    /** v-model: the encoded selection value (same wire format as DateField storage: ISO). */
+    modelValue: { type: String, default: undefined },
     mode: { type: String as PropType<DatePickerEngineOptions['mode']>, default: undefined },
     initialFocused: { type: Object as PropType<CalendarDate>, default: undefined },
+    initialSelected: {
+      type: [Object, Array] as PropType<InitialSelected>,
+      default: undefined,
+    },
     min: { type: Object as PropType<CalendarDate>, default: undefined },
     max: { type: Object as PropType<CalendarDate>, default: undefined },
     locale: {
@@ -28,7 +48,7 @@ export const DatePicker = defineComponent({
     },
     disabledWeekdays: { type: Array as PropType<ReadonlyArray<number>>, default: undefined },
     calendar: {
-      type: String as PropType<DatePickerEngineOptions['calendar']>,
+      type: [String, Object] as PropType<DatePickerEngineOptions['calendar']>,
       default: undefined,
     },
     months: { type: Number, default: 1 },
@@ -43,6 +63,10 @@ export const DatePicker = defineComponent({
     },
     minRangeDays: { type: Number, default: undefined },
     maxRangeDays: { type: Number, default: undefined },
+    rangeOverDisabled: {
+      type: String as PropType<DatePickerEngineOptions['rangeOverDisabled']>,
+      default: undefined,
+    },
     highlights: {
       type: Array as PropType<DatePickerEngineOptions['highlights']>,
       default: undefined,
@@ -61,11 +85,13 @@ export const DatePicker = defineComponent({
   emits: {
     select: (_date: CalendarDate) => true,
     change: (_state: EngineState) => true,
+    'update:modelValue': (_value: string) => true,
   },
-  setup(props, { emit, slots }) {
-    const options: DatePickerEngineOptions = {
+  setup(props, { emit, slots, expose }) {
+    // Reconfigurable engine options — everything except the construction-only
+    // initial* fields. Also used as a reactive watch source for setOptions.
+    const reconfigurableOptions = (): DatePickerEngineOptions => ({
       ...(props.mode !== undefined ? { mode: props.mode } : {}),
-      ...(props.initialFocused !== undefined ? { initialFocused: props.initialFocused } : {}),
       ...(props.min !== undefined ? { min: props.min } : {}),
       ...(props.max !== undefined ? { max: props.max } : {}),
       ...(props.locale !== undefined ? { locale: props.locale } : {}),
@@ -80,12 +106,72 @@ export const DatePicker = defineComponent({
       ...(props.granularity !== undefined ? { granularity: props.granularity } : {}),
       ...(props.minRangeDays !== undefined ? { minRangeDays: props.minRangeDays } : {}),
       ...(props.maxRangeDays !== undefined ? { maxRangeDays: props.maxRangeDays } : {}),
+      ...(props.rangeOverDisabled !== undefined
+        ? { rangeOverDisabled: props.rangeOverDisabled }
+        : {}),
       ...(props.highlights !== undefined ? { highlights: props.highlights } : {}),
       headerSelectors: props.headerSelectors,
       ...(props.yearRange !== undefined ? { yearRange: props.yearRange } : {}),
-    };
+    });
 
-    const { engine, state } = useDatePicker(options);
+    const localeString =
+      typeof props.locale === 'string' ? props.locale : (props.locale?.locale ?? 'en-US');
+    const initialSelected =
+      props.initialSelected ??
+      (props.modelValue
+        ? decodedToInitial(
+            decodeSelectionValue(props.modelValue, props.mode ?? 'single', localeString),
+          )
+        : undefined);
+
+    const { engine, state } = useDatePicker({
+      ...reconfigurableOptions(),
+      ...(props.initialFocused !== undefined ? { initialFocused: props.initialFocused } : {}),
+      ...(initialSelected !== undefined ? { initialSelected } : {}),
+    });
+
+    // Events come from the ENGINE so keyboard selection (Enter/Space),
+    // presets and programmatic changes all emit — not just clicks.
+    engine.on('select', ({ focused, selection }) => {
+      emit('select', focused);
+      emit('update:modelValue', encodeSelectionValue(selection, engine.calendar));
+    });
+    engine.on('change', ({ state: next }) => emit('change', next));
+
+    // Live prop changes reconfigure the engine.
+    watch(reconfigurableOptions, opts => engine.setOptions(opts));
+
+    // External v-model writes apply to the engine.
+    watch(
+      () => props.modelValue,
+      v => {
+        if (v === undefined) return;
+        const encoded = encodeSelectionValue(engine.state.selection, engine.calendar);
+        if (v === encoded) return;
+        const decoded = v ? decodeSelectionValue(v, engine.state.mode, engine.locale.locale) : null;
+        if (!decoded) {
+          engine.clearSelection();
+          return;
+        }
+        if (decoded.single) {
+          engine.select(decoded.single);
+        } else if (decoded.range) {
+          engine.selectRange(decoded.range.start, decoded.range.end);
+        } else if (decoded.multi) {
+          engine.clearSelection();
+          for (const d of decoded.multi) engine.select(d);
+        }
+      },
+    );
+
+    const rootRef = ref<HTMLElement | null>(null);
+    expose({
+      engine,
+      focus: (): void => {
+        const cell = rootRef.value?.querySelector<HTMLElement>('[role="gridcell"][tabindex="0"]');
+        (cell ?? rootRef.value)?.focus();
+      },
+    });
 
     return () => {
       const s = state.value;
@@ -94,13 +180,10 @@ export const DatePicker = defineComponent({
       const onDayClick = (date: CalendarDate): void => {
         if (!engine.isPickable(date)) return;
         engine.select(date);
-        emit('select', date);
-        emit('change', engine.state);
       };
 
       const onPeriodClick = (date: CalendarDate): void => {
         engine.pickInView(date);
-        emit('change', engine.state);
       };
 
       const renderHeader = () => {
@@ -283,11 +366,16 @@ export const DatePicker = defineComponent({
               firstDayOfWeek: engine.locale.firstDayOfWeek,
               fixedWeeks: true,
               calendar: engine.calendar,
+              weekNumbers: useWeeks,
             });
-        const cells: VNode[] = [];
-        if (useWeeks) cells.push(h('div', { class: 'cal-picker__weeknum-header' }, 'Wk'));
+
+        const headCells: VNode[] = [];
+        if (useWeeks)
+          headCells.push(
+            h('div', { class: 'cal-picker__weeknum-header', role: 'columnheader' }, 'Wk'),
+          );
         for (const w of monthGrid.weekdayHeaders) {
-          cells.push(
+          headCells.push(
             h(
               'div',
               { class: 'cal-picker__weekday', role: 'columnheader' },
@@ -295,14 +383,34 @@ export const DatePicker = defineComponent({
             ),
           );
         }
-        for (const week of monthGrid.weeks) {
+        const rows: VNode[] = [
+          h('div', { class: 'cal-picker__row cal-picker__row--head', role: 'row' }, headCells),
+        ];
+        monthGrid.weeks.forEach((week, weekIdx) => {
+          const cells: VNode[] = [];
           if (useWeeks && week[0]) {
             cells.push(
-              h('div', { class: 'cal-picker__weeknum' }, String(isoWeekOfYear(week[0].date))),
+              h(
+                'div',
+                { class: 'cal-picker__weeknum' },
+                String(monthGrid.weekNumbers?.[weekIdx] ?? isoWeekOfYear(week[0].date)),
+              ),
             );
           }
           for (const cell of week) cells.push(renderDayCell(cell, focusedMonth));
-        }
+          const first = week[0];
+          rows.push(
+            h(
+              'div',
+              {
+                key: first ? `${first.date.year}-${first.date.month}-${first.date.day}` : weekIdx,
+                class: 'cal-picker__row',
+                role: 'row',
+              },
+              cells,
+            ),
+          );
+        });
         return h(
           'div',
           {
@@ -311,7 +419,7 @@ export const DatePicker = defineComponent({
             role: 'grid',
             onMouseleave: () => engine.setHovered(null),
           },
-          cells,
+          rows,
         );
       };
 
@@ -331,28 +439,39 @@ export const DatePicker = defineComponent({
           engine.calendar,
           engine.locale.locale,
         );
-        return h(
-          'div',
-          { class: 'cal-picker__grid cal-picker__grid--period', role: 'grid' },
-          period.cells.map((cell: PeriodCell) =>
+        const rows: VNode[] = [];
+        for (let i = 0; i < period.cells.length; i += PERIOD_COLUMNS) {
+          const rowCells = period.cells.slice(i, i + PERIOD_COLUMNS);
+          rows.push(
             h(
-              'button',
+              'div',
               {
-                key: `${cell.date.year}-${cell.date.month}`,
-                type: 'button',
-                role: 'gridcell',
-                class: 'cal-picker__cell cal-picker__cell--period',
-                tabindex: cell.isFocused ? 0 : -1,
-                'aria-label': cell.longLabel,
-                'data-selected': cell.isFocused ? 'true' : undefined,
-                'data-today': cell.isToday ? 'true' : undefined,
-                'data-outside': cell.outside ? 'true' : undefined,
-                onClick: () => onPeriodClick(cell.date),
+                key: rowCells[0] ? `${rowCells[0].date.year}-${rowCells[0].date.month}` : i,
+                class: 'cal-picker__row',
+                role: 'row',
               },
-              cell.label,
+              rowCells.map((cell: PeriodCell) =>
+                h(
+                  'button',
+                  {
+                    key: `${cell.date.year}-${cell.date.month}`,
+                    type: 'button',
+                    role: 'gridcell',
+                    class: 'cal-picker__cell cal-picker__cell--period',
+                    tabindex: cell.isFocused ? 0 : -1,
+                    'aria-label': cell.longLabel,
+                    'data-selected': cell.isFocused ? 'true' : undefined,
+                    'data-today': cell.isToday ? 'true' : undefined,
+                    'data-outside': cell.outside ? 'true' : undefined,
+                    onClick: () => onPeriodClick(cell.date),
+                  },
+                  cell.label,
+                ),
+              ),
             ),
-          ),
-        );
+          );
+        }
+        return h('div', { class: 'cal-picker__grid cal-picker__grid--period', role: 'grid' }, rows);
       };
 
       const renderTime = () => {
@@ -442,10 +561,7 @@ export const DatePicker = defineComponent({
                 {
                   type: 'button',
                   class: 'cal-picker__preset',
-                  onClick: () => {
-                    p.apply(engine);
-                    emit('change', engine.state);
-                  },
+                  onClick: () => p.apply(engine),
                 },
                 p.label,
               ),
@@ -457,6 +573,7 @@ export const DatePicker = defineComponent({
       return h(
         'div',
         {
+          ref: rootRef,
           class: 'cal-picker',
           role: 'group',
           'aria-label': 'Date picker',
