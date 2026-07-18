@@ -1,21 +1,23 @@
 export { PickerRenderer } from './picker-renderer.js';
-export { CalenderPickerElement } from './picker-element.js';
-export { CalenderInputElement } from './input-element.js';
+export { createPickerElementClass } from './picker-element.js';
+export { createInputElementClass } from './input-element.js';
+export type { CalenderPickerElement, CalenderPickerElementConstructor } from './picker-element.js';
+export type { CalenderInputElement, CalenderInputElementConstructor } from './input-element.js';
 
-import { CalenderPickerElement } from './picker-element.js';
-import { CalenderInputElement } from './input-element.js';
+import { createPickerElementClass, type CalenderPickerElement } from './picker-element.js';
+import { createInputElementClass, type CalenderInputElement } from './input-element.js';
 
 export const defineCalenderPicker = (tagName: string = 'calender-picker'): void => {
   if (typeof window === 'undefined' || typeof customElements === 'undefined') return;
   if (!customElements.get(tagName)) {
-    customElements.define(tagName, CalenderPickerElement);
+    customElements.define(tagName, createPickerElementClass());
   }
 };
 
 export const defineCalenderInput = (tagName: string = 'calender-input'): void => {
   if (typeof window === 'undefined' || typeof customElements === 'undefined') return;
   if (!customElements.get(tagName)) {
-    customElements.define(tagName, CalenderInputElement);
+    customElements.define(tagName, createInputElementClass());
   }
 };
 

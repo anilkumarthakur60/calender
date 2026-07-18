@@ -1,3 +1,4 @@
-export { DatePickerService } from './date-picker.service.js';
-export { DatePickerComponent } from './date-picker.component.js';
+export { DatePickerService, DATE_PICKER_OPTIONS } from './date-picker.service.js';
+export { provideDatePicker } from './provide-date-picker.js';
+export { DatePickerComponent, type DatePickerValue } from './date-picker.component.js';
 export type * from '@anil-labs/core';

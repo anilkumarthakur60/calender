@@ -13,6 +13,7 @@ import {
 } from '@anil-labs/core';
 import { PickerRenderer } from './picker-renderer.js';
 import {
+  COSMETIC_ATTRS,
   readEngineOptionsFromAttributes,
   readPresetsFromAttribute,
   STANDARD_OBSERVED_ATTRS,
@@ -36,104 +37,168 @@ const HINT_BY_PATTERN: Record<string, string> = {
 };
 
 /**
- * `<calender-input>` — form-associated input that opens a calendar popover.
- * Type into the input or click to pick. Submits as a normal form field.
+ * Instance surface of `<calender-input>` — form-associated input that opens a
+ * calendar popover. Type into the input or click to pick. Submits as a
+ * normal form field.
+ *
+ * `value` reads and writes the STORAGE format (the `value-format` attribute
+ * pattern, falling back to `format`), matching the attribute and the
+ * submitted form value — so `el.value = el.value` round-trips. Use
+ * {@link CalenderInputElement.displayValue} for the formatted text shown in
+ * the visible input.
+ *
+ * This is a type-only export: the concrete class is created lazily by
+ * {@link createInputElementClass} so that loading this module never touches
+ * `HTMLElement` at module scope (safe to `require`/`import` in plain Node).
  */
-export class CalenderInputElement extends HTMLElement {
-  static formAssociated = true;
-  static get observedAttributes(): ReadonlyArray<string> {
-    return OBSERVED;
-  }
+export interface CalenderInputElement extends HTMLElement {
+  /** Committed value in the storage format (same string the form submits). */
+  value: string;
+  /** The formatted text currently shown in the visible input. */
+  readonly displayValue: string;
+}
 
-  #internals: ElementInternals | null = null;
-  #engine: DatePickerEngine | null = null;
-  #renderer: PickerRenderer | null = null;
-  #connected = false;
-  #open = false;
+export interface CalenderInputElementConstructor {
+  new (): CalenderInputElement;
+  readonly formAssociated: boolean;
+  readonly observedAttributes: ReadonlyArray<string>;
+}
 
-  #input!: HTMLInputElement;
-  #trigger!: HTMLButtonElement;
-  #control!: HTMLDivElement;
-  #popover!: HTMLDivElement;
-  #pickerHost!: HTMLDivElement;
-  #hiddenInput!: HTMLInputElement;
+let InputElementClass: CalenderInputElementConstructor | null = null;
 
-  constructor() {
-    super();
-    if (typeof this.attachInternals === 'function') {
-      try {
-        this.#internals = this.attachInternals();
-      } catch {
-        this.#internals = null;
+/**
+ * Create (and memoize) the `<calender-input>` element class. Deferred to a
+ * factory so SSR frameworks can load the bundle in Node — the class body
+ * references `HTMLElement`, which only exists once a DOM is present.
+ */
+export const createInputElementClass = (): CalenderInputElementConstructor => {
+  if (InputElementClass) return InputElementClass;
+
+  class CalenderInputElementImpl extends HTMLElement {
+    static formAssociated = true;
+    static get observedAttributes(): ReadonlyArray<string> {
+      return OBSERVED;
+    }
+
+    #internals: ElementInternals | null = null;
+    #engine: DatePickerEngine | null = null;
+    #renderer: PickerRenderer | null = null;
+    #connected = false;
+    #open = false;
+    /** True while the visible input holds uncommitted user edits. */
+    #dirty = false;
+    /** Guards against the popover re-opening from our own refocus. */
+    #suppressOpen = false;
+
+    #input!: HTMLInputElement;
+    #trigger!: HTMLButtonElement;
+    #control!: HTMLDivElement;
+    #popover!: HTMLDivElement;
+    #pickerHost!: HTMLDivElement;
+    #hiddenInput: HTMLInputElement | null = null;
+
+    constructor() {
+      super();
+      if (typeof this.attachInternals === 'function') {
+        try {
+          this.#internals = this.attachInternals();
+        } catch {
+          this.#internals = null;
+        }
       }
     }
-  }
 
-  connectedCallback(): void {
-    this.#connected = true;
-    this.#renderShell();
-    this.#rebuild();
-  }
-
-  disconnectedCallback(): void {
-    this.#connected = false;
-    this.#teardownGlobalHandlers();
-    this.#renderer?.unmount();
-    this.#renderer = null;
-    this.#engine = null;
-  }
-
-  attributeChangedCallback(name: string, _old: string | null, _next: string | null): void {
-    if (!this.#connected) return;
-    if (name === 'value') {
-      this.#input.value = this.getAttribute('value') ?? '';
-      this.#commitFromText(this.#input.value);
-      return;
+    connectedCallback(): void {
+      this.#connected = true;
+      this.#renderShell();
+      this.#rebuild();
     }
-    if (name === 'placeholder') {
-      this.#applyPlaceholder();
-      return;
+
+    disconnectedCallback(): void {
+      this.#connected = false;
+      // Reset transient UI state so a re-connected element works again.
+      this.#closePopover();
+      this.#teardownGlobalHandlers();
+      this.#renderer?.unmount();
+      this.#renderer = null;
+      this.#engine = null;
+      this.#dirty = false;
     }
-    if (name === 'disabled') {
-      this.#applyDisabled();
-      return;
+
+    attributeChangedCallback(name: string, _old: string | null, _next: string | null): void {
+      if (!this.#connected) return;
+      if (name === 'value') {
+        this.#input.value = this.getAttribute('value') ?? '';
+        this.#dirty = false;
+        this.#commitFromText(this.#input.value);
+        return;
+      }
+      if (name === 'placeholder') {
+        this.#applyPlaceholder();
+        return;
+      }
+      if (name === 'disabled') {
+        this.#applyDisabled();
+        return;
+      }
+      if (COSMETIC_ATTRS.has(name)) {
+        this.#applyCosmetics();
+        return;
+      }
+      if (name === 'presets') {
+        if (this.#renderer) {
+          this.#renderer.presets = readPresetsFromAttribute(this) ?? ['today'];
+          this.#renderer.refresh();
+        }
+        return;
+      }
+      this.#rebuild();
     }
-    this.#rebuild();
-  }
 
-  get value(): string {
-    return this.#input?.value ?? '';
-  }
-  set value(next: string) {
-    if (next === null || next === undefined) {
-      this.removeAttribute('value');
-    } else {
-      this.setAttribute('value', String(next));
+    /**
+     * Committed value in the STORAGE format (`value-format` attribute pattern,
+     * falling back to `format`). Mirrors the `value` attribute and the
+     * submitted form value, so `el.value = el.value` round-trips. Use
+     * `displayValue` for the formatted text shown in the input.
+     */
+    get value(): string {
+      return this.getAttribute('value') ?? '';
     }
-  }
+    set value(next: string) {
+      if (next === null || next === undefined) {
+        this.removeAttribute('value');
+      } else {
+        this.setAttribute('value', String(next));
+      }
+    }
 
-  // --- internals ----------------------------------------------------------
+    /** The formatted text currently shown in the visible input. */
+    get displayValue(): string {
+      return this.#input?.value ?? '';
+    }
 
-  #renderShell(): void {
-    this.classList.add('cal-field-host');
+    // --- internals ----------------------------------------------------------
 
-    this.#control = document.createElement('div');
-    this.#control.className = 'cal-field__control';
+    #renderShell(): void {
+      this.classList.add('cal-field-host');
 
-    this.#input = document.createElement('input');
-    this.#input.type = 'text';
-    this.#input.className = 'cal-field__input';
-    this.#input.autocomplete = 'off';
-    this.#input.spellcheck = false;
-    this.#input.setAttribute('aria-haspopup', 'dialog');
-    this.#input.setAttribute('aria-expanded', 'false');
+      this.#control = document.createElement('div');
+      this.#control.className = 'cal-field__control';
 
-    this.#trigger = document.createElement('button');
-    this.#trigger.type = 'button';
-    this.#trigger.className = 'cal-field__trigger';
-    this.#trigger.setAttribute('aria-label', 'Open calendar');
-    this.#trigger.tabIndex = -1;
-    this.#trigger.innerHTML = `
+      this.#input = document.createElement('input');
+      this.#input.type = 'text';
+      this.#input.className = 'cal-field__input';
+      this.#input.autocomplete = 'off';
+      this.#input.spellcheck = false;
+      this.#input.setAttribute('aria-haspopup', 'dialog');
+      this.#input.setAttribute('aria-expanded', 'false');
+
+      this.#trigger = document.createElement('button');
+      this.#trigger.type = 'button';
+      this.#trigger.className = 'cal-field__trigger';
+      this.#trigger.setAttribute('aria-label', 'Open calendar');
+      this.#trigger.tabIndex = -1;
+      this.#trigger.innerHTML = `
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <rect x="2" y="3.5" width="12" height="10.5" rx="1.5" stroke="currentColor" stroke-width="1.25"/>
         <path d="M2 6.5h12" stroke="currentColor" stroke-width="1.25"/>
@@ -141,275 +206,314 @@ export class CalenderInputElement extends HTMLElement {
       </svg>
     `;
 
-    this.#control.append(this.#input, this.#trigger);
+      this.#control.append(this.#input, this.#trigger);
 
-    this.#popover = document.createElement('div');
-    this.#popover.className = 'cal-field__popover';
-    this.#popover.setAttribute('role', 'dialog');
-    this.#popover.dataset['flip'] = 'down';
-    this.#popover.style.display = 'none';
+      this.#popover = document.createElement('div');
+      this.#popover.className = 'cal-field__popover';
+      this.#popover.setAttribute('role', 'dialog');
+      this.#popover.dataset['flip'] = 'down';
+      this.#popover.style.display = 'none';
 
-    this.#pickerHost = document.createElement('div');
-    this.#popover.append(this.#pickerHost);
+      this.#pickerHost = document.createElement('div');
+      this.#popover.append(this.#pickerHost);
 
-    this.#hiddenInput = document.createElement('input');
-    this.#hiddenInput.type = 'hidden';
-
-    this.classList.add('cal-field');
-    this.replaceChildren(this.#control, this.#hiddenInput, this.#popover);
-
-    this.#input.addEventListener('focus', () => this.#openPopover());
-    this.#input.addEventListener('click', () => this.#openPopover());
-    this.#input.addEventListener('input', () => {
-      // Text edit; defer commit until blur (lenient parse).
-    });
-    this.#input.addEventListener('blur', () => this.#handleBlur());
-    this.#trigger.addEventListener('mousedown', e => e.preventDefault());
-    this.#trigger.addEventListener('click', () => {
-      if (this.#open) this.#closePopover();
-      else this.#openPopover();
-      this.#input.focus();
-    });
-    this.#popover.addEventListener('mousedown', e => e.preventDefault());
-
-    this.#applyPlaceholder();
-    this.#applyDisabled();
-  }
-
-  #applyPlaceholder(): void {
-    const explicit = this.getAttribute('placeholder');
-    const pattern = this.#displayPattern();
-    this.#input.placeholder = explicit ?? HINT_BY_PATTERN[pattern] ?? pattern;
-  }
-
-  #displayPattern(): string {
-    return this.getAttribute('format') ?? 'iso';
-  }
-
-  #storagePattern(): string {
-    return this.getAttribute('value-format') ?? this.#displayPattern();
-  }
-
-  #activeCalendar(): CalendarSystem {
-    return createCalendarSystem(
-      (this.getAttribute('calendar') as CalendarId | null) ?? 'gregorian',
-    );
-  }
-
-  #fmtOpts(pattern: string): {
-    pattern: string | FormatPreset;
-    locale: string;
-    calendar: CalendarSystem;
-  } {
-    return {
-      pattern,
-      locale: this.getAttribute('locale') ?? 'en-US',
-      calendar: this.#activeCalendar(),
-    };
-  }
-
-  #applyDisabled(): void {
-    const disabled = this.hasAttribute('disabled');
-    this.#input.disabled = disabled;
-    this.#trigger.disabled = disabled;
-    if (disabled) this.#control.dataset['disabled'] = 'true';
-    else delete this.#control.dataset['disabled'];
-  }
-
-  #rebuild(): void {
-    this.#renderer?.unmount();
-    this.#pickerHost.replaceChildren();
-
-    const mode = (this.getAttribute('mode') as SelectionMode | null) ?? 'single';
-    const initial = this.getAttribute('value') ?? '';
-    const options = readEngineOptionsFromAttributes(this);
-    // The input parses initial via its own format pipeline; pre-seed focus.
-    if (initial) {
-      const decoded = parseSelection(initial, mode, this.#fmtOpts(this.#storagePattern()));
-      const focused = decoded?.single ?? decoded?.range?.start ?? decoded?.multi?.[0];
-      if (focused) (options as { initialFocused?: typeof focused }).initialFocused = focused;
-    }
-
-    const engine = new DatePickerEngine(options);
-    if (initial) this.#applyInitialSelection(engine, initial, mode);
-
-    engine.on('select', () => this.#onPickerChanged());
-    engine.on('change', () => this.#onPickerChanged());
-
-    this.#engine = engine;
-    // Display the formatted version in the input; storage stays as `initial`.
-    this.#input.value = this.#toDisplay(initial, mode);
-    this.#syncForm(initial);
-
-    this.#renderer = new PickerRenderer(this.#pickerHost, engine);
-    const presets = readPresetsFromAttribute(this);
-    if (presets) this.#renderer.presets = presets;
-    this.#renderer.mount();
-    this.#pickerHost.firstElementChild?.classList.add('cal-picker');
-
-    this.#applyPlaceholder();
-    this.#applyDisabled();
-
-    const theme = this.getAttribute('theme');
-    this.classList.remove('cal-theme-light', 'cal-theme-dark', 'cal-theme-auto');
-    if (theme) this.classList.add(`cal-theme-${theme}`);
-
-    const density = this.getAttribute('density');
-    this.classList.remove('cal-density-dense', 'cal-density-comfortable');
-    if (density) this.classList.add(`cal-density-${density}`);
-  }
-
-  #applyInitialSelection(engine: DatePickerEngine, text: string, mode: SelectionMode): void {
-    const decoded = parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
-    if (!decoded) return;
-    try {
-      if (decoded.single) engine.select(decoded.single);
-      else if (decoded.range) {
-        engine.select(decoded.range.start);
-        engine.select(decoded.range.end);
-      } else if (decoded.multi) {
-        for (const d of decoded.multi) engine.select(d);
+      // The hidden input is only a fallback for environments without
+      // ElementInternals — with internals it would double the form entry.
+      this.#hiddenInput = null;
+      if (!this.#internals) {
+        this.#hiddenInput = document.createElement('input');
+        this.#hiddenInput.type = 'hidden';
       }
-    } catch {
-      /* invalid date for the active calendar — ignore */
-    }
-  }
 
-  #toDisplay(stored: string, mode: SelectionMode): string {
-    if (!stored) return '';
-    const decoded = parseSelection(stored, mode, this.#fmtOpts(this.#storagePattern()));
-    if (!decoded) return stored;
-    const sel =
-      mode === 'single'
-        ? ({ mode, value: decoded.single ?? null } as const)
-        : mode === 'range'
-          ? ({ mode, value: decoded.range ?? null, anchor: null } as const)
-          : ({ mode, value: decoded.multi ?? [] } as const);
-    return formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
-  }
-
-  #onPickerChanged(): void {
-    if (!this.#engine) return;
-    const sel = this.#engine.state.selection;
-    const display = formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
-    const stored = formatSelection(sel, this.#fmtOpts(this.#storagePattern()));
-    const complete =
-      (sel.mode === 'single' && sel.value !== null) || (sel.mode === 'range' && sel.value !== null);
-    this.#input.value = display;
-    this.#commit(stored);
-    if (complete) {
-      this.#closePopover();
-      this.#input.focus();
-    }
-  }
-
-  #handleBlur(): void {
-    const text = this.#input.value;
-    const mode = (this.getAttribute('mode') as SelectionMode) ?? 'single';
-    const current = this.getAttribute('value') ?? '';
-    if (text === this.#toDisplay(current, mode)) return;
-    if (text.trim() === '') {
-      this.#input.value = '';
-      this.#commit('');
-      return;
-    }
-    const decoded =
-      parseSelection(text, mode, this.#fmtOpts(this.#displayPattern())) ??
-      parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
-    if (!decoded) {
-      this.#input.value = this.#toDisplay(current, mode);
-      return;
-    }
-    const sel =
-      mode === 'single'
-        ? ({ mode, value: decoded.single ?? null } as const)
-        : mode === 'range'
-          ? ({ mode, value: decoded.range ?? null, anchor: null } as const)
-          : ({ mode, value: decoded.multi ?? [] } as const);
-    this.#input.value = formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
-    this.#commit(formatSelection(sel, this.#fmtOpts(this.#storagePattern())));
-  }
-
-  #commit(next: string): void {
-    if (next === (this.getAttribute('value') ?? '')) return;
-    if (next) this.setAttribute('value', next);
-    else this.removeAttribute('value');
-    this.#syncForm(next);
-    if (next) announce(`Selected ${next}`);
-    this.dispatchEvent(new CustomEvent('cal-change', { detail: { value: next } }));
-  }
-
-  #commitFromText(text: string): void {
-    if (this.#engine)
-      this.#applyInitialSelection(
-        this.#engine,
-        text,
-        (this.getAttribute('mode') as SelectionMode) ?? 'single',
+      this.classList.add('cal-field');
+      this.replaceChildren(
+        this.#control,
+        ...(this.#hiddenInput ? [this.#hiddenInput] : []),
+        this.#popover,
       );
-    this.#syncForm(text);
-  }
 
-  #syncForm(value: string): void {
-    // Keep the hidden input in sync (also propagate the host's `name` so
-    // FormData traversal works in environments without ElementInternals).
-    const name = this.getAttribute('name');
-    if (name !== null) this.#hiddenInput.name = name;
-    else this.#hiddenInput.removeAttribute('name');
-    this.#hiddenInput.value = value;
-    if (this.#internals) this.#internals.setFormValue(value);
-  }
+      this.#input.addEventListener('focus', () => this.#openPopover());
+      this.#input.addEventListener('click', () => this.#openPopover());
+      this.#input.addEventListener('input', () => {
+        // Text edit; defer commit until blur (lenient parse). Marking the
+        // field dirty stops engine changes from clobbering the typing.
+        this.#dirty = true;
+      });
+      this.#input.addEventListener('blur', () => this.#handleBlur());
+      this.#trigger.addEventListener('mousedown', e => e.preventDefault());
+      this.#trigger.addEventListener('click', () => {
+        if (this.#open) this.#closePopover();
+        else this.#openPopover();
+        this.#input.focus();
+      });
+      this.#popover.addEventListener('mousedown', e => e.preventDefault());
 
-  // --- popover ----------------------------------------------------------
-
-  #focusTrap: FocusTrap | null = null;
-
-  #openPopover(): void {
-    if (this.#open || this.#input.disabled) return;
-    this.#open = true;
-    this.#popover.style.display = '';
-    this.#input.setAttribute('aria-expanded', 'true');
-    this.#positionPopover();
-    this.#installGlobalHandlers();
-    // Focus trap inside the popover
-    this.#focusTrap = activateFocusTrap(this.#popover);
-  }
-
-  #closePopover(): void {
-    if (!this.#open) return;
-    this.#open = false;
-    this.#popover.style.display = 'none';
-    this.#input.setAttribute('aria-expanded', 'false');
-    this.#teardownGlobalHandlers();
-    this.#focusTrap?.deactivate();
-    this.#focusTrap = null;
-  }
-
-  #positionPopover(): void {
-    requestAnimationFrame(() => {
-      const r = this.#control.getBoundingClientRect();
-      const popH = this.#popover.offsetHeight || 320;
-      const flip = r.bottom + popH + 8 > window.innerHeight && r.top - popH - 8 > 0;
-      this.#popover.dataset['flip'] = flip ? 'up' : 'down';
-    });
-  }
-
-  #onDocumentPointer = (event: PointerEvent): void => {
-    if (!this.contains(event.target as Node)) this.#closePopover();
-  };
-
-  #onDocumentKey = (event: KeyboardEvent): void => {
-    if (event.key === 'Escape') {
-      this.#closePopover();
-      this.#input.focus();
+      this.#applyPlaceholder();
+      this.#applyDisabled();
     }
-  };
 
-  #installGlobalHandlers(): void {
-    document.addEventListener('pointerdown', this.#onDocumentPointer);
-    document.addEventListener('keydown', this.#onDocumentKey);
+    #applyPlaceholder(): void {
+      const explicit = this.getAttribute('placeholder');
+      const pattern = this.#displayPattern();
+      this.#input.placeholder = explicit ?? HINT_BY_PATTERN[pattern] ?? pattern;
+    }
+
+    #displayPattern(): string {
+      return this.getAttribute('format') ?? 'iso';
+    }
+
+    #storagePattern(): string {
+      return this.getAttribute('value-format') ?? this.#displayPattern();
+    }
+
+    #activeCalendar(): CalendarSystem {
+      return createCalendarSystem(
+        (this.getAttribute('calendar') as CalendarId | null) ?? 'gregorian',
+      );
+    }
+
+    #fmtOpts(pattern: string): {
+      pattern: string | FormatPreset;
+      locale: string;
+      calendar: CalendarSystem;
+    } {
+      return {
+        pattern,
+        locale: this.getAttribute('locale') ?? 'en-US',
+        calendar: this.#activeCalendar(),
+      };
+    }
+
+    #applyDisabled(): void {
+      const disabled = this.hasAttribute('disabled');
+      this.#input.disabled = disabled;
+      this.#trigger.disabled = disabled;
+      if (disabled) this.#control.dataset['disabled'] = 'true';
+      else delete this.#control.dataset['disabled'];
+    }
+
+    #applyCosmetics(): void {
+      const theme = this.getAttribute('theme');
+      this.classList.remove('cal-theme-light', 'cal-theme-dark', 'cal-theme-auto');
+      if (theme) this.classList.add(`cal-theme-${theme}`);
+
+      const density = this.getAttribute('density');
+      this.classList.remove('cal-density-dense', 'cal-density-comfortable');
+      if (density) this.classList.add(`cal-density-${density}`);
+    }
+
+    #rebuild(): void {
+      this.#renderer?.unmount();
+      this.#pickerHost.replaceChildren();
+
+      const mode = (this.getAttribute('mode') as SelectionMode | null) ?? 'single';
+      const initial = this.getAttribute('value') ?? '';
+      const options = readEngineOptionsFromAttributes(this);
+      // The input parses initial via its own format pipeline; pre-seed focus.
+      if (initial) {
+        const decoded = parseSelection(initial, mode, this.#fmtOpts(this.#storagePattern()));
+        const focused = decoded?.single ?? decoded?.range?.start ?? decoded?.multi?.[0];
+        if (focused) (options as { initialFocused?: typeof focused }).initialFocused = focused;
+      }
+
+      const engine = new DatePickerEngine(options);
+      if (initial) this.#applyInitialSelection(engine, initial, mode);
+
+      // Only selection COMMITS (select/selectRange/clear) sync the input and
+      // may close the popover — paging/hover/focus changes must not.
+      engine.on('select', () => this.#onEngineSelect());
+
+      this.#engine = engine;
+      // Display the formatted version in the input; storage stays as `initial`.
+      this.#input.value = this.#toDisplay(initial, mode);
+      this.#dirty = false;
+      this.#syncForm(initial);
+
+      this.#renderer = new PickerRenderer(this.#pickerHost, engine);
+      const presets = readPresetsFromAttribute(this);
+      if (presets) this.#renderer.presets = presets;
+      this.#renderer.mount();
+      this.#pickerHost.firstElementChild?.classList.add('cal-picker');
+
+      this.#applyPlaceholder();
+      this.#applyDisabled();
+      this.#applyCosmetics();
+    }
+
+    #applyInitialSelection(engine: DatePickerEngine, text: string, mode: SelectionMode): void {
+      const decoded = parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
+      if (!decoded) return;
+      try {
+        if (decoded.single) engine.select(decoded.single);
+        else if (decoded.range) {
+          engine.select(decoded.range.start);
+          engine.select(decoded.range.end);
+        } else if (decoded.multi) {
+          for (const d of decoded.multi) engine.select(d);
+        }
+      } catch {
+        /* invalid date for the active calendar — ignore */
+      }
+    }
+
+    #toDisplay(stored: string, mode: SelectionMode): string {
+      if (!stored) return '';
+      const decoded = parseSelection(stored, mode, this.#fmtOpts(this.#storagePattern()));
+      if (!decoded) return stored;
+      const sel =
+        mode === 'single'
+          ? ({ mode, value: decoded.single ?? null } as const)
+          : mode === 'range'
+            ? ({ mode, value: decoded.range ?? null, anchor: null } as const)
+            : ({ mode, value: decoded.multi ?? [] } as const);
+      return formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
+    }
+
+    #onEngineSelect(): void {
+      if (!this.#engine) return;
+      const sel = this.#engine.state.selection;
+      const display = formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
+      const stored = formatSelection(sel, this.#fmtOpts(this.#storagePattern()));
+      const complete =
+        (sel.mode === 'single' && sel.value !== null) ||
+        (sel.mode === 'range' && sel.value !== null);
+      // A completed picker commit overrides any in-progress typing; an
+      // intermediate select (e.g. a range anchor) must not clobber it.
+      if (complete || !this.#dirty) {
+        this.#input.value = display;
+        this.#dirty = false;
+      }
+      this.#commit(stored);
+      if (complete) {
+        this.#closePopover();
+        this.#suppressOpen = true;
+        this.#input.focus();
+        this.#suppressOpen = false;
+      }
+    }
+
+    #handleBlur(): void {
+      this.#dirty = false;
+      const text = this.#input.value;
+      const mode = (this.getAttribute('mode') as SelectionMode) ?? 'single';
+      const current = this.getAttribute('value') ?? '';
+      if (text === this.#toDisplay(current, mode)) return;
+      if (text.trim() === '') {
+        this.#input.value = '';
+        this.#commit('');
+        return;
+      }
+      const decoded =
+        parseSelection(text, mode, this.#fmtOpts(this.#displayPattern())) ??
+        parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
+      if (!decoded) {
+        this.#input.value = this.#toDisplay(current, mode);
+        return;
+      }
+      const sel =
+        mode === 'single'
+          ? ({ mode, value: decoded.single ?? null } as const)
+          : mode === 'range'
+            ? ({ mode, value: decoded.range ?? null, anchor: null } as const)
+            : ({ mode, value: decoded.multi ?? [] } as const);
+      this.#input.value = formatSelection(sel, this.#fmtOpts(this.#displayPattern()));
+      this.#commit(formatSelection(sel, this.#fmtOpts(this.#storagePattern())));
+    }
+
+    #commit(next: string): void {
+      if (next === (this.getAttribute('value') ?? '')) return;
+      if (next) this.setAttribute('value', next);
+      else this.removeAttribute('value');
+      this.#syncForm(next);
+      if (next) announce(`Selected ${next}`);
+      this.dispatchEvent(
+        new CustomEvent('cal-change', {
+          detail: { value: next },
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    }
+
+    #commitFromText(text: string): void {
+      if (this.#engine)
+        this.#applyInitialSelection(
+          this.#engine,
+          text,
+          (this.getAttribute('mode') as SelectionMode) ?? 'single',
+        );
+      this.#syncForm(text);
+    }
+
+    #syncForm(value: string): void {
+      if (this.#internals) {
+        this.#internals.setFormValue(value);
+        return;
+      }
+      // Fallback: keep the hidden input in sync (also propagate the host's
+      // `name` so FormData traversal works without ElementInternals).
+      if (!this.#hiddenInput) return;
+      const name = this.getAttribute('name');
+      if (name !== null) this.#hiddenInput.name = name;
+      else this.#hiddenInput.removeAttribute('name');
+      this.#hiddenInput.value = value;
+    }
+
+    // --- popover ----------------------------------------------------------
+
+    #focusTrap: FocusTrap | null = null;
+
+    #openPopover(): void {
+      if (this.#suppressOpen || this.#open || this.#input.disabled) return;
+      this.#open = true;
+      this.#popover.style.display = '';
+      this.#input.setAttribute('aria-expanded', 'true');
+      this.#positionPopover();
+      this.#installGlobalHandlers();
+      // Focus trap inside the popover
+      this.#focusTrap = activateFocusTrap(this.#popover);
+    }
+
+    #closePopover(): void {
+      if (!this.#open) return;
+      this.#open = false;
+      this.#popover.style.display = 'none';
+      this.#input.setAttribute('aria-expanded', 'false');
+      this.#teardownGlobalHandlers();
+      this.#focusTrap?.deactivate();
+      this.#focusTrap = null;
+    }
+
+    #positionPopover(): void {
+      requestAnimationFrame(() => {
+        const r = this.#control.getBoundingClientRect();
+        const popH = this.#popover.offsetHeight || 320;
+        const flip = r.bottom + popH + 8 > window.innerHeight && r.top - popH - 8 > 0;
+        this.#popover.dataset['flip'] = flip ? 'up' : 'down';
+      });
+    }
+
+    #onDocumentPointer = (event: PointerEvent): void => {
+      if (!this.contains(event.target as Node)) this.#closePopover();
+    };
+
+    #onDocumentKey = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        this.#closePopover();
+        this.#input.focus();
+      }
+    };
+
+    #installGlobalHandlers(): void {
+      document.addEventListener('pointerdown', this.#onDocumentPointer);
+      document.addEventListener('keydown', this.#onDocumentKey);
+    }
+    #teardownGlobalHandlers(): void {
+      document.removeEventListener('pointerdown', this.#onDocumentPointer);
+      document.removeEventListener('keydown', this.#onDocumentKey);
+    }
   }
-  #teardownGlobalHandlers(): void {
-    document.removeEventListener('pointerdown', this.#onDocumentPointer);
-    document.removeEventListener('keydown', this.#onDocumentKey);
-  }
-}
+
+  InputElementClass = CalenderInputElementImpl;
+  return InputElementClass;
+};
