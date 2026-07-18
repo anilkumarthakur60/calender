@@ -62,7 +62,7 @@ export const App = (): JSX.Element => {
     <main className="layout">
       <header className="hero">
         <span className="badge">Feature showcase</span>
-        <h1>@calender — React</h1>
+        <h1>@anil-labs — React</h1>
         <p>Every feature, idiomatic React.</p>
       </header>
 

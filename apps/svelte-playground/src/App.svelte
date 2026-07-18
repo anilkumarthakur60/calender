@@ -27,7 +27,7 @@
 
 <main>
   <header>
-    <h1>@calender — Svelte 5 playground</h1>
+    <h1>@anil-labs — Svelte 5 playground</h1>
     <p>createDatePicker + runes.</p>
   </header>
 

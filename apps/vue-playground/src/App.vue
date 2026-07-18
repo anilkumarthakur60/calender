@@ -41,7 +41,7 @@ const holidays = [
   <div class="page">
     <header class="hero">
       <span class="badge">Feature showcase</span>
-      <h1>@calender — Vue 3</h1>
+      <h1>@anil-labs/calender</h1>
       <p>Every feature, idiomatic Vue.</p>
     </header>
 

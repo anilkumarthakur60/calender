@@ -13,7 +13,7 @@ export const App = () => {
   return (
     <main class="layout">
       <header>
-        <h1>@calender — Solid playground</h1>
+        <h1>@anil-labs — Solid playground</h1>
         <p>createDatePicker + fine-grained signals.</p>
       </header>
 
