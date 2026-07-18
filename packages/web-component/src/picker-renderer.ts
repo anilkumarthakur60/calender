@@ -12,9 +12,8 @@ import {
   createRange,
   isInRange,
   isSameDay,
-  isoWeekOfYear,
   resolvePresets,
-} from '@calender/core';
+} from '@anil-labs/core';
 
 export class PickerRenderer {
   readonly #host: HTMLElement;
@@ -35,6 +34,8 @@ export class PickerRenderer {
     this.#host.setAttribute('aria-label', 'Date picker');
     this.#host.dir = this.#engine.locale.direction;
     this.#render();
+    this.#host.addEventListener('focusin', this.#onFocusIn);
+    this.#host.addEventListener('focusout', this.#onFocusOut);
     this.#host.addEventListener('keydown', this.#onKey);
     this.#host.addEventListener('click', this.#onClick);
     this.#host.addEventListener('mouseover', this.#onHover);
@@ -45,7 +46,14 @@ export class PickerRenderer {
     this.#host.addEventListener('pointercancel', this.#onPointerCancel);
   }
 
+  /** Re-render from the current engine state (e.g. after a presets change). */
+  refresh(): void {
+    this.#render();
+  }
+
   unmount(): void {
+    this.#host.removeEventListener('focusin', this.#onFocusIn);
+    this.#host.removeEventListener('focusout', this.#onFocusOut);
     this.#host.removeEventListener('keydown', this.#onKey);
     this.#host.removeEventListener('click', this.#onClick);
     this.#host.removeEventListener('mouseover', this.#onHover);
@@ -57,6 +65,28 @@ export class PickerRenderer {
     for (const u of this.#unsubs) u();
     this.#unsubs.length = 0;
     this.#host.replaceChildren();
+  }
+
+  // --- Roving focus ------------------------------------------------------
+  // Only re-focus the roving cell when focus is already inside the picker
+  // (keyboard navigation); mounting or attribute-driven re-renders must not
+  // steal focus from the rest of the document.
+  #focusWithin = false;
+
+  #onFocusIn = (): void => {
+    this.#focusWithin = true;
+  };
+
+  #onFocusOut = (event: FocusEvent): void => {
+    const next = event.relatedTarget as Node | null;
+    if (!next || !this.#host.contains(next)) this.#focusWithin = false;
+  };
+
+  #shouldRestoreFocus(): boolean {
+    if (this.#focusWithin) return true;
+    const doc = this.#host.ownerDocument;
+    const active = doc?.activeElement;
+    return !!active && active !== doc.body && this.#host.contains(active);
   }
 
   // --- Touch swipe -------------------------------------------------------
@@ -207,17 +237,20 @@ export class PickerRenderer {
     const grid = el('div', `cal-picker__grid${useWeeks ? ' cal-picker__grid--with-weeks' : ''}`);
     grid.setAttribute('role', 'grid');
 
+    const headRow = gridRow('cal-picker__row cal-picker__row--head');
     if (useWeeks) {
       const h = el('div', 'cal-picker__weeknum-header');
       h.textContent = 'Wk';
-      grid.append(h);
+      h.setAttribute('role', 'columnheader');
+      headRow.append(h);
     }
     for (const w of state.grid.weekdayHeaders) {
       const h = el('div', 'cal-picker__weekday');
       h.textContent = fmt.formatWeekday(w, 'short');
       h.setAttribute('role', 'columnheader');
-      grid.append(h);
+      headRow.append(h);
     }
+    grid.append(headRow);
 
     const sameMonth =
       focusedMonth.year === state.focused.year && focusedMonth.month === state.focused.month;
@@ -227,16 +260,20 @@ export class PickerRenderer {
           firstDayOfWeek: this.#engine.locale.firstDayOfWeek,
           fixedWeeks: true,
           calendar: this.#engine.calendar,
+          weekNumbers: useWeeks,
         });
 
-    for (const week of monthGrid.weeks) {
-      if (useWeeks && week[0]) {
+    monthGrid.weeks.forEach((week, index) => {
+      const row = gridRow('cal-picker__row');
+      if (useWeeks) {
         const wn = el('div', 'cal-picker__weeknum');
-        wn.textContent = String(isoWeekOfYear(week[0].date));
-        grid.append(wn);
+        wn.setAttribute('role', 'rowheader');
+        wn.textContent = String(monthGrid.weekNumbers?.[index] ?? '');
+        row.append(wn);
       }
-      for (const cell of week) grid.append(this.#renderDayCell(cell, state, focusedMonth));
-    }
+      for (const cell of week) row.append(this.#renderDayCell(cell, state, focusedMonth));
+      grid.append(row);
+    });
     return grid;
   }
 
@@ -249,7 +286,16 @@ export class PickerRenderer {
       this.#engine.calendar,
       this.#engine.locale.locale,
     );
-    for (const cell of period.cells) grid.append(this.#renderPeriodCell(cell));
+    // Chunk into rows of 4 (matches the stylesheet's period column count) so
+    // gridcells are never direct children of role="grid".
+    const perRow = 4;
+    for (let i = 0; i < period.cells.length; i += perRow) {
+      const row = gridRow('cal-picker__row');
+      for (const cell of period.cells.slice(i, i + perRow)) {
+        row.append(this.#renderPeriodCell(cell));
+      }
+      grid.append(row);
+    }
     return grid;
   }
 
@@ -314,7 +360,9 @@ export class PickerRenderer {
 
     const focused = isSameDay(cell.date, state.focused);
     btn.tabIndex = focused ? 0 : -1;
-    if (focused) queueMicrotask(() => btn.focus({ preventScroll: true }));
+    if (focused && this.#shouldRestoreFocus()) {
+      queueMicrotask(() => btn.focus({ preventScroll: true }));
+    }
     let label = this.#engine.formatter.formatFull(cell.date);
     if (highlight?.label) label += ` — ${highlight.label}`;
     btn.setAttribute('aria-label', label);
@@ -399,7 +447,9 @@ export class PickerRenderer {
     const kind = dateEl.dataset['kind'];
     if (kind === 'period') this.#engine.pickInView(date);
     else this.#engine.select(date);
-    this.#host.dispatchEvent(new CustomEvent('cal-select', { detail: { date } }));
+    this.#host.dispatchEvent(
+      new CustomEvent('cal-select', { detail: { date }, bubbles: true, composed: true }),
+    );
   };
 
   #onHover = (event: Event): void => {
@@ -430,6 +480,18 @@ const el = <K extends keyof HTMLElementTagNameMap>(
   const node = document.createElement(tag);
   if (className) node.className = className;
   return node;
+};
+
+/**
+ * ARIA row container. `display: contents` keeps the stylesheet's CSS-grid
+ * tracks (declared on the grid element) working while giving assistive tech
+ * the required grid > row > gridcell structure.
+ */
+const gridRow = (className: string): HTMLDivElement => {
+  const row = el('div', className);
+  row.setAttribute('role', 'row');
+  row.style.display = 'contents';
+  return row;
 };
 
 const navButton = (

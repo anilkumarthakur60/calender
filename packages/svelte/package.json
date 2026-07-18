@@ -1,7 +1,7 @@
 {
-  "name": "@calender/svelte",
+  "name": "@anil-labs/svelte",
   "version": "0.1.0",
-  "description": "Svelte 5 adapter for @calender/core.",
+  "description": "Svelte 5 adapter for @anil-labs/core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/svelte#readme",
@@ -50,17 +50,18 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "test": "echo 'no tests'"
+    "test": "vitest run"
   },
   "dependencies": {
-    "@calender/core": "workspace:*"
+    "@anil-labs/core": "workspace:*"
   },
   "peerDependencies": {
     "svelte": ">=5"
   },
   "devDependencies": {
     "tsup": "^8.3.5",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^2.1.8"
   },
   "publishConfig": {
     "access": "public"

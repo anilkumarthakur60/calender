@@ -1,11 +1,11 @@
-# @calender/web-component
+# @anil-labs/web-component
 
-Framework-free `<calender-picker>` custom element built on `@calender/core`.
+Framework-free `<calender-picker>` custom element built on `@anil-labs/core`.
 
 ```html
-<link rel="stylesheet" href="@calender/styles" />
+<link rel="stylesheet" href="@anil-labs/styles" />
 <script type="module">
-  import '@calender/web-component/auto-register';
+  import '@anil-labs/web-component/auto-register';
 </script>
 
 <calender-picker

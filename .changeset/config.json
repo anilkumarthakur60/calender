@@ -3,18 +3,18 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [["@calender/*"]],
+  "linked": [["@anil-labs/*"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@calender/angular",
-    "@calender/docs",
-    "@calender/wc-playground",
-    "@calender/react-playground",
-    "@calender/vue-playground",
-    "@calender/svelte-playground",
-    "@calender/solid-playground",
-    "@calender/angular-playground"
+    "@anil-labs/angular",
+    "docs",
+    "example-react",
+    "example-vue",
+    "example-svelte",
+    "example-solid",
+    "example-wc",
+    "example-angular"
   ]
 }

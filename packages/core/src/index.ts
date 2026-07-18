@@ -1,5 +1,5 @@
 /**
- * @calender/core — Headless, framework-agnostic calendar/date-picker engine.
+ * @anil-labs/core — Headless, framework-agnostic calendar/date-picker engine.
  *
  * Public surface (barrel). Internal modules are intentionally NOT re-exported;
  * downstream packages should import from this entry point to get a stable API.

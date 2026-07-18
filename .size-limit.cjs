@@ -4,51 +4,51 @@
 
 module.exports = [
   {
-    name: '@calender/core (ESM)',
+    name: '@anil-labs/core (ESM)',
     path: 'packages/core/dist/index.js',
     limit: '14 KB',
   },
   {
-    name: '@calender/styles (compiled CSS)',
+    name: '@anil-labs/styles (compiled CSS)',
     path: 'packages/styles/dist/calender.css',
     limit: '6 KB',
   },
   {
-    name: '@calender/web-component (ESM, includes core)',
+    name: '@anil-labs/web-component (ESM, includes core)',
     path: 'packages/web-component/dist/index.js',
     limit: '24 KB',
     import: '{ defineCalenderPicker }',
   },
   {
     // Includes the bundled core engine; framework deps excluded by `ignore`.
-    name: '@calender/react (ESM, with core, excl. React)',
+    name: '@anil-labs/react (ESM, with core, excl. React)',
     path: 'packages/react/dist/index.js',
-    limit: '15 KB',
+    limit: '18 KB',
     import: '{ DatePicker, DateField, useDatePicker }',
     ignore: ['react', 'react-dom'],
   },
   {
-    name: '@calender/vue (ESM, with core, excl. Vue)',
+    name: '@anil-labs/vue (ESM, with core, excl. Vue)',
     path: 'packages/vue/dist/index.js',
-    limit: '15 KB',
+    limit: '17 KB',
     import: '{ DatePicker, DateField, useDatePicker }',
     ignore: ['vue'],
   },
   {
-    name: '@calender/svelte (ESM, excl. core)',
+    name: '@anil-labs/svelte (ESM, excl. core)',
     path: 'packages/svelte/dist/index.js',
     limit: '2 KB',
-    ignore: ['@calender/core'],
+    ignore: ['@anil-labs/core'],
   },
   {
-    name: '@calender/solid (ESM, excl. core & solid-js)',
+    name: '@anil-labs/solid (ESM, excl. core & solid-js)',
     path: 'packages/solid/dist/index.js',
     limit: '2 KB',
-    ignore: ['@calender/core', 'solid-js'],
+    ignore: ['@anil-labs/core', 'solid-js'],
   },
   {
     // The CDN drop-in script — minified IIFE with core bundled.
-    name: '@calender/web-component (CDN auto-register, minified)',
+    name: '@anil-labs/web-component (CDN auto-register, minified)',
     path: 'packages/web-component/dist/auto-register.global.js',
     limit: '40 KB',
   },

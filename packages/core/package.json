@@ -1,5 +1,5 @@
 {
-  "name": "@calender/core",
+  "name": "@anil-labs/core",
   "version": "0.1.0",
   "description": "Headless, framework-agnostic calendar/date-picker state engine.",
   "license": "MIT",

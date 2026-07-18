@@ -1,0 +1,18 @@
+{
+  "name": "example-wc",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5180",
+    "build": "vite build",
+    "preview": "vite preview --port 5180"
+  },
+  "dependencies": {
+    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/web-component": "workspace:*"
+  },
+  "devDependencies": {
+    "vite": "^8.0.13"
+  }
+}

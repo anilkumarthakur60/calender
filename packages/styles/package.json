@@ -1,7 +1,7 @@
 {
-  "name": "@calender/styles",
+  "name": "@anil-labs/styles",
   "version": "0.1.0",
-  "description": "SCSS source and compiled CSS theme for the @calender renderers.",
+  "description": "SCSS source and compiled CSS theme for the @anil-labs renderers.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/styles#readme",
@@ -27,12 +27,15 @@
   "files": [
     "dist",
     "src",
+    "index.d.ts",
     "README.md"
   ],
   "main": "./dist/calender.css",
   "style": "./dist/calender.css",
+  "types": "./index.d.ts",
   "exports": {
     ".": {
+      "types": "./index.d.ts",
       "sass": "./src/scss/calender.scss",
       "style": "./dist/calender.css",
       "default": "./dist/calender.css"

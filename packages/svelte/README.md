@@ -1,12 +1,12 @@
-# @calender/svelte
+# @anil-labs/svelte
 
-Svelte adapter for `@calender/core`. Exposes a factory that satisfies Svelte's
-readable store contract — usable as `$state` in Svelte 3/4 and read from a
-`$derived` rune in Svelte 5.
+Svelte adapter for `@anil-labs/core`. Exposes a factory that satisfies Svelte's
+readable store contract — read it with `$store` auto-subscription in
+Svelte 3/4/5, or bridge it into a rune with Svelte 5's `fromStore`.
 
 ```svelte
 <script lang="ts">
-  import { createDatePicker } from '@calender/svelte';
+  import { createDatePicker } from '@anil-labs/svelte';
 
   const { engine, state } = createDatePicker({ mode: 'range', locale: 'en-GB' });
 </script>
@@ -25,6 +25,18 @@ readable store contract — usable as `$state` in Svelte 3/4 and read from a
     {/each}
   {/each}
 </div>
+```
+
+## Live reconfiguration
+
+The result exposes the engine plus a `setOptions` shorthand, so a mounted
+picker can be reconfigured without recreating it — selection and focus are
+preserved where still valid and every subscriber is notified:
+
+```ts
+const picker = createDatePicker({ mode: 'single' });
+picker.setOptions({ min: { year: 2025, month: 1, day: 1 } });
+// equivalent: picker.engine.setOptions({ ... })
 ```
 
 A pre-built `.svelte` component is intentionally omitted: shipping `.svelte`

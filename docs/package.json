@@ -1,0 +1,21 @@
+{
+  "name": "docs",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev . --port 5179",
+    "build": "vitepress build .",
+    "preview": "vitepress preview . --port 5179"
+  },
+  "dependencies": {
+    "@anil-labs/core": "workspace:*",
+    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/vue": "workspace:*",
+    "@anil-labs/web-component": "workspace:*",
+    "vue": "^3.5.34"
+  },
+  "devDependencies": {
+    "vitepress": "^1.5.0"
+  }
+}

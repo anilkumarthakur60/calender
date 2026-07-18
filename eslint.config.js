@@ -2,17 +2,19 @@
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import pluginVue from 'eslint-plugin-vue';
+import reactHooks from 'eslint-plugin-react-hooks';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
     ignores: [
       '**/dist/**',
+      '**/dist-demos/**',
       '**/node_modules/**',
       '**/*.cjs',
       '**/*.js.map',
       '**/coverage/**',
-      'apps/playground/dist/**',
+      'examples/**/dist/**',
     ],
   },
   js.configs.recommended,
@@ -22,6 +24,15 @@ export default tseslint.config(
     files: ['**/*.vue'],
     languageOptions: {
       parserOptions: { parser: tseslint.parser },
+    },
+  },
+  {
+    // React adapter — enable the rules-of-hooks + exhaustive-deps plugin.
+    files: ['packages/react/**/*.{ts,tsx}', 'examples/react/**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
   prettier,

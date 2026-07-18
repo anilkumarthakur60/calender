@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@anil-labs/web-component — feature showcase</title>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" crossorigin="anonymous" />
+    <script type="module" src="/src/main.ts"></script>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --accent: #2563eb;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          'Inter',
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
+        font-feature-settings: 'cv11';
+        background:
+          radial-gradient(ellipse 80% 50% at 50% -10%, rgba(37, 99, 235, 0.1), transparent 60%),
+          var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page {
+        max-width: 84rem;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header.hero {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+      .badge {
+        display: inline-block;
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--accent);
+        border: 1px solid rgba(37, 99, 235, 0.18);
+        font-size: 0.75rem;
+        font-weight: 500;
+        padding: 0.25rem 0.625rem;
+        border-radius: 999px;
+        margin-bottom: 0.75rem;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        margin: 0 0 0.5rem;
+        background: linear-gradient(135deg, #0f172a, #475569);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .hero p {
+        color: var(--text-muted);
+        font-size: 1.0625rem;
+        margin: 0;
+      }
+
+      .section-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .section-title:first-of-type {
+        margin-top: 1rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+        gap: 1.5rem;
+        align-items: start;
+      }
+      .grid--wide {
+        grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow:
+          0 0 0 1px rgb(15 23 42 / 0.02),
+          0 1px 3px 0 rgb(15 23 42 / 0.04);
+        transition: box-shadow 200ms ease;
+      }
+      .card:hover {
+        box-shadow:
+          0 0 0 1px rgb(15 23 42 / 0.04),
+          0 8px 20px -4px rgb(15 23 42 / 0.08);
+      }
+      .card > header {
+        margin-bottom: 1.25rem;
+      }
+      .card h3 {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+      }
+      .card > header > p {
+        color: var(--text-muted);
+        font-size: 0.8125rem;
+        line-height: 1.55;
+        margin: 0;
+      }
+      .card.dark {
+        background: #0f172a;
+        border-color: #1e293b;
+        color: #f1f5f9;
+      }
+      .card.dark h3 {
+        color: #f1f5f9;
+      }
+      .card.dark > header > p {
+        color: #94a3b8;
+      }
+      .card.dark .status {
+        background: #1e293b;
+        border-color: #334155;
+        color: #94a3b8;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      .field-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        margin-bottom: 0.375rem;
+      }
+      .status {
+        margin-top: 1rem;
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 0.75rem;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 0.5rem;
+        padding: 0.4375rem 0.625rem;
+        color: var(--text-muted);
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 0.78em;
+        padding: 0.0625rem 0.25rem;
+        border-radius: 0.25rem;
+        background: rgba(15, 23, 42, 0.06);
+      }
+      .submit-btn {
+        background: #2563eb;
+        color: #fff;
+        border: 0;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        margin-top: 0.75rem;
+      }
+      .submit-btn:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <span class="badge">Feature showcase</span>
+        <h1>@anil-labs — Web Component</h1>
+        <p>Every feature in one place. Use the same attributes from any framework or plain HTML.</p>
+      </header>
+
+      <!-- ========== SELECTION MODES ========== -->
+      <h2 class="section-title">Selection modes</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>Single date</h3>
+            <p>Default mode. Click any day. Today is marked with a dot.</p>
+          </header>
+          <calender-picker mode="single" locale="en-GB"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Range — hover preview</h3>
+            <p>
+              Click an anchor, then hover anywhere — see a lighter tentative range until you click
+              the second date.
+            </p>
+          </header>
+          <calender-picker mode="range"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Multi-date</h3>
+            <p>Click multiple dates to toggle. Saves all selections.</p>
+          </header>
+          <calender-picker mode="multi" id="multi-basic"></calender-picker>
+          <p class="status" id="multi-basic-out">(none)</p>
+        </div>
+      </div>
+
+      <!-- ========== FORM INTEGRATION ========== -->
+      <h2 class="section-title">Form integration</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>&lt;calender-input&gt; — text input + popover</h3>
+            <p>
+              Type or pick. Form-associated. <code>name="bookingDate"</code> submits like a native
+              input.
+            </p>
+          </header>
+          <form id="input-form">
+            <label class="field-label" for="bookingDate">Booking date</label>
+            <calender-input
+              id="bookingDate"
+              name="bookingDate"
+              mode="single"
+              locale="en-GB"
+              value="2025-04-15"
+            ></calender-input>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+          <p class="status" id="input-form-out">(unsubmitted)</p>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Picker as form input</h3>
+            <p>The raw <code>&lt;calender-picker&gt;</code> is form-associated too.</p>
+          </header>
+          <form id="picker-form">
+            <calender-picker name="dob" mode="single" locale="en-GB"></calender-picker>
+            <button type="submit" class="submit-btn">Submit</button>
+          </form>
+          <p class="status" id="picker-form-out">(unsubmitted)</p>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Custom display format</h3>
+            <p>
+              Pass <code>format="MMM d, yyyy"</code>. Storage stays ISO via
+              <code>value-format="iso"</code>.
+            </p>
+          </header>
+          <calender-input
+            id="format-input"
+            format="MMM d, yyyy"
+            value-format="iso"
+            value="2025-04-15"
+          ></calender-input>
+          <p class="status" id="format-input-out">value (ISO): 2025-04-15</p>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>EU format input</h3>
+            <p><code>format="dd/MM/yyyy"</code>. Both display and storage use this format.</p>
+          </header>
+          <calender-input id="eu-input" format="dd/MM/yyyy"></calender-input>
+          <p class="status" id="eu-input-out">(none)</p>
+        </div>
+      </div>
+
+      <!-- ========== NAVIGATION ========== -->
+      <h2 class="section-title">Navigation</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>Header month/year dropdowns</h3>
+            <p>Pass <code>header-selectors</code>. Jump to any month/year in a click.</p>
+          </header>
+          <calender-picker header-selectors year-range="2000-2050"></calender-picker>
+        </div>
+
+        <div class="card grid--wide">
+          <header>
+            <h3>Multi-month — 2 months side-by-side</h3>
+            <p><code>months="2"</code>. The range selection band spans across months.</p>
+          </header>
+          <calender-picker mode="range" months="2"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Preset shortcuts</h3>
+            <p><code>presets="today,last7days,last30days,thisMonth,clear"</code>.</p>
+          </header>
+          <calender-picker
+            mode="range"
+            presets="today,last7days,last30days,thisMonth,clear"
+          ></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Today button only</h3>
+            <p>Built-in default.</p>
+          </header>
+          <calender-picker mode="single"></calender-picker>
+        </div>
+      </div>
+
+      <!-- ========== VISUAL ========== -->
+      <h2 class="section-title">Visual options</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>Week numbers</h3>
+            <p>ISO week numbers on the left. Pass <code>week-numbers</code>.</p>
+          </header>
+          <calender-picker week-numbers></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Highlighted dates (events / holidays)</h3>
+            <p>
+              Pass
+              <code>highlights="2026-12-25|#dc2626|Christmas, 2026-01-01|#16a34a|New Year"</code>.
+              Colored dot under the number.
+            </p>
+          </header>
+          <calender-picker
+            highlights="2026-12-25|#dc2626|Christmas, 2026-01-01|#16a34a|New Year, 2026-07-04|#f59e0b|Independence Day"
+            min="2026-01-01"
+            max="2026-12-31"
+          ></calender-picker>
+        </div>
+
+        <div class="card dark">
+          <header>
+            <h3>Dark theme + dense</h3>
+            <p><code>theme="dark" density="dense"</code>.</p>
+          </header>
+          <calender-picker theme="dark" density="dense"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>RTL — Arabic locale</h3>
+            <p><code>locale="ar-EG"</code>. Layout mirrors.</p>
+          </header>
+          <calender-picker locale="ar-EG" mode="range"></calender-picker>
+        </div>
+      </div>
+
+      <!-- ========== TIME PICKER ========== -->
+      <h2 class="section-title">Time / DateTime</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>24-hour clock</h3>
+            <p><code>with-time</code>. Default 24-hour, minute step 1.</p>
+          </header>
+          <calender-picker with-time></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>12-hour clock + AM/PM + seconds</h3>
+            <p><code>with-time clock="12" seconds</code>.</p>
+          </header>
+          <calender-picker with-time clock="12" seconds></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>DateTime input — 15-minute step</h3>
+            <p>
+              Combines <code>with-time</code> with a 15-minute step. Format: <code>HH:mm</code>.
+            </p>
+          </header>
+          <calender-input
+            id="datetime-input"
+            mode="single"
+            with-time
+            time-step="15"
+            format="yyyy-MM-dd HH:mm"
+          ></calender-input>
+          <p class="status" id="datetime-input-out">(none)</p>
+        </div>
+      </div>
+
+      <!-- ========== CALENDAR SYSTEMS ========== -->
+      <h2 class="section-title">Calendar systems</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>Bikram Sambat — English transliteration</h3>
+            <p><code>calendar="bikram-sambat" locale="en-US"</code>. Months: Baishakh, Jestha, …</p>
+          </header>
+          <calender-picker
+            calendar="bikram-sambat"
+            locale="en-US"
+            header-selectors
+          ></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Bikram Sambat — Nepali (Devanagari)</h3>
+            <p><code>locale="ne-NP"</code> renders month names + day digits in Devanagari.</p>
+          </header>
+          <calender-picker
+            calendar="bikram-sambat"
+            locale="ne-NP"
+            header-selectors
+          ></calender-picker>
+        </div>
+      </div>
+
+      <!-- ========== GRANULARITY ========== -->
+      <h2 class="section-title">Granularity (month-only / year-only)</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>Month picker</h3>
+            <p>
+              <code>granularity="month"</code>. Starts at month view, clicking selects (no
+              drill-down).
+            </p>
+          </header>
+          <calender-picker granularity="month" id="month-only"></calender-picker>
+          <p class="status" id="month-only-out">(none)</p>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Year picker</h3>
+            <p><code>granularity="year"</code>. Same idea, for years.</p>
+          </header>
+          <calender-picker granularity="year" id="year-only"></calender-picker>
+          <p class="status" id="year-only-out">(none)</p>
+        </div>
+      </div>
+
+      <!-- ========== CONSTRAINTS ========== -->
+      <h2 class="section-title">Constraints</h2>
+      <div class="grid">
+        <div class="card">
+          <header>
+            <h3>min / max bounds</h3>
+            <p>Dates outside the range are dimmed and not clickable.</p>
+          </header>
+          <calender-picker min="2025-04-01" max="2025-06-30"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Disabled weekdays</h3>
+            <p><code>disabled-weekdays="0,6"</code> blocks Saturdays + Sundays.</p>
+          </header>
+          <calender-picker disabled-weekdays="0,6"></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Disabled specific dates</h3>
+            <p><code>disabled-dates="2025-12-25, 2025-12-26"</code>.</p>
+          </header>
+          <calender-picker
+            disabled-dates="2025-12-25, 2025-12-26, 2026-01-01"
+            initial-focused="2025-12-15"
+          ></calender-picker>
+        </div>
+
+        <div class="card">
+          <header>
+            <h3>Range length 3–7 days</h3>
+            <p>
+              <code>min-range-days="3" max-range-days="7"</code>. After picking an anchor, cells
+              outside the allowed window are disabled.
+            </p>
+          </header>
+          <calender-picker mode="range" min-range-days="3" max-range-days="7"></calender-picker>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

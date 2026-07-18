@@ -6,6 +6,7 @@ import {
   onBeforeUnmount,
   onMounted,
   ref,
+  useId,
   watch,
   type PropType,
 } from 'vue';
@@ -13,11 +14,18 @@ import {
   type CalendarDate,
   type CalendarId,
   type CalendarSystem,
+  type DateConstraint,
   type DatePickerEngineOptions,
+  type DecodedSelection,
   type EngineState,
   type FocusTrap,
   type FormatPreset,
+  type InitialSelected,
+  type PresetSpec,
   type SelectionMode,
+  CompositeConstraint,
+  DisabledWeekdayConstraint,
+  MinMaxConstraint,
   activateFocusTrap,
   announce,
   applyMask,
@@ -25,7 +33,7 @@ import {
   formatSelection,
   isMaskable,
   parseSelection,
-} from '@calender/core';
+} from '@anil-labs/core';
 import { DatePicker } from './DatePicker.js';
 
 const HINT_BY_PATTERN: Record<string, string> = {
@@ -53,11 +61,24 @@ const toSelectionValue = (
   return { mode: 'multi', value: decoded.multi ?? [] };
 };
 
+/**
+ * Multi mode: the single-date mask would strip `,`/`;`, making it impossible
+ * to type more than one date. Mask each segment between separators instead,
+ * preserving the separators themselves.
+ */
+const maskMultiSegments = (raw: string, pattern: string | FormatPreset): string =>
+  raw
+    .split(/([,;]\s*)/)
+    .map((part, i) => (i % 2 === 1 ? part : applyMask(part, pattern).value))
+    .join('');
+
 export const DateField = defineComponent({
   name: 'DateField',
   props: {
     modelValue: { type: String, default: undefined },
     name: { type: String, default: undefined },
+    /** Explicit input id. Auto-generated (stable per instance) when omitted. */
+    id: { type: String, default: undefined },
     placeholder: { type: String, default: undefined },
     disabled: { type: Boolean, default: false },
     mode: { type: String as PropType<SelectionMode>, default: 'single' },
@@ -80,17 +101,27 @@ export const DateField = defineComponent({
     error: { type: Boolean, default: false },
     label: { type: String, default: undefined },
     mask: { type: Boolean, default: undefined },
+    /** Preset specs passed through to the popover picker. */
+    presets: { type: Array as PropType<ReadonlyArray<PresetSpec>>, default: undefined },
+    /** Hide the popover picker's preset footer. */
+    hideFooter: { type: Boolean, default: undefined },
   },
   emits: {
     'update:modelValue': (_value: string) => true,
     change: (_value: string) => true,
   },
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const open = ref(false);
     const flipUp = ref(false);
+    /** True when the last blur-parse produced a date the constraints reject. */
+    const parseInvalid = ref(false);
     const wrapperRef = ref<HTMLElement | null>(null);
     const inputRef = ref<HTMLInputElement | null>(null);
     const popoverRef = ref<HTMLElement | null>(null);
+
+    // Stable per-instance id (generated ONCE in setup — never in render).
+    const generatedId = useId();
+    const fieldId = computed(() => props.id ?? `cal-input-${generatedId}`);
 
     const localeString = computed(() =>
       typeof props.locale === 'string' ? props.locale : (props.locale?.locale ?? 'en-US'),
@@ -125,12 +156,45 @@ export const DateField = defineComponent({
       },
     );
 
-    const initialFocused = computed<CalendarDate | undefined>(() => {
+    const decodedCurrent = computed<DecodedSelection | null>(() => {
       const current = props.modelValue ?? '';
-      if (!current) return undefined;
-      const decoded = parseSelection(current, props.mode, fmtOptsStorage.value);
-      return decoded?.single ?? decoded?.range?.start ?? decoded?.multi?.[0];
+      if (!current) return null;
+      return parseSelection(current, props.mode, fmtOptsStorage.value);
     });
+
+    const initialFocused = computed<CalendarDate | undefined>(() => {
+      const d = decodedCurrent.value;
+      return d?.single ?? d?.range?.start ?? d?.multi?.[0];
+    });
+
+    // Seed the popover picker with the committed selection so reopening shows
+    // the picked date(s) as selected.
+    const initialSelected = computed<InitialSelected | undefined>(() => {
+      const d = decodedCurrent.value;
+      if (!d) return undefined;
+      if (props.mode === 'single') return d.single;
+      if (props.mode === 'range')
+        return d.range ? { start: d.range.start, end: d.range.end } : undefined;
+      return d.multi;
+    });
+
+    // Constraint mirror of the popover engine, for validating typed input.
+    const fieldConstraint = computed(() => {
+      const cs: DateConstraint[] = [];
+      if (props.min || props.max) cs.push(new MinMaxConstraint(props.min, props.max));
+      if (props.disabledWeekdays?.length)
+        cs.push(new DisabledWeekdayConstraint(props.disabledWeekdays, calendarSystem.value));
+      return new CompositeConstraint(cs);
+    });
+
+    const violatesConstraints = (decoded: DecodedSelection): boolean => {
+      const dates: ReadonlyArray<CalendarDate> = decoded.single
+        ? [decoded.single]
+        : decoded.range
+          ? [decoded.range.start, decoded.range.end]
+          : (decoded.multi ?? []);
+      return dates.some(d => fieldConstraint.value.evaluate(d) !== null);
+    };
 
     const commit = (next: string): void => {
       if (next === (props.modelValue ?? '')) return;
@@ -138,21 +202,66 @@ export const DateField = defineComponent({
       emit('change', next);
     };
 
+    // The popover picker reports every engine change (focus moves included);
+    // only selection changes matter here. Track completeness for the
+    // select-driven close below ('change' always fires before 'select').
+    let lastPickerValue = '';
+    let pickerComplete = false;
+
     const handlePickerChange = (state: EngineState): void => {
-      const displayStr = formatSelection(state.selection, fmtOptsDisplay.value);
+      pickerComplete = isComplete(state);
       const storedStr = formatSelection(state.selection, fmtOptsStorage.value);
-      text.value = displayStr;
+      if (storedStr === lastPickerValue) return;
+      lastPickerValue = storedStr;
+      parseInvalid.value = false;
+      text.value = formatSelection(state.selection, fmtOptsDisplay.value);
       commit(storedStr);
-      if (isComplete(state) && props.mode !== 'multi') {
+    };
+
+    const handlePickerSelect = (): void => {
+      if (props.mode !== 'multi' && pickerComplete) {
         open.value = false;
-        nextTick(() => inputRef.value?.focus());
+        void nextTick(() => inputRef.value?.focus());
       }
+    };
+
+    const handleInput = (e: Event): void => {
+      const el = e.target as HTMLInputElement;
+      const raw = el.value;
+      parseInvalid.value = false;
+      const maskEnabled = props.mask ?? isMaskable(displayPattern.value);
+      // Don't mask while the user is deleting (length shrank).
+      if (!maskEnabled || raw.length < text.value.length) {
+        text.value = raw;
+        return;
+      }
+      const caretPos = el.selectionStart ?? raw.length;
+      let maskedValue: string;
+      let caret: number;
+      if (props.mode === 'multi') {
+        maskedValue = maskMultiSegments(raw, displayPattern.value);
+        caret = maskMultiSegments(raw.slice(0, caretPos), displayPattern.value).length;
+      } else {
+        maskedValue = applyMask(raw, displayPattern.value).value;
+        // Masking the prefix up to the caret yields the caret's new position.
+        caret = applyMask(raw.slice(0, caretPos), displayPattern.value).caret;
+      }
+      text.value = maskedValue;
+      // Restore the caret after the masked value hits the DOM (prevents the
+      // caret jumping to the end on mid-string edits).
+      void nextTick(() => {
+        const input = inputRef.value;
+        if (!input || document.activeElement !== input) return;
+        if (input.value !== maskedValue) input.value = maskedValue;
+        input.setSelectionRange(caret, caret);
+      });
     };
 
     const handleBlur = (): void => {
       const current = props.modelValue ?? '';
       if (text.value === toDisplay(current)) return;
       if (text.value.trim() === '') {
+        parseInvalid.value = false;
         commit('');
         return;
       }
@@ -163,6 +272,12 @@ export const DateField = defineComponent({
         text.value = toDisplay(current); // revert
         return;
       }
+      if (violatesConstraints(decoded)) {
+        // Keep the text so the user can correct it; flag the field, no commit.
+        parseInvalid.value = true;
+        return;
+      }
+      parseInvalid.value = false;
       const sel = toSelectionValue(decoded, props.mode);
       text.value = formatSelection(sel, fmtOptsDisplay.value);
       commit(formatSelection(sel, fmtOptsStorage.value));
@@ -193,6 +308,9 @@ export const DateField = defineComponent({
     let trap: FocusTrap | null = null;
     watch(open, isOpen => {
       if (isOpen) {
+        // Snapshot the committed value so untouched-engine changes are ignored.
+        lastPickerValue = props.modelValue ?? '';
+        pickerComplete = false;
         nextTick(() => {
           if (popoverRef.value) trap = activateFocusTrap(popoverRef.value);
         });
@@ -207,7 +325,7 @@ export const DateField = defineComponent({
     watch(
       () => props.modelValue,
       v => {
-        if (typeof v === 'string' && v) announce(`Selected ${v}`);
+        if (typeof v === 'string' && v) announce(`Selected ${toDisplay(v)}`);
       },
     );
 
@@ -231,21 +349,24 @@ export const DateField = defineComponent({
         HINT_BY_PATTERN[typeof displayPattern.value === 'string' ? displayPattern.value : 'iso'] ??
         String(displayPattern.value);
 
-      const isInvalid = props.error === true || !!props.errorText;
-      const fieldId = `cal-input-${Math.random().toString(36).slice(2, 9)}`;
-      const helperId = `${fieldId}-helper`;
-      const errorId = `${fieldId}-error`;
+      const isInvalid = props.error === true || !!props.errorText || parseInvalid.value;
+      const helperId = `${fieldId.value}-helper`;
+      const errorId = `${fieldId.value}-error`;
       const describedBy =
         isInvalid && props.errorText ? errorId : props.helperText ? helperId : undefined;
 
       const pickerProps: Record<string, unknown> = { mode: props.mode };
       if (initialFocused.value !== undefined) pickerProps['initialFocused'] = initialFocused.value;
+      if (initialSelected.value !== undefined)
+        pickerProps['initialSelected'] = initialSelected.value;
       if (props.min !== undefined) pickerProps['min'] = props.min;
       if (props.max !== undefined) pickerProps['max'] = props.max;
       if (props.locale !== undefined) pickerProps['locale'] = props.locale;
       if (props.calendar !== undefined) pickerProps['calendar'] = props.calendar;
       if (props.disabledWeekdays !== undefined)
         pickerProps['disabledWeekdays'] = props.disabledWeekdays;
+      if (props.presets !== undefined) pickerProps['presets'] = props.presets;
+      if (props.hideFooter !== undefined) pickerProps['hideFooter'] = props.hideFooter;
 
       return h(
         'div',
@@ -255,7 +376,7 @@ export const DateField = defineComponent({
         },
         [
           props.label
-            ? h('label', { class: 'cal-field__label', for: fieldId }, [
+            ? h('label', { class: 'cal-field__label', for: fieldId.value }, [
                 props.label,
                 props.required
                   ? h('span', { class: 'cal-field__required', 'aria-hidden': 'true' }, ' *')
@@ -272,7 +393,7 @@ export const DateField = defineComponent({
             [
               h('input', {
                 ref: (el: unknown) => (inputRef.value = el as HTMLInputElement | null),
-                id: fieldId,
+                id: fieldId.value,
                 type: 'text',
                 class: 'cal-field__input',
                 value: text.value,
@@ -284,16 +405,9 @@ export const DateField = defineComponent({
                 'aria-haspopup': 'dialog',
                 'aria-expanded': open.value,
                 'aria-invalid': isInvalid || undefined,
+                'data-invalid': isInvalid ? 'true' : undefined,
                 'aria-describedby': describedBy,
-                onInput: (e: Event) => {
-                  const raw = (e.target as HTMLInputElement).value;
-                  const maskEnabled = props.mask ?? isMaskable(displayPattern.value);
-                  if (!maskEnabled || raw.length < text.value.length) {
-                    text.value = raw;
-                    return;
-                  }
-                  text.value = applyMask(raw, displayPattern.value).value;
-                },
+                onInput: handleInput,
                 onFocus: () => (open.value = true),
                 onClick: () => (open.value = true),
                 onBlur: handleBlur,
@@ -330,7 +444,18 @@ export const DateField = defineComponent({
                   'aria-modal': 'false',
                   onMousedown: (e: MouseEvent) => e.preventDefault(),
                 },
-                [h(DatePicker, { ...pickerProps, onChange: handlePickerChange })],
+                [
+                  h(
+                    DatePicker,
+                    {
+                      ...pickerProps,
+                      onChange: handlePickerChange,
+                      onSelect: handlePickerSelect,
+                    },
+                    // Forward the day-cell slot to the popover picker.
+                    slots.cell ? { cell: slots.cell } : undefined,
+                  ),
+                ],
               )
             : null,
           isInvalid && props.errorText

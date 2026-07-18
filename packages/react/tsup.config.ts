@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2022',
-  external: ['react', 'react-dom', '@calender/core'],
+  external: ['react', 'react-dom', '@anil-labs/core'],
 });
