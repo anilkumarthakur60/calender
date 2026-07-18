@@ -6,7 +6,10 @@
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    // This package pins TypeScript 5.9 (ng-packagr/Angular 21 require <6.0);
+    // the base config's "6.0" value is not valid there.
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src/**/*.ts"]
 }
