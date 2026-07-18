@@ -58,7 +58,7 @@ const chunkCells = <T,>(cells: ReadonlyArray<T>, size: number): T[][] => {
 };
 
 export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
-  (props, ref): JSX.Element => {
+  (props, ref): React.JSX.Element => {
     const {
       className,
       onSelect,
@@ -422,7 +422,7 @@ const TimeRow = ({
 }: {
   engine: ReturnType<typeof useDatePicker>['engine'];
   state: EngineState;
-}): JSX.Element => {
+}): React.JSX.Element => {
   const t = state.time ?? { hour: 0, minute: 0, second: 0 };
   const hour12 = engine.use12HourClock;
   const showSeconds = engine.showSeconds;

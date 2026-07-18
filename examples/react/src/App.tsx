@@ -11,7 +11,7 @@ const Section = ({
 }: {
   title: string;
   children: React.ReactNode;
-}): JSX.Element => (
+}): React.JSX.Element => (
   <>
     <h2 className="section-title">{title}</h2>
     <div className="grid">{children}</div>
@@ -28,7 +28,7 @@ const Card = ({
   description: React.ReactNode;
   children: React.ReactNode;
   status?: string | null;
-}): JSX.Element => (
+}): React.JSX.Element => (
   <section>
     <header>
       <h3>{title}</h3>
@@ -39,7 +39,7 @@ const Card = ({
   </section>
 );
 
-export const App = (): JSX.Element => {
+export const App = (): React.JSX.Element => {
   const [single, setSingle] = useState<CalendarDate | null>(null);
   const [range, setRange] = useState<CalendarDate | null>(null);
   const [multi, setMulti] = useState<CalendarDate | null>(null);

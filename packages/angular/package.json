@@ -54,17 +54,17 @@
     "@angular/forms": ">=17"
   },
   "devDependencies": {
-    "@angular/core": "~21.2.18",
-    "@angular/common": "~21.2.18",
-    "@angular/compiler": "~21.2.18",
-    "@angular/compiler-cli": "~21.2.18",
-    "@angular/forms": "~21.2.18",
-    "@angular/platform-browser": "~21.2.18",
-    "ng-packagr": "^21.2.0",
-    "rxjs": "^7.8.1",
-    "zone.js": "^0.15.0",
-    "typescript": "~5.9.2",
-    "vitest": "^2.1.8"
+    "@angular/core": "~22.0.7",
+    "@angular/common": "~22.0.7",
+    "@angular/compiler": "~22.0.7",
+    "@angular/compiler-cli": "~22.0.7",
+    "@angular/forms": "~22.0.7",
+    "@angular/platform-browser": "~22.0.7",
+    "ng-packagr": "^22.0.1",
+    "rxjs": "^7.8.2",
+    "zone.js": "^0.16.2",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.10"
   },
   "publishConfig": {
     "access": "public"
