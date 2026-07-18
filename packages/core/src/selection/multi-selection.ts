@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { compareDates, isSameDay } from '../domain/calendar-date.js';
+import { type CalendarDate, compareDates, isSameDay } from '../domain';
 import type { SelectionStrategy, SelectionValue } from './selection-strategy.js';
 
 type S = Extract<SelectionValue, { mode: 'multi' }>;

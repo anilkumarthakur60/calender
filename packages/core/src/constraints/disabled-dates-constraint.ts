@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { toIso } from '../domain/calendar-date.js';
+import { type CalendarDate, toIso } from '../domain';
 import type { DateConstraint } from './constraint.js';
 
 export class DisabledDatesConstraint implements DateConstraint {

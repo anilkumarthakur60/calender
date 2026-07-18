@@ -4,7 +4,7 @@ import {
   toEpochDay,
   todayCalendarDate as todayGregorian,
   usWeekday,
-} from '../domain/calendar-date.js';
+} from '../domain';
 import type { CalendarSystem } from './calendar-system.js';
 import { GregorianCalendar } from './gregorian-calendar.js';
 import {

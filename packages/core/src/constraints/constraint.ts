@@ -1,4 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
+import type { CalendarDate } from '../domain';
 
 /**
  * Predicate-style constraint: returns a reason string when a date is *not*

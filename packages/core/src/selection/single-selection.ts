@@ -1,5 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { isSameDay } from '../domain/calendar-date.js';
+import { type CalendarDate, isSameDay } from '../domain';
 import type { SelectionStrategy, SelectionValue } from './selection-strategy.js';
 
 type S = Extract<SelectionValue, { mode: 'single' }>;

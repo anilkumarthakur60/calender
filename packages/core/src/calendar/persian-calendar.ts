@@ -1,4 +1,4 @@
-import { type CalendarDate, toJsDate } from '../domain/calendar-date.js';
+import { type CalendarDate, toJsDate } from '../domain';
 import type { CalendarSystem } from './calendar-system.js';
 import { GregorianCalendar } from './gregorian-calendar.js';
 
