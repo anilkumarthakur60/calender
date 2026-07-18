@@ -23,13 +23,15 @@ const Card = ({
   description,
   children,
   status,
+  wide,
 }: {
   title: string;
   description: React.ReactNode;
   children: React.ReactNode;
   status?: string | null;
+  wide?: boolean;
 }): React.JSX.Element => (
-  <section>
+  <section className={wide ? 'wide' : undefined}>
     <header>
       <h3>{title}</h3>
       <p>{description}</p>
@@ -211,6 +213,7 @@ export const App = (): React.JSX.Element => {
 
         <Card
           title="Multi-month — 2 months"
+          wide
           description={
             <>
               <code>months={2}</code>. Range bands span across months.

@@ -159,7 +159,7 @@ const holidays = [
         <DatePicker :header-selectors="true" :year-range="[2000, 2050]" />
       </article>
 
-      <article class="card">
+      <article class="card wide">
         <header>
           <h3>Multi-month — 2 months</h3>
           <p><code>:months="2"</code>. Range bands span across months.</p>
@@ -382,6 +382,10 @@ body {
   grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
   gap: 1.5rem;
   align-items: start;
+}
+/* Wide cards (e.g. multi-month) span two columns so both months fit. */
+.card.wide {
+  grid-column: span 2;
 }
 .card {
   background: var(--card-bg);

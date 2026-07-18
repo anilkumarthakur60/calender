@@ -95,8 +95,9 @@
         gap: 1.5rem;
         align-items: start;
       }
-      .grid--wide {
-        grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+      /* Wide cards (e.g. multi-month) span two columns so both months fit. */
+      .card.wide {
+        grid-column: span 2;
       }
       .card {
         background: var(--surface);
@@ -305,7 +306,7 @@
           <calender-picker header-selectors year-range="2000-2050"></calender-picker>
         </div>
 
-        <div class="card grid--wide">
+        <div class="card wide">
           <header>
             <h3>Multi-month — 2 months side-by-side</h3>
             <p><code>months="2"</code>. The range selection band spans across months.</p>
