@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { DateField, DatePicker } from '@anil-labs/react';
-import { type CalendarDate, createCalendarDate } from '@anil-labs/core';
-
-const toLabel = (d: CalendarDate | null): string =>
-  d ? `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}` : '(none)';
+import { createCalendarDate } from '@anil-labs/core';
 
 const Section = ({
   title,
@@ -41,23 +38,63 @@ const Card = ({
   </section>
 );
 
+/**
+ * A feature shown twice, side by side: the inline picker on the left and the
+ * same feature as a DateField (form input) on the right — so each use case is
+ * easy to compare in both forms.
+ */
+const FeaturePair = ({
+  title,
+  description,
+  picker,
+  field,
+}: {
+  title: string;
+  description: React.ReactNode;
+  picker: React.ReactNode;
+  field: React.ReactNode;
+}): React.JSX.Element => (
+  <div className="pair">
+    <div className="pair-head">
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+    <div className="pair-cards">
+      <div className="pair-card">
+        <span className="pair-tag">Inline picker</span>
+        {picker}
+      </div>
+      <div className="pair-card">
+        <span className="pair-tag">Form input</span>
+        {field}
+      </div>
+    </div>
+  </div>
+);
+
+const PairSection = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}): React.JSX.Element => (
+  <>
+    <h2 className="section-title">{title}</h2>
+    <div className="pairs">{children}</div>
+  </>
+);
+
+const holidays = [
+  { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
+  { date: createCalendarDate(2026, 1, 1), color: '#16a34a', label: 'New Year' },
+  { date: createCalendarDate(2026, 12, 31), color: '#f59e0b', label: 'NYE' },
+];
+
 export const App = (): React.JSX.Element => {
-  const [single, setSingle] = useState<CalendarDate | null>(null);
-  const [range, setRange] = useState<CalendarDate | null>(null);
-  const [multi, setMulti] = useState<CalendarDate | null>(null);
-  const [datetimeIso, setDatetimeIso] = useState('');
   const [euValue, setEuValue] = useState('');
   const [isoValue, setIsoValue] = useState('2025-04-15');
   const [bookingIso, setBookingIso] = useState<string | null>(null);
-  const [monthPick, setMonthPick] = useState<CalendarDate | null>(null);
-  const [yearPick, setYearPick] = useState<CalendarDate | null>(null);
-  const [presetRange, setPresetRange] = useState('');
-  const [bsValue, setBsValue] = useState('');
-  const [multiRangeVal, setMultiRangeVal] = useState('');
-  const [weekNumVal, setWeekNumVal] = useState('');
-  const [highlightVal, setHighlightVal] = useState('2026-12-25');
-  const [constrainedVal, setConstrainedVal] = useState('');
-  const [dropdownVal, setDropdownVal] = useState('');
 
   const onNativeSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -70,33 +107,216 @@ export const App = (): React.JSX.Element => {
       <header className="hero">
         <span className="badge">Feature showcase</span>
         <h1>@anil-labs — React</h1>
-        <p>Every feature, idiomatic React.</p>
+        <p>Every feature shown as an inline picker and as a form input, side by side.</p>
       </header>
 
-      <Section title="Selection modes">
-        <Card title="Single date" description="Default mode. Today is marked with a dot.">
-          <DatePicker mode="single" locale="en-GB" onSelect={setSingle} />
-          <p className="status">Selected: {toLabel(single)}</p>
-        </Card>
-
-        <Card
+      <PairSection title="Selection modes">
+        <FeaturePair
+          title="Single date"
+          description="Default mode. Today is marked with a dot."
+          picker={<DatePicker mode="single" locale="en-GB" />}
+          field={<DateField mode="single" locale="en-GB" />}
+        />
+        <FeaturePair
           title="Range — hover preview"
-          description="Click an anchor, then hover anywhere — see the tentative range until you click the second date."
-        >
-          <DatePicker mode="range" onSelect={setRange} />
-          <p className="status">Last clicked: {toLabel(range)}</p>
-        </Card>
-
-        <Card
+          description="Click an anchor, then hover — a tentative range shows until the second click."
+          picker={<DatePicker mode="range" />}
+          field={<DateField mode="range" format="MMM d, yyyy" />}
+        />
+        <FeaturePair
           title="Multi-date — weekends disabled"
-          description="Click multiple non-weekend dates to toggle them."
-        >
-          <DatePicker mode="multi" disabledWeekdays={[0, 6]} onSelect={setMulti} />
-          <p className="status">Last clicked: {toLabel(multi)}</p>
-        </Card>
-      </Section>
+          description="Toggle multiple non-weekend dates."
+          picker={<DatePicker mode="multi" disabledWeekdays={[0, 6]} />}
+          field={<DateField mode="multi" disabledWeekdays={[0, 6]} />}
+        />
+      </PairSection>
 
-      <Section title="Form integration — DateField">
+      <PairSection title="Navigation">
+        <FeaturePair
+          title="Header month/year dropdowns"
+          description={
+            <>
+              <code>headerSelectors yearRange={[2000, 2050]}</code>. Jump in one click.
+            </>
+          }
+          picker={<DatePicker headerSelectors yearRange={[2000, 2050]} />}
+          field={<DateField headerSelectors yearRange={[2000, 2050]} />}
+        />
+        <FeaturePair
+          title="Multi-month — 2 months"
+          description={
+            <>
+              <code>mode="range" months={2}</code>. Two months side by side; range bands span both.
+            </>
+          }
+          picker={<DatePicker mode="range" months={2} />}
+          field={<DateField mode="range" months={2} format="MMM d, yyyy" />}
+        />
+        <FeaturePair
+          title="Preset shortcuts"
+          description={
+            <>
+              <code>presets={`['today','last7days','last30days','thisMonth','clear']`}</code>.
+            </>
+          }
+          picker={
+            <DatePicker
+              mode="range"
+              presets={['today', 'last7days', 'last30days', 'thisMonth', 'clear']}
+            />
+          }
+          field={
+            <DateField
+              mode="range"
+              presets={['today', 'last7days', 'last30days', 'thisMonth', 'clear']}
+              format="MMM d, yyyy"
+            />
+          }
+        />
+      </PairSection>
+
+      <PairSection title="Visual options">
+        <FeaturePair
+          title="Week numbers"
+          description={
+            <>
+              ISO week numbers in a left column. <code>weekNumbers</code>.
+            </>
+          }
+          picker={<DatePicker weekNumbers />}
+          field={<DateField weekNumbers />}
+        />
+        <FeaturePair
+          title="Highlights — events / holidays"
+          description={
+            <>
+              Coloured dot under the day; tooltip from <code>label</code>.
+            </>
+          }
+          picker={
+            <DatePicker initialFocused={createCalendarDate(2026, 12, 1)} highlights={holidays} />
+          }
+          field={<DateField defaultValue="2026-12-25" highlights={holidays} />}
+        />
+      </PairSection>
+
+      <PairSection title="Time / DateTime">
+        <FeaturePair
+          title="24-hour clock"
+          description={
+            <>
+              <code>withTime</code>. Default 24-hour, minute step 1.
+            </>
+          }
+          picker={<DatePicker withTime />}
+          field={<DateField withTime format="yyyy-MM-dd HH:mm" />}
+        />
+        <FeaturePair
+          title="12-hour + seconds + 5-min step"
+          description={
+            <>
+              <code>withTime use12HourClock showSeconds timeStep={5}</code>.
+            </>
+          }
+          picker={<DatePicker withTime use12HourClock showSeconds timeStep={5} />}
+          field={
+            <DateField
+              withTime
+              use12HourClock
+              showSeconds
+              timeStep={5}
+              format="yyyy-MM-dd hh:mm:ss a"
+            />
+          }
+        />
+      </PairSection>
+
+      <PairSection title="Granularity">
+        <FeaturePair
+          title="Month picker"
+          description={
+            <>
+              <code>granularity="month"</code>. Pick a month.
+            </>
+          }
+          picker={<DatePicker granularity="month" />}
+          field={<DateField granularity="month" format="MMM yyyy" />}
+        />
+        <FeaturePair
+          title="Year picker"
+          description={
+            <>
+              <code>granularity="year"</code>. Pick a year.
+            </>
+          }
+          picker={<DatePicker granularity="year" />}
+          field={<DateField granularity="year" format="yyyy" />}
+        />
+      </PairSection>
+
+      <PairSection title="Constraints">
+        <FeaturePair
+          title="min / max"
+          description="Dates outside the range are dimmed and rejected on type + click."
+          picker={
+            <DatePicker
+              min={createCalendarDate(2025, 4, 1)}
+              max={createCalendarDate(2025, 6, 30)}
+            />
+          }
+          field={
+            <DateField min={createCalendarDate(2025, 4, 1)} max={createCalendarDate(2025, 6, 30)} />
+          }
+        />
+        <FeaturePair
+          title="Range 3–7 days"
+          description={
+            <>
+              <code>
+                minRangeDays={3} maxRangeDays={7}
+              </code>
+              . Cells outside the window are disabled after the anchor.
+            </>
+          }
+          picker={<DatePicker mode="range" minRangeDays={3} maxRangeDays={7} />}
+          field={<DateField mode="range" minRangeDays={3} maxRangeDays={7} format="MMM d" />}
+        />
+      </PairSection>
+
+      <PairSection title="Calendar systems">
+        <FeaturePair
+          title="Bikram Sambat — English"
+          description="Months: Baishakh, Jestha, … transliterated."
+          picker={<DatePicker calendar="bikram-sambat" locale="en-US" headerSelectors />}
+          field={
+            <DateField
+              calendar="bikram-sambat"
+              locale="en-US"
+              headerSelectors
+              format="MMMM d, yyyy"
+            />
+          }
+        />
+        <FeaturePair
+          title="Bikram Sambat — Nepali Devanagari"
+          description={
+            <>
+              <code>locale="ne-NP"</code> renders Devanagari digits + month names.
+            </>
+          }
+          picker={<DatePicker calendar="bikram-sambat" locale="ne-NP" headerSelectors />}
+          field={
+            <DateField
+              calendar="bikram-sambat"
+              locale="ne-NP"
+              headerSelectors
+              format="MMMM d, yyyy"
+            />
+          }
+        />
+      </PairSection>
+
+      <Section title="Form integration — DateField patterns">
         <Card
           title="Controlled — ISO storage"
           description={
@@ -113,8 +333,8 @@ export const App = (): React.JSX.Element => {
           title="Custom display, ISO storage"
           description={
             <>
-              <code>format="MMM d, yyyy"</code> <code>valueFormat="iso"</code>. User sees pretty
-              dates; you store ISO.
+              <code>format="MMM d, yyyy"</code> <code>valueFormat="iso"</code>. Pretty display, ISO
+              storage.
             </>
           }
           status={`stored: ${isoValue || '(empty)'}`}
@@ -149,313 +369,12 @@ export const App = (): React.JSX.Element => {
           status={`submitted: ${bookingIso ?? '(unsubmitted)'}`}
         >
           <form onSubmit={onNativeSubmit}>
-            <label
-              style={{
-                display: 'block',
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                marginBottom: '0.375rem',
-                color: '#64748b',
-              }}
-            >
-              Booking date
-            </label>
+            <label className="field-label">Booking date</label>
             <DateField name="bookingDate" defaultValue="2025-04-15" mode="single" />
             <button type="submit" className="submit-btn-react">
               Submit
             </button>
           </form>
-        </Card>
-
-        <Card
-          title="DateTime — 15-min step"
-          description={
-            <>
-              <code>withTime timeStep={15} format="yyyy-MM-dd HH:mm"</code>.
-            </>
-          }
-          status={`value = ${datetimeIso || '(empty)'}`}
-        >
-          <DateField
-            value={datetimeIso}
-            onChange={setDatetimeIso}
-            withTime
-            timeStep={15}
-            format="yyyy-MM-dd HH:mm"
-          />
-        </Card>
-
-        <Card
-          title="BS calendar — Devanagari"
-          description={
-            <>
-              BS picker with <code>calendar="bikram-sambat" locale="ne-NP"</code>.
-            </>
-          }
-          status={`value = ${bsValue || '(empty)'}`}
-        >
-          <DateField
-            value={bsValue}
-            onChange={setBsValue}
-            calendar="bikram-sambat"
-            locale="ne-NP"
-            format="MMMM d, yyyy"
-          />
-        </Card>
-      </Section>
-
-      <Section title="DateField — every feature as an input">
-        <Card
-          title="Multi-month — 2 months"
-          wide
-          description={
-            <>
-              <code>mode="range" months={2}</code>. The popover shows two months; range bands span
-              across them.
-            </>
-          }
-          status={`value = ${multiRangeVal || '(empty)'}`}
-        >
-          <DateField
-            mode="range"
-            months={2}
-            value={multiRangeVal}
-            onChange={setMultiRangeVal}
-            format="MMM d, yyyy"
-          />
-        </Card>
-
-        <Card
-          title="Week numbers"
-          description={
-            <>
-              <code>weekNumbers</code>. ISO week column in the popover.
-            </>
-          }
-          status={`value = ${weekNumVal || '(empty)'}`}
-        >
-          <DateField weekNumbers value={weekNumVal} onChange={setWeekNumVal} />
-        </Card>
-
-        <Card
-          title="Highlights — events / holidays"
-          description={
-            <>
-              <code>highlights</code>. Dots mark events; hover for the label.
-            </>
-          }
-          status={`value = ${highlightVal || '(empty)'}`}
-        >
-          <DateField
-            value={highlightVal}
-            onChange={setHighlightVal}
-            highlights={[
-              { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
-              { date: createCalendarDate(2026, 12, 31), color: '#f59e0b', label: 'NYE' },
-            ]}
-          />
-        </Card>
-
-        <Card
-          title="min / max constraint"
-          description={
-            <>
-              <code>min</code> / <code>max</code>. Out-of-range dates are rejected on type and
-              click.
-            </>
-          }
-          status={`value = ${constrainedVal || '(empty)'}`}
-        >
-          <DateField
-            value={constrainedVal}
-            onChange={setConstrainedVal}
-            min={createCalendarDate(2025, 4, 1)}
-            max={createCalendarDate(2025, 6, 30)}
-          />
-        </Card>
-
-        <Card
-          title="Header month/year dropdowns"
-          description={
-            <>
-              <code>headerSelectors yearRange={[2000, 2050]}</code>. Jump in one click.
-            </>
-          }
-          status={`value = ${dropdownVal || '(empty)'}`}
-        >
-          <DateField
-            value={dropdownVal}
-            onChange={setDropdownVal}
-            headerSelectors
-            yearRange={[2000, 2050]}
-          />
-        </Card>
-      </Section>
-
-      <Section title="Navigation">
-        <Card
-          title="Header month/year dropdowns"
-          description={
-            <>
-              Pass <code>headerSelectors</code>. Jump in one click.
-            </>
-          }
-        >
-          <DatePicker headerSelectors yearRange={[2000, 2050]} />
-        </Card>
-
-        <Card
-          title="Multi-month — 2 months"
-          wide
-          description={
-            <>
-              <code>months={2}</code>. Range bands span across months.
-            </>
-          }
-        >
-          <DatePicker mode="range" months={2} />
-        </Card>
-
-        <Card
-          title="Preset shortcuts"
-          description={
-            <>
-              <code>presets={`['last7days','last30days','thisMonth','clear']`}</code>.
-            </>
-          }
-          status={`range value: ${presetRange || '(none)'}`}
-        >
-          <DatePicker
-            mode="range"
-            presets={['today', 'last7days', 'last30days', 'thisMonth', 'clear']}
-            onChange={s => {
-              const sel = s.selection;
-              if (sel.mode === 'range' && sel.value) {
-                setPresetRange(`${toLabel(sel.value.start)} / ${toLabel(sel.value.end)}`);
-              } else {
-                setPresetRange('');
-              }
-            }}
-          />
-        </Card>
-      </Section>
-
-      <Section title="Visual options">
-        <Card
-          title="Week numbers"
-          description={
-            <>
-              ISO week numbers in a left column. <code>weekNumbers</code>.
-            </>
-          }
-        >
-          <DatePicker weekNumbers />
-        </Card>
-
-        <Card
-          title="Highlights — events / holidays"
-          description={
-            <>
-              Coloured dot under the day number. Tooltip from <code>label</code>.
-            </>
-          }
-        >
-          <DatePicker
-            initialFocused={createCalendarDate(2026, 12, 1)}
-            highlights={[
-              { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
-              { date: createCalendarDate(2026, 1, 1), color: '#16a34a', label: 'New Year' },
-              { date: createCalendarDate(2026, 12, 31), color: '#f59e0b', label: 'NYE' },
-            ]}
-          />
-        </Card>
-      </Section>
-
-      <Section title="Time / DateTime">
-        <Card
-          title="24-hour clock"
-          description={
-            <>
-              <code>withTime</code>. Default 24-hour, minute step 1.
-            </>
-          }
-        >
-          <DatePicker withTime />
-        </Card>
-
-        <Card
-          title="12-hour + seconds + 5-min step"
-          description={
-            <>
-              <code>withTime use12HourClock showSeconds timeStep={5}</code>.
-            </>
-          }
-        >
-          <DatePicker withTime use12HourClock showSeconds timeStep={5} />
-        </Card>
-      </Section>
-
-      <Section title="Granularity">
-        <Card
-          title="Month picker"
-          description={
-            <>
-              <code>granularity="month"</code>. Click a month to select.
-            </>
-          }
-          status={`picked: ${toLabel(monthPick)}`}
-        >
-          <DatePicker granularity="month" onSelect={setMonthPick} />
-        </Card>
-
-        <Card
-          title="Year picker"
-          description={
-            <>
-              <code>granularity="year"</code>. Click a year to select.
-            </>
-          }
-          status={`picked: ${toLabel(yearPick)}`}
-        >
-          <DatePicker granularity="year" onSelect={setYearPick} />
-        </Card>
-      </Section>
-
-      <Section title="Constraints">
-        <Card title="min / max" description="Dates outside the range are dimmed and not clickable.">
-          <DatePicker min={createCalendarDate(2025, 4, 1)} max={createCalendarDate(2025, 6, 30)} />
-        </Card>
-
-        <Card
-          title="Range 3–7 days"
-          description={
-            <>
-              <code>minRangeDays={3}</code> <code>maxRangeDays={7}</code>. After picking the anchor,
-              cells outside the allowed window are disabled.
-            </>
-          }
-        >
-          <DatePicker mode="range" minRangeDays={3} maxRangeDays={7} />
-        </Card>
-      </Section>
-
-      <Section title="Calendar systems">
-        <Card
-          title="Bikram Sambat — English transliteration"
-          description={<>Months: Baishakh, Jestha, …</>}
-        >
-          <DatePicker calendar="bikram-sambat" locale="en-US" headerSelectors />
-        </Card>
-
-        <Card
-          title="Bikram Sambat — Nepali Devanagari"
-          description={
-            <>
-              <code>locale="ne-NP"</code> renders Devanagari digits + month names.
-            </>
-          }
-        >
-          <DatePicker calendar="bikram-sambat" locale="ne-NP" headerSelectors />
         </Card>
       </Section>
     </main>
