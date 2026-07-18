@@ -1,6 +1,6 @@
 # Getting started
 
-`@calender` is a small set of packages. Pick the renderer for your framework and
+`@anil-labs` is a small set of packages. Pick the renderer for your framework and
 go — the headless core powers them all.
 
 ## Install

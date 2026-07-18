@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: '@calender'
+  name: '@anil-labs'
   text: "One headless engine.\nEvery modern framework."
   tagline: Calendar / date-picker for React, Vue, Svelte, Solid, Angular & Web Components. AD + Bikram Sambat out of the box.
   image:
     src: /calendar.svg
-    alt: '@calender'
+    alt: '@anil-labs'
   actions:
     - theme: brand
       text: Get started

@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
-  title: '@calender',
+  title: '@anil-labs',
   description:
     'Headless, framework-agnostic calendar / date-picker for React, Vue, Svelte, Solid, Angular & Web Components. AD + Bikram Sambat.',
   lang: 'en-US',
@@ -29,7 +29,7 @@ export default defineConfig({
 
   themeConfig: {
     logo: '/calendar.svg',
-    siteTitle: '@calender',
+    siteTitle: '@anil-labs',
 
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
@@ -115,7 +115,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under MIT.',
-      copyright: 'Built with 💙 — @calender',
+      copyright: 'Built with 💙 — @anil-labs',
     },
 
     search: { provider: 'local' },

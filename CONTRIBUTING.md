@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in `@calender`. This guide is intentionally short —
+Thanks for your interest in `@anil-labs`. This guide is intentionally short —
 the [main README](./README.md) has the full project structure and dev
 workflow.
 
