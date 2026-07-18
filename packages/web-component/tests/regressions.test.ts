@@ -57,6 +57,30 @@ describe('bug #5 — cal-change contract', () => {
   });
 });
 
+describe('grid entry animation only plays on navigation', () => {
+  const grid = (root: HTMLElement): HTMLElement =>
+    root.querySelector<HTMLElement>('.cal-picker__grid')!;
+
+  it('does not replay the slide-in animation when selecting within the month', () => {
+    const el = mount('<calender-picker value="2025-04-15"></calender-picker>');
+    // First render animates (fresh mount).
+    expect(grid(el).style.animation).toBe('');
+    // Selecting a same-month day re-renders but must suppress the animation,
+    // otherwise the grid visibly shifts/flickers on every click.
+    dayCell(el, '2025-4-20').click();
+    expect(grid(el).style.animation).toBe('none');
+  });
+
+  it('replays the animation when navigating to another month', () => {
+    const el = mount('<calender-picker value="2025-04-15"></calender-picker>');
+    dayCell(el, '2025-4-20').click();
+    expect(grid(el).style.animation).toBe('none');
+    // Navigating months changes the displayed period → animation plays again.
+    el.querySelector<HTMLButtonElement>('.cal-picker__nav[aria-label="Next"]')!.click();
+    expect(grid(el).style.animation).toBe('');
+  });
+});
+
 describe('bug #6 — attribute changes must not wipe the selection', () => {
   it('cosmetic attributes (theme/density) keep the selection', () => {
     const el = mount('<calender-picker></calender-picker>') as CalenderPickerElement;
