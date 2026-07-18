@@ -14,7 +14,7 @@ export default tseslint.config(
       '**/*.cjs',
       '**/*.js.map',
       '**/coverage/**',
-      'apps/playground/dist/**',
+      'examples/**/dist/**',
     ],
   },
   js.configs.recommended,
@@ -28,7 +28,7 @@ export default tseslint.config(
   },
   {
     // React adapter — enable the rules-of-hooks + exhaustive-deps plugin.
-    files: ['packages/react/**/*.{ts,tsx}', 'apps/react-playground/**/*.{ts,tsx}'],
+    files: ['packages/react/**/*.{ts,tsx}', 'examples/react/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks },
     rules: {
       'react-hooks/rules-of-hooks': 'error',

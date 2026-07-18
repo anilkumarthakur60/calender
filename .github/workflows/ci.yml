@@ -71,8 +71,8 @@ jobs:
             node --input-type=module -e "import('./packages/$d/dist/index.js').then(() => {})"
           done
 
-      - name: Build apps
-        run: pnpm build:apps
+      - name: Build examples
+        run: pnpm build:examples
 
       - name: Bundle size budget
         run: pnpm size

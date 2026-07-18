@@ -1,17 +1,16 @@
-// Assemble all framework playgrounds into a single static demos site.
+// Assemble all framework examples into a single static site for deployment.
 //
 //   dist-demos/
 //     index.html      <- landing page (generated below)
-//     wc/             <- wc-playground built with base=/wc/
-//     react/          <- react-playground built with base=/react/
+//     wc/             <- example-wc     built with base=/wc/
+//     react/          <- example-react  built with base=/react/
 //     vue/ svelte/ solid/
 //
 // Run from the repo root:  pnpm build:demos
-// Deploy dist-demos/ to any static host (or point a Vercel project's build
-// command at this script with output directory dist-demos).
+// Vercel runs this as the project's build command (see vercel.json).
 
 import { execSync } from 'node:child_process';
-import { cpSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
 
@@ -26,94 +25,123 @@ const run = cmd => {
 const demos = [
   {
     slug: 'wc',
-    filter: '@anil-labs/wc-playground',
-    dir: 'apps/wc-playground',
+    filter: 'example-wc',
     label: 'Web Component',
-    desc: '<calender-picker> + <calender-input> on plain HTML — the most thorough feature showcase.',
+    desc: '<calender-picker> and <calender-input> on plain HTML — the most thorough feature showcase.',
   },
   {
     slug: 'react',
-    filter: '@anil-labs/react-playground',
-    dir: 'apps/react-playground',
+    filter: 'example-react',
     label: 'React',
-    desc: '<DatePicker>, <DateField> and <DateRangeField> with the useDatePicker hook.',
+    desc: 'DatePicker, DateField and DateRangeField with the useDatePicker hook.',
   },
   {
     slug: 'vue',
-    filter: '@anil-labs/vue-playground',
-    dir: 'apps/vue-playground',
+    filter: 'example-vue',
     label: 'Vue 3',
-    desc: '<DatePicker> and <DateField> components plus the useDatePicker composable.',
+    desc: 'DatePicker and DateField components plus the useDatePicker composable.',
   },
   {
     slug: 'svelte',
-    filter: '@anil-labs/svelte-playground',
-    dir: 'apps/svelte-playground',
+    filter: 'example-svelte',
     label: 'Svelte 5',
     desc: 'createDatePicker store driving a hand-rolled grid.',
   },
   {
     slug: 'solid',
-    filter: '@anil-labs/solid-playground',
-    dir: 'apps/solid-playground',
+    filter: 'example-solid',
     label: 'Solid',
     desc: 'createDatePicker signals with fine-grained updates.',
   },
 ];
 
-// Fresh output dir.
-rmSync(outDir, { recursive: true, force: true });
-mkdirSync(outDir, { recursive: true });
+// 1. Build the workspace packages the examples depend on. `pnpm install` on
+//    Vercel links the workspace deps but does not build them.
+run('pnpm -r --filter "./packages/*" build');
 
-// Libraries first, then each playground with its subpath base.
-run('pnpm -r --filter "./packages/**" run build');
-for (const { slug, filter, dir } of demos) {
-  run(`pnpm --filter ${filter} exec vite build --base=/${slug}/`);
-  cpSync(join(root, dir, 'dist'), join(outDir, slug), { recursive: true });
+// 2. Build each example into dist-demos/<slug> with a matching base path.
+for (const { slug, filter } of demos) {
+  run(
+    `pnpm --filter ${filter} exec vite build --base=/${slug}/ --outDir=${join(outDir, slug)} --emptyOutDir`,
+  );
 }
 
-// Landing page.
+// 3. Generate the landing page.
 const cards = demos
   .map(
-    ({ slug, label, desc }) => `      <a class="card" href="./${slug}/">
-        <h2>${label}</h2>
-        <p>${desc.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+    ({ slug, label, desc }) => `
+      <a class="card" href="/${slug}/">
+        <div class="card-top"><span class="badge">${label}</span></div>
+        <p class="desc">${desc.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+        <span class="cta">Open demo &rarr;</span>
       </a>`,
   )
-  .join('\n');
+  .join('');
 
-writeFileSync(
-  join(outDir, 'index.html'),
-  `<!doctype html>
+const html = `<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>@anil-labs — live demos</title>
-  <style>
-    :root { color-scheme: light dark; font-family: system-ui, sans-serif; }
-    body { margin: 0 auto; max-width: 56rem; padding: 3rem 1.5rem; }
-    h1 { font-size: 1.9rem; margin-bottom: 0.25rem; }
-    .sub { opacity: 0.7; margin-bottom: 2rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 1rem; }
-    .card { display: block; padding: 1.25rem; border: 1px solid color-mix(in srgb, currentColor 20%, transparent);
-            border-radius: 0.75rem; text-decoration: none; color: inherit; }
-    .card:hover { border-color: color-mix(in srgb, currentColor 45%, transparent); }
-    .card h2 { margin: 0 0 0.4rem; font-size: 1.1rem; }
-    .card p { margin: 0; font-size: 0.9rem; opacity: 0.75; }
-    footer { margin-top: 2.5rem; font-size: 0.85rem; opacity: 0.6; }
-  </style>
-</head>
-<body>
-  <h1>@anil-labs</h1>
-  <p class="sub">One headless calendar engine, every framework. Pick a playground:</p>
-  <div class="grid">
-${cards}
-  </div>
-  <footer><a href="https://github.com/anilkumarthakur60/calender">GitHub</a></footer>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@anil-labs/calender — live demos</title>
+    <meta name="description" content="Live demos of the @anil-labs calendar / date-picker for React, Vue, Svelte, Solid and Web Components." />
+    <style>
+      :root { color-scheme: dark; }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        background: radial-gradient(1200px 600px at 50% -10%, #23233a 0%, #131318 55%);
+        color: #ececf1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 20px;
+      }
+      main { width: 100%; max-width: 900px; }
+      .hero { text-align: center; margin-bottom: 40px; }
+      h1 { font-size: clamp(28px, 6vw, 44px); margin: 0 0 12px; letter-spacing: -0.02em; }
+      .tag { color: #9a9aa8; font-size: 16px; max-width: 560px; margin: 0 auto; line-height: 1.5; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; }
+      .card {
+        display: flex; flex-direction: column; gap: 12px;
+        padding: 22px; border-radius: 16px; text-decoration: none;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: inherit; transition: transform .15s ease, border-color .15s ease, background .15s ease;
+      }
+      .card:hover { transform: translateY(-3px); border-color: #7dabff; background: rgba(125,171,255,0.08); }
+      .badge {
+        display: inline-block; padding: 4px 12px; border-radius: 999px;
+        background: rgba(125,171,255,0.16); color: #7dabff; font-weight: 600; font-size: 14px;
+      }
+      .desc { margin: 0; color: #b7b7c4; font-size: 14px; line-height: 1.5; flex: 1; }
+      .cta { color: #7dabff; font-weight: 600; font-size: 14px; }
+      footer { margin-top: 40px; text-align: center; color: #75757f; font-size: 13px; }
+      footer code { background: rgba(255,255,255,0.07); padding: 2px 7px; border-radius: 6px; }
+      footer a { color: #7dabff; text-decoration: none; }
+      footer a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="hero">
+        <h1>@anil-labs/calender</h1>
+        <p class="tag">A headless, framework-agnostic calendar / date-picker — selection modes, constraints, i18n, time, and full keyboard a11y. Pick a demo:</p>
+      </div>
+      <div class="grid">${cards}
+      </div>
+      <footer>
+        Every demo runs the same zero-dependency <code>@anil-labs/core</code> engine.
+        <a href="https://github.com/anilkumarthakur60/calender">View on GitHub</a>
+      </footer>
+    </main>
+  </body>
 </html>
-`,
-);
+`;
 
-console.log(`\nDemos site assembled at ${outDir}`);
+mkdirSync(outDir, { recursive: true });
+writeFileSync(join(outDir, 'index.html'), html);
+console.log(`\n✓ Wrote landing page to dist-demos/index.html`);
+console.log('✓ Demos assembled in dist-demos/');
