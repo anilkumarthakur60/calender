@@ -16,6 +16,7 @@ const isoValue = ref("2025-04-15");
 const euValue = ref("");
 const datetimeValue = ref("");
 const bsValue = ref("");
+const multiRangeValue = ref("");
 
 // Form
 const submittedIso = ref<string | null>(null);
@@ -146,6 +147,15 @@ const holidays = [
           />
         </div>
         <p class="status">value = {{ bsValue || "(empty)" }}</p>
+      </article>
+
+      <article class="card wide">
+        <header>
+          <h3>Multi-month — 2 months</h3>
+          <p><code>mode="range" :months="2"</code>. The popover shows two months.</p>
+        </header>
+        <DateField v-model="multiRangeValue" mode="range" :months="2" format="MMM d, yyyy" />
+        <p class="status">value = {{ multiRangeValue || "(empty)" }}</p>
       </article>
     </div>
 

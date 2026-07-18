@@ -53,6 +53,11 @@ export const App = (): React.JSX.Element => {
   const [yearPick, setYearPick] = useState<CalendarDate | null>(null);
   const [presetRange, setPresetRange] = useState('');
   const [bsValue, setBsValue] = useState('');
+  const [multiRangeVal, setMultiRangeVal] = useState('');
+  const [weekNumVal, setWeekNumVal] = useState('');
+  const [highlightVal, setHighlightVal] = useState('2026-12-25');
+  const [constrainedVal, setConstrainedVal] = useState('');
+  const [dropdownVal, setDropdownVal] = useState('');
 
   const onNativeSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -195,6 +200,94 @@ export const App = (): React.JSX.Element => {
             calendar="bikram-sambat"
             locale="ne-NP"
             format="MMMM d, yyyy"
+          />
+        </Card>
+      </Section>
+
+      <Section title="DateField — every feature as an input">
+        <Card
+          title="Multi-month — 2 months"
+          wide
+          description={
+            <>
+              <code>mode="range" months={2}</code>. The popover shows two months; range bands span
+              across them.
+            </>
+          }
+          status={`value = ${multiRangeVal || '(empty)'}`}
+        >
+          <DateField
+            mode="range"
+            months={2}
+            value={multiRangeVal}
+            onChange={setMultiRangeVal}
+            format="MMM d, yyyy"
+          />
+        </Card>
+
+        <Card
+          title="Week numbers"
+          description={
+            <>
+              <code>weekNumbers</code>. ISO week column in the popover.
+            </>
+          }
+          status={`value = ${weekNumVal || '(empty)'}`}
+        >
+          <DateField weekNumbers value={weekNumVal} onChange={setWeekNumVal} />
+        </Card>
+
+        <Card
+          title="Highlights — events / holidays"
+          description={
+            <>
+              <code>highlights</code>. Dots mark events; hover for the label.
+            </>
+          }
+          status={`value = ${highlightVal || '(empty)'}`}
+        >
+          <DateField
+            value={highlightVal}
+            onChange={setHighlightVal}
+            highlights={[
+              { date: createCalendarDate(2026, 12, 25), color: '#dc2626', label: 'Christmas' },
+              { date: createCalendarDate(2026, 12, 31), color: '#f59e0b', label: 'NYE' },
+            ]}
+          />
+        </Card>
+
+        <Card
+          title="min / max constraint"
+          description={
+            <>
+              <code>min</code> / <code>max</code>. Out-of-range dates are rejected on type and
+              click.
+            </>
+          }
+          status={`value = ${constrainedVal || '(empty)'}`}
+        >
+          <DateField
+            value={constrainedVal}
+            onChange={setConstrainedVal}
+            min={createCalendarDate(2025, 4, 1)}
+            max={createCalendarDate(2025, 6, 30)}
+          />
+        </Card>
+
+        <Card
+          title="Header month/year dropdowns"
+          description={
+            <>
+              <code>headerSelectors yearRange={[2000, 2050]}</code>. Jump in one click.
+            </>
+          }
+          status={`value = ${dropdownVal || '(empty)'}`}
+        >
+          <DateField
+            value={dropdownVal}
+            onChange={setDropdownVal}
+            headerSelectors
+            yearRange={[2000, 2050]}
           />
         </Card>
       </Section>
