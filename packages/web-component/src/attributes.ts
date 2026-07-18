@@ -1,4 +1,5 @@
 import {
+  type CalendarDate,
   type CalendarId,
   type DateHighlight,
   type DatePickerEngineOptions,
@@ -7,6 +8,20 @@ import {
   type SelectionMode,
   fromIso,
 } from '@anil-labs/core';
+
+/**
+ * Parse an ISO date coming from an attribute. Malformed values are ignored
+ * (with a console warning) instead of throwing, so a bad `min`/`max`/
+ * `disabled-dates` attribute never bricks the element.
+ */
+const safeFromIso = (value: string, attr: string): CalendarDate | undefined => {
+  try {
+    return fromIso(value);
+  } catch {
+    console.warn(`[calender] ignoring invalid ${attr} attribute value: "${value}"`);
+    return undefined;
+  }
+};
 
 /**
  * Parse a complete {@link DatePickerEngineOptions} from an HTMLElement's
@@ -35,10 +50,21 @@ export const readEngineOptionsFromAttributes = (el: HTMLElement): DatePickerEngi
   const yearRangeAttr = get('year-range');
   const highlightsAttr = get('highlights');
 
+  const min = minAttr ? safeFromIso(minAttr, 'min') : undefined;
+  const max = maxAttr ? safeFromIso(maxAttr, 'max') : undefined;
+  const disabledDates = ddAttr
+    ? ddAttr
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(s => safeFromIso(s, 'disabled-dates'))
+        .filter((d): d is CalendarDate => d !== undefined)
+    : undefined;
+
   const options: DatePickerEngineOptions = {
     ...(mode ? { mode } : {}),
-    ...(minAttr ? { min: fromIso(minAttr) } : {}),
-    ...(maxAttr ? { max: fromIso(maxAttr) } : {}),
+    ...(min ? { min } : {}),
+    ...(max ? { max } : {}),
     ...(localeAttr ? { locale: localeAttr } : {}),
     ...(calendarAttr ? { calendar: calendarAttr } : {}),
     ...(granularity ? { granularity } : {}),
@@ -60,15 +86,7 @@ export const readEngineOptionsFromAttributes = (el: HTMLElement): DatePickerEngi
             .filter(Number.isFinite),
         }
       : {}),
-    ...(ddAttr
-      ? {
-          disabledDates: ddAttr
-            .split(',')
-            .map(s => s.trim())
-            .filter(Boolean)
-            .map(s => fromIso(s)),
-        }
-      : {}),
+    ...(disabledDates && disabledDates.length > 0 ? { disabledDates } : {}),
     ...(highlightsAttr ? parseHighlights(highlightsAttr) : {}),
   };
 
@@ -118,6 +136,12 @@ export const readPresetsFromAttribute = (
     .filter(Boolean);
   return parts.length > 0 ? (parts as PresetSpec[]) : undefined;
 };
+
+/**
+ * Attributes that are purely presentational — changing them must never
+ * rebuild or reconfigure the engine (and therefore never wipe a selection).
+ */
+export const COSMETIC_ATTRS: ReadonlySet<string> = new Set(['theme', 'density']);
 
 /** Standard attribute list that both elements observe. */
 export const STANDARD_OBSERVED_ATTRS: ReadonlyArray<string> = [
