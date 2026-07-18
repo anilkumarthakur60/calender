@@ -1,6 +1,5 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
+import { type CalendarSystem, GregorianCalendar } from '../calendar';
+import type { CalendarDate } from '../domain';
 import { resolveTwoDigitYear } from './parser.js';
 
 /**

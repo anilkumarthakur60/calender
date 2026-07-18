@@ -81,7 +81,7 @@ interface RangeParts {
  * the child fields speak, round-tripped via the separator-safe core codec.
  */
 export const DateRangeField = forwardRef<DateRangeFieldHandle, DateRangeFieldProps>(
-  (props, ref): JSX.Element => {
+  (props, ref): React.JSX.Element => {
     const {
       nameStart,
       nameEnd,

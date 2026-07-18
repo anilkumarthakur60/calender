@@ -1,8 +1,6 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { createRange, type DateRange } from '../domain/date-range.js';
-import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
-import type { SelectionMode, SelectionValue } from '../selection/selection-strategy.js';
+import { type CalendarSystem, GregorianCalendar } from '../calendar';
+import { type CalendarDate, createRange, type DateRange } from '../domain';
+import type { SelectionMode, SelectionValue } from '../selection';
 import { parseDate } from './parser.js';
 import {
   formatWithPattern,

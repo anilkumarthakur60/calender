@@ -1,4 +1,4 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
+import type { CalendarSystem } from '../calendar';
 import type { CalendarDate } from './calendar-date.js';
 
 export interface PeriodCell {

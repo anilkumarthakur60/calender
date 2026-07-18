@@ -333,7 +333,6 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
       const presets = readPresetsFromAttribute(this);
       if (presets) this.#renderer.presets = presets;
       this.#renderer.mount();
-      this.#pickerHost.firstElementChild?.classList.add('cal-picker');
 
       this.#applyPlaceholder();
       this.#applyDisabled();

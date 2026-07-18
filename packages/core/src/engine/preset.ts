@@ -1,4 +1,4 @@
-import type { CalendarDate } from '../domain/calendar-date.js';
+import type { CalendarDate } from '../domain';
 import type { DatePickerEngine } from './date-picker-engine.js';
 
 /**

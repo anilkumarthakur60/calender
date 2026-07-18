@@ -23,6 +23,7 @@ import {
   type PresetSpec,
   type SelectionMode,
   CompositeConstraint,
+  DisabledDatesConstraint,
   DisabledWeekdayConstraint,
   MinMaxConstraint,
   activateFocusTrap,
@@ -86,6 +87,20 @@ export interface DateFieldProps {
   readonly showSeconds?: boolean;
   /** Selection granularity (e.g. `'day'`, `'minute'`). */
   readonly granularity?: DatePickerEngineOptions['granularity'];
+
+  // --- Feature options (forwarded to the popover picker) -----------------
+  /** Render N months side by side in the popover. */
+  readonly months?: DatePickerEngineOptions['months'];
+  /** Show an ISO week-number column. */
+  readonly weekNumbers?: DatePickerEngineOptions['weekNumbers'];
+  /** Highlighted dates (events, holidays) shown with a dot. */
+  readonly highlights?: DatePickerEngineOptions['highlights'];
+  /** Specific dates to disable. */
+  readonly disabledDates?: DatePickerEngineOptions['disabledDates'];
+  /** Use `<select>` month/year dropdowns in the popover header. */
+  readonly headerSelectors?: DatePickerEngineOptions['headerSelectors'];
+  /** Year range for the header year dropdown. */
+  readonly yearRange?: DatePickerEngineOptions['yearRange'];
 
   // --- Popover picker chrome ----------------------------------------------
   /** Preset specs passed through to the popover picker. */
@@ -156,433 +171,457 @@ const maskMultiSegments = (raw: string, pattern: string | FormatPreset): string 
     .map((part, i) => (i % 2 === 1 ? part : applyMask(part, pattern).value))
     .join('');
 
-export const DateField = forwardRef<DateFieldHandle, DateFieldProps>((props, ref): JSX.Element => {
-  const {
-    name,
-    value,
-    defaultValue,
-    onChange,
-    mode = 'single',
-    format = 'iso',
-    valueFormat,
-    min,
-    max,
-    disabledWeekdays,
-    minRangeDays,
-    maxRangeDays,
-    withTime,
-    timeStep,
-    use12HourClock,
-    showSeconds,
-    granularity,
-    presets,
-    hideFooter,
-    renderCell,
-    placeholder,
-    disabled,
-    required,
-    id: idProp,
-    className,
-    inputProps,
-    autoFocus,
-    locale,
-    calendar,
-    helperText,
-    errorText,
-    error,
-    label,
-    mask,
-  } = props;
+export const DateField = forwardRef<DateFieldHandle, DateFieldProps>(
+  (props, ref): React.JSX.Element => {
+    const {
+      name,
+      value,
+      defaultValue,
+      onChange,
+      mode = 'single',
+      format = 'iso',
+      valueFormat,
+      min,
+      max,
+      disabledWeekdays,
+      minRangeDays,
+      maxRangeDays,
+      withTime,
+      timeStep,
+      use12HourClock,
+      showSeconds,
+      granularity,
+      months,
+      weekNumbers,
+      highlights,
+      disabledDates,
+      headerSelectors,
+      yearRange,
+      presets,
+      hideFooter,
+      renderCell,
+      placeholder,
+      disabled,
+      required,
+      id: idProp,
+      className,
+      inputProps,
+      autoFocus,
+      locale,
+      calendar,
+      helperText,
+      errorText,
+      error,
+      label,
+      mask,
+    } = props;
 
-  const maskEnabled = mask ?? isMaskable(format);
+    const maskEnabled = mask ?? isMaskable(format);
 
-  const controlled = value !== undefined;
-  const generatedId = useId();
-  const id = idProp ?? `cal-input-${generatedId}`;
+    const controlled = value !== undefined;
+    const generatedId = useId();
+    const id = idProp ?? `cal-input-${generatedId}`;
 
-  const localeString = typeof locale === 'string' ? locale : (locale?.locale ?? 'en-US');
-  const calendarSystem = useMemo(() => createCalendarSystem(calendar ?? 'gregorian'), [calendar]);
+    const localeString = typeof locale === 'string' ? locale : (locale?.locale ?? 'en-US');
+    const calendarSystem = useMemo(() => createCalendarSystem(calendar ?? 'gregorian'), [calendar]);
 
-  const displayPattern = format;
-  const storagePattern = valueFormat ?? format;
-  const fmtOptsDisplay = useMemo(
-    () => ({ pattern: displayPattern, locale: localeString, calendar: calendarSystem }),
-    [displayPattern, localeString, calendarSystem],
-  );
-  const fmtOptsStorage = useMemo(
-    () => ({ pattern: storagePattern, locale: localeString, calendar: calendarSystem }),
-    [storagePattern, localeString, calendarSystem],
-  );
+    const displayPattern = format;
+    const storagePattern = valueFormat ?? format;
+    const fmtOptsDisplay = useMemo(
+      () => ({ pattern: displayPattern, locale: localeString, calendar: calendarSystem }),
+      [displayPattern, localeString, calendarSystem],
+    );
+    const fmtOptsStorage = useMemo(
+      () => ({ pattern: storagePattern, locale: localeString, calendar: calendarSystem }),
+      [storagePattern, localeString, calendarSystem],
+    );
 
-  // Convert the user-facing storage value <-> display value.
-  const toDisplay = useCallback(
-    (stored: string): string => {
-      if (!stored) return '';
-      const decoded = parseSelection(stored, mode, fmtOptsStorage);
-      if (!decoded) return stored;
-      return formatSelection(toSelectionValue(decoded, mode), fmtOptsDisplay);
-    },
-    [mode, fmtOptsStorage, fmtOptsDisplay],
-  );
-
-  const [committed, setCommitted] = useState<string>(defaultValue ?? value ?? '');
-  const [text, setText] = useState<string>(toDisplay(defaultValue ?? value ?? ''));
-  const [open, setOpen] = useState(false);
-  const [flipUp, setFlipUp] = useState(false);
-  /** True when the last blur-parse produced a date the constraints reject. */
-  const [parseInvalid, setParseInvalid] = useState(false);
-
-  const current = controlled ? (value as string) : committed;
-  const isInvalid = error === true || errorText != null || parseInvalid;
-
-  useEffect(() => {
-    if (controlled) setText(toDisplay(value as string));
-  }, [controlled, value, toDisplay]);
-
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const pickerRef = useRef<DatePickerHandle>(null);
-  const pendingCaretRef = useRef<number | null>(null);
-
-  useImperativeHandle(
-    ref,
-    () => ({
-      focus: () => inputRef.current?.focus(),
-      get engine() {
-        return pickerRef.current?.engine ?? null;
+    // Convert the user-facing storage value <-> display value.
+    const toDisplay = useCallback(
+      (stored: string): string => {
+        if (!stored) return '';
+        const decoded = parseSelection(stored, mode, fmtOptsStorage);
+        if (!decoded) return stored;
+        return formatSelection(toSelectionValue(decoded, mode), fmtOptsDisplay);
       },
-    }),
-    [],
-  );
+      [mode, fmtOptsStorage, fmtOptsDisplay],
+    );
 
-  const decodedCurrent = useMemo(
-    () => (current ? parseSelection(current, mode, fmtOptsStorage) : null),
-    [current, mode, fmtOptsStorage],
-  );
+    const [committed, setCommitted] = useState<string>(defaultValue ?? value ?? '');
+    const [text, setText] = useState<string>(toDisplay(defaultValue ?? value ?? ''));
+    const [open, setOpen] = useState(false);
+    const [flipUp, setFlipUp] = useState(false);
+    /** True when the last blur-parse produced a date the constraints reject. */
+    const [parseInvalid, setParseInvalid] = useState(false);
 
-  const initialFocused = useMemo<CalendarDate | undefined>(
-    () => decodedCurrent?.single ?? decodedCurrent?.range?.start ?? decodedCurrent?.multi?.[0],
-    [decodedCurrent],
-  );
+    const current = controlled ? (value as string) : committed;
+    const isInvalid = error === true || errorText != null || parseInvalid;
 
-  // Seed the popover picker with the committed selection so reopening shows
-  // the picked date(s) as selected.
-  const initialSelected = useMemo<InitialSelected | undefined>(() => {
-    if (!decodedCurrent) return undefined;
-    if (mode === 'single') return decodedCurrent.single;
-    if (mode === 'range') {
-      return decodedCurrent.range
-        ? { start: decodedCurrent.range.start, end: decodedCurrent.range.end }
-        : undefined;
-    }
-    return decodedCurrent.multi;
-  }, [decodedCurrent, mode]);
+    useEffect(() => {
+      if (controlled) setText(toDisplay(value as string));
+    }, [controlled, value, toDisplay]);
 
-  // Constraint mirror of the popover engine, for validating typed input.
-  const fieldConstraint = useMemo(() => {
-    const cs: DateConstraint[] = [];
-    if (min || max) cs.push(new MinMaxConstraint(min, max));
-    if (disabledWeekdays?.length)
-      cs.push(new DisabledWeekdayConstraint(disabledWeekdays, calendarSystem));
-    return new CompositeConstraint(cs);
-  }, [min, max, disabledWeekdays, calendarSystem]);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const pickerRef = useRef<DatePickerHandle>(null);
+    const pendingCaretRef = useRef<number | null>(null);
 
-  const violatesConstraints = useCallback(
-    (decoded: NonNullable<ReturnType<typeof parseSelection>>): boolean => {
-      const dates: ReadonlyArray<CalendarDate> = decoded.single
-        ? [decoded.single]
-        : decoded.range
-          ? [decoded.range.start, decoded.range.end]
-          : (decoded.multi ?? []);
-      return dates.some(d => fieldConstraint.evaluate(d) !== null);
-    },
-    [fieldConstraint],
-  );
+    useImperativeHandle(
+      ref,
+      () => ({
+        focus: () => inputRef.current?.focus(),
+        get engine() {
+          return pickerRef.current?.engine ?? null;
+        },
+      }),
+      [],
+    );
 
-  const commit = useCallback(
-    (next: string) => {
-      if (next === current) return;
-      if (!controlled) setCommitted(next);
-      onChange?.(next);
-    },
-    [controlled, current, onChange],
-  );
+    const decodedCurrent = useMemo(
+      () => (current ? parseSelection(current, mode, fmtOptsStorage) : null),
+      [current, mode, fmtOptsStorage],
+    );
 
-  // The popover picker reports every engine change (focus moves included);
-  // only selection changes matter here. Track completeness for the
-  // select-driven close below ('change' always fires before 'select').
-  const lastPickerValueRef = useRef<string>('');
-  const pickerCompleteRef = useRef(false);
+    const initialFocused = useMemo<CalendarDate | undefined>(
+      () => decodedCurrent?.single ?? decodedCurrent?.range?.start ?? decodedCurrent?.multi?.[0],
+      [decodedCurrent],
+    );
 
-  const handlePickerChange = useCallback(
-    (state: EngineState) => {
-      pickerCompleteRef.current = isComplete(state);
-      const storedStr = formatSelection(state.selection, fmtOptsStorage);
-      if (storedStr === lastPickerValueRef.current) return;
-      lastPickerValueRef.current = storedStr;
-      setParseInvalid(false);
-      setText(formatSelection(state.selection, fmtOptsDisplay));
-      commit(storedStr);
-    },
-    [commit, fmtOptsDisplay, fmtOptsStorage],
-  );
-
-  const handlePickerSelect = useCallback(() => {
-    if (mode !== 'multi' && pickerCompleteRef.current) {
-      setOpen(false);
-      inputRef.current?.focus();
-    }
-  }, [mode]);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value;
-      setParseInvalid(false);
-      // Don't mask while the user is deleting (length shrank).
-      if (!maskEnabled || raw.length < text.length) {
-        setText(raw);
-        return;
+    // Seed the popover picker with the committed selection so reopening shows
+    // the picked date(s) as selected.
+    const initialSelected = useMemo<InitialSelected | undefined>(() => {
+      if (!decodedCurrent) return undefined;
+      if (mode === 'single') return decodedCurrent.single;
+      if (mode === 'range') {
+        return decodedCurrent.range
+          ? { start: decodedCurrent.range.start, end: decodedCurrent.range.end }
+          : undefined;
       }
-      const caretPos = e.target.selectionStart ?? raw.length;
-      if (mode === 'multi') {
-        pendingCaretRef.current = maskMultiSegments(raw.slice(0, caretPos), format).length;
-        setText(maskMultiSegments(raw, format));
-        return;
-      }
-      // Masking the prefix up to the caret yields the caret's new position.
-      pendingCaretRef.current = applyMask(raw.slice(0, caretPos), format).caret;
-      setText(applyMask(raw, format).value);
-    },
-    [maskEnabled, text.length, mode, format],
-  );
+      return decodedCurrent.multi;
+    }, [decodedCurrent, mode]);
 
-  // Restore the caret after the masked value has rendered (prevents the
-  // caret jumping to the end on mid-string edits).
-  useIsomorphicLayoutEffect(() => {
-    const caret = pendingCaretRef.current;
-    if (caret === null) return;
-    pendingCaretRef.current = null;
-    const input = inputRef.current;
-    if (input && document.activeElement === input) input.setSelectionRange(caret, caret);
-  }, [text]);
+    // Constraint mirror of the popover engine, for validating typed input.
+    const fieldConstraint = useMemo(() => {
+      const cs: DateConstraint[] = [];
+      if (min || max) cs.push(new MinMaxConstraint(min, max));
+      if (disabledWeekdays?.length)
+        cs.push(new DisabledWeekdayConstraint(disabledWeekdays, calendarSystem));
+      if (disabledDates?.length) cs.push(new DisabledDatesConstraint(disabledDates));
+      return new CompositeConstraint(cs);
+    }, [min, max, disabledWeekdays, disabledDates, calendarSystem]);
 
-  const handleBlur = useCallback(() => {
-    if (text === toDisplay(current)) return;
-    if (text.trim() === '') {
-      setParseInvalid(false);
-      commit('');
-      return;
-    }
-    // Try display format first (what the input is shaped as), then storage.
-    const decoded =
-      parseSelection(text, mode, fmtOptsDisplay) ?? parseSelection(text, mode, fmtOptsStorage);
-    if (!decoded) {
-      setText(toDisplay(current)); // revert
-      return;
-    }
-    if (violatesConstraints(decoded)) {
-      // Keep the text so the user can correct it; flag the field, no commit.
-      setParseInvalid(true);
-      return;
-    }
-    setParseInvalid(false);
-    const sel = toSelectionValue(decoded, mode);
-    setText(formatSelection(sel, fmtOptsDisplay));
-    commit(formatSelection(sel, fmtOptsStorage));
-  }, [text, current, mode, fmtOptsDisplay, fmtOptsStorage, commit, toDisplay, violatesConstraints]);
+    const violatesConstraints = useCallback(
+      (decoded: NonNullable<ReturnType<typeof parseSelection>>): boolean => {
+        const dates: ReadonlyArray<CalendarDate> = decoded.single
+          ? [decoded.single]
+          : decoded.range
+            ? [decoded.range.start, decoded.range.end]
+            : (decoded.multi ?? []);
+        return dates.some(d => fieldConstraint.evaluate(d) !== null);
+      },
+      [fieldConstraint],
+    );
 
-  // Outside click + Escape
-  useEffect(() => {
-    if (!open) return;
-    const onPointer = (event: PointerEvent): void => {
-      if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const onKey = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+    const commit = useCallback(
+      (next: string) => {
+        if (next === current) return;
+        if (!controlled) setCommitted(next);
+        onChange?.(next);
+      },
+      [controlled, current, onChange],
+    );
+
+    // The popover picker reports every engine change (focus moves included);
+    // only selection changes matter here. Track completeness for the
+    // select-driven close below ('change' always fires before 'select').
+    const lastPickerValueRef = useRef<string>('');
+    const pickerCompleteRef = useRef(false);
+
+    const handlePickerChange = useCallback(
+      (state: EngineState) => {
+        pickerCompleteRef.current = isComplete(state);
+        const storedStr = formatSelection(state.selection, fmtOptsStorage);
+        if (storedStr === lastPickerValueRef.current) return;
+        lastPickerValueRef.current = storedStr;
+        setParseInvalid(false);
+        setText(formatSelection(state.selection, fmtOptsDisplay));
+        commit(storedStr);
+      },
+      [commit, fmtOptsDisplay, fmtOptsStorage],
+    );
+
+    const handlePickerSelect = useCallback(() => {
+      if (mode !== 'multi' && pickerCompleteRef.current) {
         setOpen(false);
         inputRef.current?.focus();
       }
-    };
-    document.addEventListener('pointerdown', onPointer);
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('pointerdown', onPointer);
-      document.removeEventListener('keydown', onKey);
-    };
-  }, [open]);
+    }, [mode]);
 
-  // Reset the picker bookkeeping whenever the popover opens.
-  useEffect(() => {
-    if (!open) return;
-    lastPickerValueRef.current = current;
-    pickerCompleteRef.current = false;
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot at open
-  }, [open]);
+    const handleInputChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value;
+        setParseInvalid(false);
+        // Don't mask while the user is deleting (length shrank).
+        if (!maskEnabled || raw.length < text.length) {
+          setText(raw);
+          return;
+        }
+        const caretPos = e.target.selectionStart ?? raw.length;
+        if (mode === 'multi') {
+          pendingCaretRef.current = maskMultiSegments(raw.slice(0, caretPos), format).length;
+          setText(maskMultiSegments(raw, format));
+          return;
+        }
+        // Masking the prefix up to the caret yields the caret's new position.
+        pendingCaretRef.current = applyMask(raw.slice(0, caretPos), format).caret;
+        setText(applyMask(raw, format).value);
+      },
+      [maskEnabled, text.length, mode, format],
+    );
 
-  useIsomorphicLayoutEffect(() => {
-    if (!open) {
-      setFlipUp(false);
-      return;
-    }
-    const input = wrapperRef.current?.getBoundingClientRect();
-    const popH = popoverRef.current?.offsetHeight ?? 320;
-    if (!input) return;
-    setFlipUp(input.bottom + popH + 8 > window.innerHeight && input.top - popH - 8 > 0);
-  }, [open]);
+    // Restore the caret after the masked value has rendered (prevents the
+    // caret jumping to the end on mid-string edits).
+    useIsomorphicLayoutEffect(() => {
+      const caret = pendingCaretRef.current;
+      if (caret === null) return;
+      pendingCaretRef.current = null;
+      const input = inputRef.current;
+      if (input && document.activeElement === input) input.setSelectionRange(caret, caret);
+    }, [text]);
 
-  // Focus trap inside the popover.
-  useEffect(() => {
-    if (!open || !popoverRef.current) return;
-    const trap: FocusTrap = activateFocusTrap(popoverRef.current);
-    return () => trap.deactivate();
-  }, [open]);
+    const handleBlur = useCallback(() => {
+      if (text === toDisplay(current)) return;
+      if (text.trim() === '') {
+        setParseInvalid(false);
+        commit('');
+        return;
+      }
+      // Try display format first (what the input is shaped as), then storage.
+      const decoded =
+        parseSelection(text, mode, fmtOptsDisplay) ?? parseSelection(text, mode, fmtOptsStorage);
+      if (!decoded) {
+        setText(toDisplay(current)); // revert
+        return;
+      }
+      if (violatesConstraints(decoded)) {
+        // Keep the text so the user can correct it; flag the field, no commit.
+        setParseInvalid(true);
+        return;
+      }
+      setParseInvalid(false);
+      const sel = toSelectionValue(decoded, mode);
+      setText(formatSelection(sel, fmtOptsDisplay));
+      commit(formatSelection(sel, fmtOptsStorage));
+    }, [
+      text,
+      current,
+      mode,
+      fmtOptsDisplay,
+      fmtOptsStorage,
+      commit,
+      toDisplay,
+      violatesConstraints,
+    ]);
 
-  // Announce committed values to screen readers — only after user-initiated
-  // changes (never on mount) and using the human-readable display value.
-  const announcedRef = useRef<string | null>(null);
-  useEffect(() => {
-    if (announcedRef.current === null) {
+    // Outside click + Escape
+    useEffect(() => {
+      if (!open) return;
+      const onPointer = (event: PointerEvent): void => {
+        if (!wrapperRef.current?.contains(event.target as Node)) setOpen(false);
+      };
+      const onKey = (event: KeyboardEvent): void => {
+        if (event.key === 'Escape') {
+          setOpen(false);
+          inputRef.current?.focus();
+        }
+      };
+      document.addEventListener('pointerdown', onPointer);
+      document.addEventListener('keydown', onKey);
+      return () => {
+        document.removeEventListener('pointerdown', onPointer);
+        document.removeEventListener('keydown', onKey);
+      };
+    }, [open]);
+
+    // Reset the picker bookkeeping whenever the popover opens.
+    useEffect(() => {
+      if (!open) return;
+      lastPickerValueRef.current = current;
+      pickerCompleteRef.current = false;
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot at open
+    }, [open]);
+
+    useIsomorphicLayoutEffect(() => {
+      if (!open) {
+        setFlipUp(false);
+        return;
+      }
+      const input = wrapperRef.current?.getBoundingClientRect();
+      const popH = popoverRef.current?.offsetHeight ?? 320;
+      if (!input) return;
+      setFlipUp(input.bottom + popH + 8 > window.innerHeight && input.top - popH - 8 > 0);
+    }, [open]);
+
+    // Focus trap inside the popover.
+    useEffect(() => {
+      if (!open || !popoverRef.current) return;
+      const trap: FocusTrap = activateFocusTrap(popoverRef.current);
+      return () => trap.deactivate();
+    }, [open]);
+
+    // Announce committed values to screen readers — only after user-initiated
+    // changes (never on mount) and using the human-readable display value.
+    const announcedRef = useRef<string | null>(null);
+    useEffect(() => {
+      if (announcedRef.current === null) {
+        announcedRef.current = current;
+        return;
+      }
+      if (current === announcedRef.current) return;
       announcedRef.current = current;
-      return;
-    }
-    if (current === announcedRef.current) return;
-    announcedRef.current = current;
-    if (current) announce(`Selected ${toDisplay(current)}`);
-  }, [current, toDisplay]);
+      if (current) announce(`Selected ${toDisplay(current)}`);
+    }, [current, toDisplay]);
 
-  const placeholderText =
-    placeholder ??
-    HINT_BY_PATTERN[typeof displayPattern === 'string' ? displayPattern : 'iso'] ??
-    String(displayPattern);
+    const placeholderText =
+      placeholder ??
+      HINT_BY_PATTERN[typeof displayPattern === 'string' ? displayPattern : 'iso'] ??
+      String(displayPattern);
 
-  const helperId = `${id}-helper`;
-  const errorId = `${id}-error`;
-  const describedBy =
-    isInvalid && errorText != null ? errorId : helperText != null ? helperId : undefined;
+    const helperId = `${id}-helper`;
+    const errorId = `${id}-error`;
+    const describedBy =
+      isInvalid && errorText != null ? errorId : helperText != null ? helperId : undefined;
 
-  return (
-    <div
-      ref={wrapperRef}
-      className={['cal-field', isInvalid ? 'cal-field--error' : '', className]
-        .filter(Boolean)
-        .join(' ')}
-    >
-      {label != null && (
-        <label htmlFor={id} className="cal-field__label">
-          {label}
-          {required && (
-            <span className="cal-field__required" aria-hidden="true">
-              {' *'}
-            </span>
-          )}
-        </label>
-      )}
+    return (
       <div
-        className="cal-field__control"
-        data-disabled={disabled || undefined}
-        data-error={isInvalid || undefined}
+        ref={wrapperRef}
+        className={['cal-field', isInvalid ? 'cal-field--error' : '', className]
+          .filter(Boolean)
+          .join(' ')}
       >
-        {/* inputProps spread FIRST so internal bindings can't be destroyed;
-              the composed handlers run the internal logic, then the user's. */}
-        <input
-          {...inputProps}
-          ref={inputRef}
-          id={id}
-          type="text"
-          className="cal-field__input"
-          value={text}
-          placeholder={placeholderText}
-          disabled={disabled}
-          required={required}
-          autoComplete="off"
-          spellCheck={false}
-          onChange={e => {
-            handleInputChange(e);
-            inputProps?.onChange?.(e);
-          }}
-          onFocus={e => {
-            setOpen(true);
-            inputProps?.onFocus?.(e);
-          }}
-          onClick={e => {
-            setOpen(true);
-            inputProps?.onClick?.(e);
-          }}
-          onBlur={e => {
-            handleBlur();
-            inputProps?.onBlur?.(e);
-          }}
-          autoFocus={autoFocus}
-          aria-haspopup="dialog"
-          aria-expanded={open}
-          aria-invalid={isInvalid || undefined}
-          data-invalid={isInvalid || undefined}
-          aria-describedby={describedBy}
-        />
-        <button
-          type="button"
-          className="cal-field__trigger"
-          tabIndex={-1}
-          aria-label="Open calendar"
-          disabled={disabled}
-          onMouseDown={e => e.preventDefault()}
-          onClick={() => {
-            setOpen(v => !v);
-            inputRef.current?.focus();
-          }}
-        >
-          <CalendarIcon />
-        </button>
-      </div>
-      {name !== undefined && <input type="hidden" name={name} value={current} />}
-      {open && (
+        {label != null && (
+          <label htmlFor={id} className="cal-field__label">
+            {label}
+            {required && (
+              <span className="cal-field__required" aria-hidden="true">
+                {' *'}
+              </span>
+            )}
+          </label>
+        )}
         <div
-          ref={popoverRef}
-          className="cal-field__popover"
-          data-flip={flipUp ? 'up' : 'down'}
-          role="dialog"
-          aria-modal="false"
-          onMouseDown={e => e.preventDefault()}
+          className="cal-field__control"
+          data-disabled={disabled || undefined}
+          data-error={isInvalid || undefined}
         >
-          <DatePicker
-            ref={pickerRef}
-            mode={mode}
-            {...(initialFocused !== undefined && { initialFocused })}
-            {...(initialSelected !== undefined && { initialSelected })}
-            {...(locale !== undefined && { locale })}
-            {...(calendar !== undefined && { calendar })}
-            {...(min !== undefined && { min })}
-            {...(max !== undefined && { max })}
-            {...(disabledWeekdays !== undefined && { disabledWeekdays })}
-            {...(minRangeDays !== undefined && { minRangeDays })}
-            {...(maxRangeDays !== undefined && { maxRangeDays })}
-            {...(withTime !== undefined && { withTime })}
-            {...(timeStep !== undefined && { timeStep })}
-            {...(use12HourClock !== undefined && { use12HourClock })}
-            {...(showSeconds !== undefined && { showSeconds })}
-            {...(granularity !== undefined && { granularity })}
-            {...(presets !== undefined && { presets })}
-            {...(hideFooter !== undefined && { hideFooter })}
-            {...(renderCell !== undefined && { renderCell })}
-            onChange={handlePickerChange}
-            onSelect={handlePickerSelect}
+          {/* inputProps spread FIRST so internal bindings can't be destroyed;
+              the composed handlers run the internal logic, then the user's. */}
+          <input
+            {...inputProps}
+            ref={inputRef}
+            id={id}
+            type="text"
+            className="cal-field__input"
+            value={text}
+            placeholder={placeholderText}
+            disabled={disabled}
+            required={required}
+            autoComplete="off"
+            spellCheck={false}
+            onChange={e => {
+              handleInputChange(e);
+              inputProps?.onChange?.(e);
+            }}
+            onFocus={e => {
+              setOpen(true);
+              inputProps?.onFocus?.(e);
+            }}
+            onClick={e => {
+              setOpen(true);
+              inputProps?.onClick?.(e);
+            }}
+            onBlur={e => {
+              handleBlur();
+              inputProps?.onBlur?.(e);
+            }}
+            autoFocus={autoFocus}
+            aria-haspopup="dialog"
+            aria-expanded={open}
+            aria-invalid={isInvalid || undefined}
+            data-invalid={isInvalid || undefined}
+            aria-describedby={describedBy}
           />
+          <button
+            type="button"
+            className="cal-field__trigger"
+            tabIndex={-1}
+            aria-label="Open calendar"
+            disabled={disabled}
+            onMouseDown={e => e.preventDefault()}
+            onClick={() => {
+              setOpen(v => !v);
+              inputRef.current?.focus();
+            }}
+          >
+            <CalendarIcon />
+          </button>
         </div>
-      )}
-      {isInvalid && errorText != null && (
-        <p id={errorId} className="cal-field__error" role="alert">
-          {errorText}
-        </p>
-      )}
-      {!isInvalid && helperText != null && (
-        <p id={helperId} className="cal-field__helper">
-          {helperText}
-        </p>
-      )}
-    </div>
-  );
-});
+        {name !== undefined && <input type="hidden" name={name} value={current} />}
+        {open && (
+          <div
+            ref={popoverRef}
+            className="cal-field__popover"
+            data-flip={flipUp ? 'up' : 'down'}
+            role="dialog"
+            aria-modal="false"
+            onMouseDown={e => e.preventDefault()}
+          >
+            <DatePicker
+              ref={pickerRef}
+              mode={mode}
+              {...(initialFocused !== undefined && { initialFocused })}
+              {...(initialSelected !== undefined && { initialSelected })}
+              {...(locale !== undefined && { locale })}
+              {...(calendar !== undefined && { calendar })}
+              {...(min !== undefined && { min })}
+              {...(max !== undefined && { max })}
+              {...(disabledWeekdays !== undefined && { disabledWeekdays })}
+              {...(minRangeDays !== undefined && { minRangeDays })}
+              {...(maxRangeDays !== undefined && { maxRangeDays })}
+              {...(withTime !== undefined && { withTime })}
+              {...(timeStep !== undefined && { timeStep })}
+              {...(use12HourClock !== undefined && { use12HourClock })}
+              {...(showSeconds !== undefined && { showSeconds })}
+              {...(granularity !== undefined && { granularity })}
+              {...(months !== undefined && { months })}
+              {...(weekNumbers !== undefined && { weekNumbers })}
+              {...(highlights !== undefined && { highlights })}
+              {...(disabledDates !== undefined && { disabledDates })}
+              {...(headerSelectors !== undefined && { headerSelectors })}
+              {...(yearRange !== undefined && { yearRange })}
+              {...(presets !== undefined && { presets })}
+              {...(hideFooter !== undefined && { hideFooter })}
+              {...(renderCell !== undefined && { renderCell })}
+              onChange={handlePickerChange}
+              onSelect={handlePickerSelect}
+            />
+          </div>
+        )}
+        {isInvalid && errorText != null && (
+          <p id={errorId} className="cal-field__error" role="alert">
+            {errorText}
+          </p>
+        )}
+        {!isInvalid && helperText != null && (
+          <p id={helperId} className="cal-field__helper">
+            {helperText}
+          </p>
+        )}
+      </div>
+    );
+  },
+);
 
 DateField.displayName = 'DateField';
 
@@ -596,7 +635,7 @@ const toSelectionValue = (
   return { mode: 'multi', value: decoded.multi ?? [] };
 };
 
-const CalendarIcon = (): JSX.Element => (
+const CalendarIcon = (): React.JSX.Element => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
     <rect
       x="2"

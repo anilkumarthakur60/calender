@@ -1,7 +1,5 @@
-import type { CalendarSystem } from '../calendar/calendar-system.js';
-import { GregorianCalendar } from '../calendar/gregorian-calendar.js';
-import type { CalendarDate } from '../domain/calendar-date.js';
-import { clamp } from '../domain/calendar-date.js';
+import { type CalendarSystem, GregorianCalendar } from '../calendar';
+import { type CalendarDate, clamp } from '../domain';
 import type { ViewMode } from './view-mode.js';
 
 export interface NavigationBounds {
