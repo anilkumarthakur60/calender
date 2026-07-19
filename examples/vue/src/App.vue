@@ -1,24 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { DateField, DatePicker } from "@anil-labs/vue";
-import { createCalendarDate, type CalendarDate } from "@anil-labs/core";
+import { createCalendarDate } from "@anil-labs/core";
+import FeaturePair from "./FeaturePair.vue";
 
-const fmt = (d: CalendarDate | null) =>
-  d ? `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}` : "(none)";
-
-// Selection modes
-const single = ref<CalendarDate | null>(null);
-const range = ref<CalendarDate | null>(null);
-const multi = ref<CalendarDate | null>(null);
-
-// DateField values
+// Form-pattern demos (controlled state).
 const isoValue = ref("2025-04-15");
 const euValue = ref("");
-const datetimeValue = ref("");
-const bsValue = ref("");
-const multiRangeValue = ref("");
-
-// Form
 const submittedIso = ref<string | null>(null);
 const onSubmit = (e: Event): void => {
   e.preventDefault();
@@ -26,15 +14,10 @@ const onSubmit = (e: Event): void => {
   submittedIso.value = String(data.get("bookingDate") ?? "");
 };
 
-// Granularity
-const monthPick = ref<CalendarDate | null>(null);
-const yearPick = ref<CalendarDate | null>(null);
-
-// Highlights data
 const holidays = [
   { date: createCalendarDate(2026, 12, 25), color: "#dc2626", label: "Christmas" },
   { date: createCalendarDate(2026, 1, 1), color: "#16a34a", label: "New Year" },
-  { date: createCalendarDate(2026, 7, 4), color: "#f59e0b", label: "Independence Day" },
+  { date: createCalendarDate(2026, 12, 31), color: "#f59e0b", label: "NYE" },
 ];
 </script>
 
@@ -43,43 +26,190 @@ const holidays = [
     <header class="hero">
       <span class="badge">Feature showcase</span>
       <h1>@anil-labs/calender</h1>
-      <p>Every feature, idiomatic Vue.</p>
+      <p>Every feature shown as an inline picker and as a form input, side by side.</p>
     </header>
 
     <h2 class="section-title">Selection modes</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>Single date</h3>
-          <p>Default mode. Today is marked with a dot.</p>
-        </header>
-        <DatePicker mode="single" locale="en-GB" @select="d => (single = d)" />
-        <p class="status">Selected: {{ fmt(single) }}</p>
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Range — hover preview</h3>
-          <p>
-            Click an anchor, then hover anywhere — see the tentative range until you click the
-            second date.
-          </p>
-        </header>
-        <DatePicker mode="range" @select="d => (range = d)" />
-        <p class="status">Last clicked: {{ fmt(range) }}</p>
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Multi-date — weekends disabled</h3>
-          <p>Click multiple non-weekend dates to toggle.</p>
-        </header>
-        <DatePicker mode="multi" :disabled-weekdays="[0, 6]" @select="d => (multi = d)" />
-        <p class="status">Last clicked: {{ fmt(multi) }}</p>
-      </article>
+    <div class="pairs">
+      <FeaturePair title="Single date">
+        <template #desc>Default mode. Today is marked with a dot.</template>
+        <template #picker><DatePicker mode="single" locale="en-GB" /></template>
+        <template #field><DateField mode="single" locale="en-GB" /></template>
+      </FeaturePair>
+      <FeaturePair title="Range — hover preview">
+        <template #desc
+          >Click an anchor, then hover — a tentative range shows until the second click.</template
+        >
+        <template #picker><DatePicker mode="range" /></template>
+        <template #field><DateField mode="range" format="MMM d, yyyy" /></template>
+      </FeaturePair>
+      <FeaturePair title="Multi-date — weekends disabled">
+        <template #desc>Toggle multiple non-weekend dates.</template>
+        <template #picker><DatePicker mode="multi" :disabled-weekdays="[0, 6]" /></template>
+        <template #field><DateField mode="multi" :disabled-weekdays="[0, 6]" /></template>
+      </FeaturePair>
     </div>
 
-    <h2 class="section-title">Form integration — DateField (v-model)</h2>
+    <h2 class="section-title">Navigation</h2>
+    <div class="pairs">
+      <FeaturePair title="Header month/year dropdowns">
+        <template #desc
+          ><code>:header-selectors :year-range="[2000, 2050]"</code>. Jump in one click.</template
+        >
+        <template #picker
+          ><DatePicker :header-selectors="true" :year-range="[2000, 2050]"
+        /></template>
+        <template #field
+          ><DateField :header-selectors="true" :year-range="[2000, 2050]"
+        /></template>
+      </FeaturePair>
+      <FeaturePair title="Multi-month — 2 months">
+        <template #desc
+          ><code>mode="range" :months="2"</code>. Two months side by side; range bands span
+          both.</template
+        >
+        <template #picker><DatePicker mode="range" :months="2" /></template>
+        <template #field><DateField mode="range" :months="2" format="MMM d, yyyy" /></template>
+      </FeaturePair>
+      <FeaturePair title="Preset shortcuts">
+        <template #desc
+          ><code>:presets="['today','last7days','last30days','thisMonth','clear']"</code>.</template
+        >
+        <template #picker>
+          <DatePicker
+            mode="range"
+            :presets="['today', 'last7days', 'last30days', 'thisMonth', 'clear']"
+          />
+        </template>
+        <template #field>
+          <DateField
+            mode="range"
+            :presets="['today', 'last7days', 'last30days', 'thisMonth', 'clear']"
+            format="MMM d, yyyy"
+          />
+        </template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Visual options</h2>
+    <div class="pairs">
+      <FeaturePair title="Week numbers">
+        <template #desc
+          >ISO week numbers in a left column. <code>:week-numbers="true"</code>.</template
+        >
+        <template #picker><DatePicker :week-numbers="true" /></template>
+        <template #field><DateField :week-numbers="true" /></template>
+      </FeaturePair>
+      <FeaturePair title="Highlights — events / holidays">
+        <template #desc>Coloured dot under the day; tooltip from <code>label</code>.</template>
+        <template #picker
+          ><DatePicker :initial-focused="createCalendarDate(2026, 12, 1)" :highlights="holidays"
+        /></template>
+        <template #field><DateField default-value="2026-12-25" :highlights="holidays" /></template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Time / DateTime</h2>
+    <div class="pairs">
+      <FeaturePair title="24-hour clock">
+        <template #desc><code>:with-time="true"</code>. Default 24-hour.</template>
+        <template #picker><DatePicker :with-time="true" /></template>
+        <template #field><DateField :with-time="true" format="yyyy-MM-dd HH:mm" /></template>
+      </FeaturePair>
+      <FeaturePair title="12-hour + seconds + 5-min step">
+        <template #desc
+          ><code>:with-time :use12-hour-clock :show-seconds :time-step="5"</code>.</template
+        >
+        <template #picker
+          ><DatePicker
+            :with-time="true"
+            :use12-hour-clock="true"
+            :show-seconds="true"
+            :time-step="5"
+        /></template>
+        <template #field
+          ><DateField
+            :with-time="true"
+            :use12-hour-clock="true"
+            :show-seconds="true"
+            :time-step="5"
+            format="yyyy-MM-dd hh:mm:ss a"
+        /></template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Granularity</h2>
+    <div class="pairs">
+      <FeaturePair title="Month picker">
+        <template #desc><code>granularity="month"</code>. Pick a month.</template>
+        <template #picker><DatePicker granularity="month" /></template>
+        <template #field><DateField granularity="month" format="MMM yyyy" /></template>
+      </FeaturePair>
+      <FeaturePair title="Year picker">
+        <template #desc><code>granularity="year"</code>. Pick a year.</template>
+        <template #picker><DatePicker granularity="year" /></template>
+        <template #field><DateField granularity="year" format="yyyy" /></template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Constraints</h2>
+    <div class="pairs">
+      <FeaturePair title="min / max">
+        <template #desc>Dates outside the range are dimmed and rejected on type + click.</template>
+        <template #picker
+          ><DatePicker :min="createCalendarDate(2025, 4, 1)" :max="createCalendarDate(2025, 6, 30)"
+        /></template>
+        <template #field
+          ><DateField :min="createCalendarDate(2025, 4, 1)" :max="createCalendarDate(2025, 6, 30)"
+        /></template>
+      </FeaturePair>
+      <FeaturePair title="Range 3–7 days">
+        <template #desc
+          ><code>:min-range-days="3" :max-range-days="7"</code>. Cells outside the window disable
+          after the anchor.</template
+        >
+        <template #picker
+          ><DatePicker mode="range" :min-range-days="3" :max-range-days="7"
+        /></template>
+        <template #field
+          ><DateField mode="range" :min-range-days="3" :max-range-days="7" format="MMM d"
+        /></template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Calendar systems</h2>
+    <div class="pairs">
+      <FeaturePair title="Bikram Sambat — English">
+        <template #desc>Months: Baishakh, Jestha, … transliterated.</template>
+        <template #picker
+          ><DatePicker calendar="bikram-sambat" locale="en-US" :header-selectors="true"
+        /></template>
+        <template #field
+          ><DateField
+            calendar="bikram-sambat"
+            locale="en-US"
+            :header-selectors="true"
+            format="MMMM d, yyyy"
+        /></template>
+      </FeaturePair>
+      <FeaturePair title="Bikram Sambat — Nepali Devanagari">
+        <template #desc
+          ><code>locale="ne-NP"</code> renders Devanagari digits + month names.</template
+        >
+        <template #picker
+          ><DatePicker calendar="bikram-sambat" locale="ne-NP" :header-selectors="true"
+        /></template>
+        <template #field
+          ><DateField
+            calendar="bikram-sambat"
+            locale="ne-NP"
+            :header-selectors="true"
+            format="MMMM d, yyyy"
+        /></template>
+      </FeaturePair>
+    </div>
+
+    <h2 class="section-title">Form integration — DateField patterns</h2>
     <div class="grid">
       <article class="card">
         <header>
@@ -93,10 +223,7 @@ const holidays = [
       <article class="card">
         <header>
           <h3>Custom display, ISO storage</h3>
-          <p>
-            <code>format="MMM d, yyyy" value-format="iso"</code>. User sees pretty dates; you store
-            ISO.
-          </p>
+          <p><code>format="MMM d, yyyy" value-format="iso"</code>. Pretty display, ISO storage.</p>
         </header>
         <DateField v-model="isoValue" format="MMM d, yyyy" value-format="iso" />
         <p class="status">stored: {{ isoValue || "(empty)" }}</p>
@@ -122,179 +249,6 @@ const holidays = [
           <button type="submit" class="submit-btn">Submit</button>
         </form>
         <p class="status">submitted = {{ submittedIso ?? "(unsubmitted)" }}</p>
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>DateTime — 15-min step</h3>
-          <p><code>with-time time-step="15" format="yyyy-MM-dd HH:mm"</code>.</p>
-        </header>
-        <DateField v-model="datetimeValue" with-time :time-step="15" format="yyyy-MM-dd HH:mm" />
-        <p class="status">value = {{ datetimeValue || "(empty)" }}</p>
-      </article>
-
-      <article class="card dark">
-        <header>
-          <h3>BS calendar — Devanagari</h3>
-          <p>BS picker with <code>calendar="bikram-sambat" locale="ne-NP"</code>.</p>
-        </header>
-        <div class="cal-theme-dark">
-          <DateField
-            v-model="bsValue"
-            calendar="bikram-sambat"
-            locale="ne-NP"
-            format="MMMM d, yyyy"
-          />
-        </div>
-        <p class="status">value = {{ bsValue || "(empty)" }}</p>
-      </article>
-
-      <article class="card wide">
-        <header>
-          <h3>Multi-month — 2 months</h3>
-          <p><code>mode="range" :months="2"</code>. The popover shows two months.</p>
-        </header>
-        <DateField v-model="multiRangeValue" mode="range" :months="2" format="MMM d, yyyy" />
-        <p class="status">value = {{ multiRangeValue || "(empty)" }}</p>
-      </article>
-    </div>
-
-    <h2 class="section-title">Navigation</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>Header month/year dropdowns</h3>
-          <p>Pass <code>:header-selectors="true"</code>. Jump in one click.</p>
-        </header>
-        <DatePicker :header-selectors="true" :year-range="[2000, 2050]" />
-      </article>
-
-      <article class="card wide">
-        <header>
-          <h3>Multi-month — 2 months</h3>
-          <p><code>:months="2"</code>. Range bands span across months.</p>
-        </header>
-        <DatePicker mode="range" :months="2" />
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Preset shortcuts</h3>
-          <p><code>:presets="['today','last7days','last30days','thisMonth','clear']"</code>.</p>
-        </header>
-        <DatePicker
-          mode="range"
-          :presets="['today', 'last7days', 'last30days', 'thisMonth', 'clear']"
-        />
-      </article>
-    </div>
-
-    <h2 class="section-title">Visual options</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>Week numbers</h3>
-          <p>ISO week numbers on the left. <code>:week-numbers="true"</code>.</p>
-        </header>
-        <DatePicker :week-numbers="true" />
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Highlights — events / holidays</h3>
-          <p>Coloured dot under the day number. Tooltip from <code>label</code>.</p>
-        </header>
-        <DatePicker :initial-focused="createCalendarDate(2026, 12, 1)" :highlights="holidays" />
-      </article>
-    </div>
-
-    <h2 class="section-title">Time / DateTime</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>24-hour clock</h3>
-          <p><code>:with-time="true"</code>. Default 24-hour.</p>
-        </header>
-        <DatePicker :with-time="true" />
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>12-hour + AM/PM + seconds</h3>
-          <p>
-            <code
-              >:with-time="true" :use12-hour-clock="true" :show-seconds="true" :time-step="5"</code
-            >.
-          </p>
-        </header>
-        <DatePicker
-          :with-time="true"
-          :use12-hour-clock="true"
-          :show-seconds="true"
-          :time-step="5"
-        />
-      </article>
-    </div>
-
-    <h2 class="section-title">Granularity</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>Month picker</h3>
-          <p><code>granularity="month"</code>. Click a month to select.</p>
-        </header>
-        <DatePicker granularity="month" @select="d => (monthPick = d)" />
-        <p class="status">picked: {{ fmt(monthPick) }}</p>
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Year picker</h3>
-          <p><code>granularity="year"</code>. Click a year to select.</p>
-        </header>
-        <DatePicker granularity="year" @select="d => (yearPick = d)" />
-        <p class="status">picked: {{ fmt(yearPick) }}</p>
-      </article>
-    </div>
-
-    <h2 class="section-title">Constraints</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>min / max</h3>
-          <p>Dates outside the range are dimmed and not clickable.</p>
-        </header>
-        <DatePicker :min="createCalendarDate(2025, 4, 1)" :max="createCalendarDate(2025, 6, 30)" />
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Range 3–7 days</h3>
-          <p>
-            <code>:min-range-days="3"</code> <code>:max-range-days="7"</code>. After picking the
-            anchor, only dates 3 to 7 days away are clickable.
-          </p>
-        </header>
-        <DatePicker mode="range" :min-range-days="3" :max-range-days="7" />
-      </article>
-    </div>
-
-    <h2 class="section-title">Calendar systems</h2>
-    <div class="grid">
-      <article class="card">
-        <header>
-          <h3>Bikram Sambat — English transliteration</h3>
-          <p>Months: Baishakh, Jestha, …</p>
-        </header>
-        <DatePicker calendar="bikram-sambat" locale="en-US" :header-selectors="true" />
-      </article>
-
-      <article class="card">
-        <header>
-          <h3>Bikram Sambat — Nepali Devanagari</h3>
-          <p><code>locale="ne-NP"</code> renders Devanagari digits + month names.</p>
-        </header>
-        <DatePicker calendar="bikram-sambat" locale="ne-NP" :header-selectors="true" />
       </article>
     </div>
   </div>
@@ -387,15 +341,17 @@ body {
   border-bottom: 1px solid var(--card-border);
 }
 
+.pairs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
   gap: 1.5rem;
   align-items: start;
-}
-/* Wide cards (e.g. multi-month) span two columns so both months fit. */
-.card.wide {
-  grid-column: span 2;
 }
 .card {
   background: var(--card-bg);
@@ -426,22 +382,6 @@ body {
   line-height: 1.55;
   margin: 0;
 }
-.card.dark {
-  background: #0f172a;
-  border-color: #1e293b;
-  color: #f1f5f9;
-}
-.card.dark h3 {
-  color: #f1f5f9;
-}
-.card.dark > header p {
-  color: #94a3b8;
-}
-.card.dark .status {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8 !important;
-}
 code {
   font-family: ui-monospace, SFMono-Regular, monospace;
   font-size: 0.78em;
@@ -449,10 +389,6 @@ code {
   border-radius: 0.25rem;
   background: rgba(15, 23, 42, 0.06);
   color: var(--ink);
-}
-.dark code {
-  background: rgba(241, 245, 249, 0.1);
-  color: #f1f5f9;
 }
 .status {
   margin-top: 1rem;
