@@ -12,7 +12,7 @@
     "@anil-labs/core": "workspace:*",
     "@anil-labs/styles": "workspace:*",
     "@anil-labs/svelte": "workspace:*",
-    "svelte": "^5.56.6"
+    "svelte": "^5.56.7"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
