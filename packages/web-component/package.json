@@ -82,7 +82,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "unpkg": "./dist/auto-register.global.js",
   "jsdelivr": "./dist/auto-register.global.js",

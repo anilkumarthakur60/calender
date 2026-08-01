@@ -163,7 +163,7 @@ Full guides, every API, every option: **the [VitePress docs site](https://calend
 
 ### Prerequisites
 
-- **Node.js ≥ 20** (`node --version` to check)
+- **Node.js ≥ 22** (`node --version` to check)
 - **pnpm 10** (`npm i -g pnpm` or `corepack enable`)
 - **Git**
 
@@ -495,11 +495,11 @@ once under **Settings → Pages → Source: GitHub Actions**.
 
 Three workflows ship in `.github/workflows/`:
 
-| Workflow      | Trigger                    | Does                                                                                                                                                 |
-| ------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ci.yml`      | Every push / PR            | Lint + format-check + build + typecheck + test + package checks (publint/attw) + Node import smoke + build examples + size budgets, on Node 20 & 22. |
-| `docs.yml`    | Push to `main` (`docs/**`) | Builds VitePress and deploys it to GitHub Pages.                                                                                                     |
-| `release.yml` | Push to `main`             | Changesets: opens the version PR, or publishes to npm with provenance when it merges (needs `NPM_TOKEN`).                                            |
+| Workflow      | Trigger                    | Does                                                                                                                                                     |
+| ------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ci.yml`      | Every push / PR            | Lint + format-check + build + typecheck + test + package checks (publint/attw) + Node import smoke + build examples + size budgets, on Node 22, 24 & 26. |
+| `docs.yml`    | Push to `main` (`docs/**`) | Builds VitePress and deploys it to GitHub Pages.                                                                                                         |
+| `release.yml` | Push to `main`             | Changesets: opens the version PR, or publishes to npm with provenance when it merges (needs `NPM_TOKEN`).                                                |
 
 Deployment of the demos needs **no** workflow — Vercel's Git integration
 handles it. The only repo secret required anywhere is `NPM_TOKEN`, for releases.
@@ -544,7 +544,7 @@ The `examples/*` and `docs` are `"private": true` and never publish;
 | Format               | Prettier 3                                                        |
 | Styles               | SCSS source → compiled CSS, design-token driven                   |
 | CI/CD                | GitHub Actions + Vercel CLI                                       |
-| Runtime requirements | Node ≥ 20 (development); modern evergreen browsers (consumers)    |
+| Runtime requirements | Node ≥ 22 (development); modern evergreen browsers (consumers)    |
 
 ---
 
