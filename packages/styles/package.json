@@ -51,12 +51,12 @@
     "test": "echo 'no tests'"
   },
   "devDependencies": {
-    "sass": "^1.101.0"
+    "sass": "^1.102.0"
   },
   "publishConfig": {
     "access": "public"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

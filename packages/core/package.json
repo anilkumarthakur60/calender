@@ -62,7 +62,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "unpkg": "./dist/index.global.js",
   "jsdelivr": "./dist/index.global.js"
