@@ -71,7 +71,7 @@ to `/`) and add the domain in the Pages settings.
 
 `.github/workflows/ci.yml` runs on every push and PR: lint, format check, build,
 typecheck, test, package checks (publint + arethetypeswrong), a Node import
-smoke test, `build:examples`, and the size budgets — on Node 20 and 22. It does
+smoke test, `build:examples`, and the size budgets — on Node 22, 24, and 26. It does
 not deploy anything; deployment is handled by Vercel (demos) and the Docs
 workflow (docs).
 

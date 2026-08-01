@@ -19,12 +19,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 20 & 22 & 24 are LTS lines; 26 is the current release (LTS Oct 2026),
-        # tested for forward compatibility. engines requires Node >=20.
-        node: [20, 22, 24, 26]
+        # 22 & 24 are LTS lines; 26 is the current release (LTS Oct 2026),
+        # tested for forward compatibility. engines requires Node >=22.
+        node: [22, 24, 26]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v6
 
