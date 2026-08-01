@@ -12,11 +12,11 @@
     "@anil-labs/core": "workspace:*",
     "@anil-labs/styles": "workspace:*",
     "@anil-labs/svelte": "workspace:*",
-    "svelte": "^5.56.6"
+    "svelte": "^5.56.8"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
-    "svelte-check": "^4.7.3",
+    "svelte-check": "^4.7.4",
     "typescript": "~6.0.3",
     "vite": "^8.1.5"
   }
