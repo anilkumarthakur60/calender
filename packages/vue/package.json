@@ -59,7 +59,7 @@
     "vue": ">=3.3"
   },
   "devDependencies": {
-    "@testing-library/user-event": "^14.6.1",
+    "@testing-library/user-event": "^14.6.3",
     "@testing-library/vue": "^8.1.0",
     "@vue/test-utils": "^2.4.11",
     "happy-dom": "^20.11.1",
