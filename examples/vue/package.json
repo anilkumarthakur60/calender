@@ -13,14 +13,14 @@
     "@anil-labs/calendar-styles": "workspace:*",
     "@anil-labs/calendar-vue": "workspace:*",
     "@anil-labs/calendar-web-component": "workspace:*",
-    "vue": "^3.5.40"
+    "vue": "^3.5.41"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/tsconfig": "^0.9.1",
-    "sass": "^1.102.0",
+    "sass": "^1.103.0",
     "typescript": "~6.0.3",
-    "vite": "^8.2.0",
-    "vue-tsc": "^3.3.9"
+    "vite": "^8.2.2",
+    "vue-tsc": "^3.3.10"
   }
 }
