@@ -48,6 +48,10 @@ const monthDays = (year: number, month: number): number => {
  * Used as the canonical "days since epoch" for conversion to/from Gregorian.
  */
 const bsDaysFromEpoch = (date: CalendarDate): number => {
+  // Must be first: with month === 1 neither loop below runs, so `monthDays`
+  // (the only other range check) is never reached and an unsupported year
+  // would silently resolve to a wrong Gregorian date.
+  assertInRange(date.year);
   let total = 0;
   for (let y = BS_MIN_YEAR; y < date.year; y += 1) {
     const row = BS_MONTH_DAYS[y];

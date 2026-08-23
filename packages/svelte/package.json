@@ -53,10 +53,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/calendar-core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:^"
   },
   "peerDependencies": {
-    "svelte": ">=5"
+    "svelte": ">=3"
   },
   "devDependencies": {
     "tsup": "^8.5.1",
@@ -67,6 +67,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=18"
   }
 }

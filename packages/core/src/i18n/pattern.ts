@@ -1,6 +1,6 @@
 import { type CalendarSystem, GregorianCalendar } from '../calendar';
 import type { CalendarDate } from '../domain';
-import { resolveTwoDigitYear } from './parser.js';
+import { normalizeDigits, resolveTwoDigitYear } from './parser.js';
 
 /**
  * Token-based date formatting + parsing.
@@ -278,7 +278,9 @@ export const parseDateTimeWithPattern = (
 ): ParsedDateTime | null => {
   const segments = tokenize(resolvePattern(pattern));
   let cursor = 0;
-  const trimmed = input.trim();
+  // Fold localized numerals to ASCII first: every numeric token below matches
+  // /^\d/, so Devanagari, Persian and Arabic-Indic output would never parse back.
+  const trimmed = normalizeDigits(input.trim());
   const fields: ParseFields = {};
 
   for (const seg of segments) {

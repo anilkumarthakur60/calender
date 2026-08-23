@@ -57,15 +57,17 @@ jobs:
       # package (publint) and TypeScript resolution across module systems (attw).
       - name: Package checks (publint + arethetypeswrong)
         run: |
-          for d in core react vue svelte solid web-component styles; do
+          for d in core react vue svelte solid web-component styles angular; do
             npx --yes publint "packages/$d"
           done
-          for d in core react vue svelte solid web-component; do
+          for d in core react vue svelte solid web-component angular; do
             npx --yes @arethetypeswrong/cli --pack "packages/$d" --profile node16
           done
 
       # Smoke-test that every publishable JS package loads in plain Node,
       # both require() and import — catches SSR-hostile module-scope DOM access.
+      # angular is excluded here only because it ships ESM/FESM with no CJS
+      # entry; publint and attw above DO cover it.
       - name: Node import smoke test
         run: |
           for d in core react vue svelte solid web-component; do

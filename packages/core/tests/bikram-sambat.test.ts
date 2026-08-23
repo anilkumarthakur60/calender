@@ -6,7 +6,9 @@ import {
   buildMonthGrid,
   createCalendarDate,
   createCalendarSystem,
+  BS_MAX_YEAR,
   BS_MIN_YEAR,
+  BS_MONTH_DAYS,
 } from '../src/index.js';
 
 const bs = new BikramSambatCalendar();
@@ -93,9 +95,36 @@ describe('BikramSambatCalendar — UTC-pure conversion', () => {
       day: 13,
     });
     // Round-trip invariance across a span of years.
-    for (const y of [2010, 2040, 2068, 2080, 2090]) {
+    for (const y of [2010, 2040, 2068, 2080, 2086]) {
       const d = createCalendarDate(y, 6, 10);
       expect(bs.fromGregorian(bs.toGregorian(d))).toEqual(d);
+    }
+  });
+
+  it('rejects years outside the verified table, month 1 included', () => {
+    // month === 1 skips both accumulation loops, so this used to return a
+    // silently wrong Gregorian date instead of throwing.
+    expect(() => bs.toGregorian(createCalendarDate(1000, 1, 5))).toThrow(RangeError);
+    expect(() => bs.toGregorian(createCalendarDate(1969, 1, 1))).toThrow(RangeError);
+    expect(() => bs.toGregorian(createCalendarDate(2087, 1, 1))).toThrow(RangeError);
+  });
+
+  it('every supported year is internally consistent', () => {
+    for (let y = BS_MIN_YEAR; y <= BS_MAX_YEAR; y += 1) {
+      const months = BS_MONTH_DAYS[y];
+      expect(months, `missing BS year ${y}`).toBeDefined();
+      const total = (months as ReadonlyArray<number>).reduce((a, b) => a + b, 0);
+      expect(total, `BS ${y} year length`).toBeGreaterThanOrEqual(365);
+      expect(total, `BS ${y} year length`).toBeLessThanOrEqual(366);
+      for (const len of months as ReadonlyArray<number>) {
+        expect(len, `BS ${y} month length`).toBeGreaterThanOrEqual(29);
+        expect(len, `BS ${y} month length`).toBeLessThanOrEqual(32);
+      }
+      // Nepali New Year always falls in the Gregorian window Apr 12-15.
+      const ny = bs.toGregorian(createCalendarDate(y, 1, 1));
+      expect(ny.month, `BS ${y} new year month`).toBe(4);
+      expect(ny.day, `BS ${y} new year day`).toBeGreaterThanOrEqual(12);
+      expect(ny.day, `BS ${y} new year day`).toBeLessThanOrEqual(15);
     }
   });
 });

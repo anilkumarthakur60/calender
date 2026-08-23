@@ -53,10 +53,10 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/calendar-core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:^"
   },
   "peerDependencies": {
-    "vue": ">=3.3"
+    "vue": ">=3.5"
   },
   "devDependencies": {
     "@testing-library/user-event": "^14.6.1",
@@ -73,6 +73,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=18"
   }
 }

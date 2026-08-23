@@ -36,6 +36,7 @@ export const createDatePicker = (options: DatePickerEngineOptions = {}): CreateD
     if (disposed) return;
     disposed = true;
     unsub();
+    engine.destroy();
   };
   if (getOwner()) onCleanup(dispose);
   return { engine, state, dispose };

@@ -2,6 +2,7 @@ import {
   type CalendarId,
   type CalendarSystem,
   DatePickerEngine,
+  type DecodedSelection,
   type FocusTrap,
   type FormatPreset,
   type SelectionMode,
@@ -87,6 +88,9 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
     #open = false;
     /** True while the visible input holds uncommitted user edits. */
     #dirty = false;
+
+    /** Guards against `#commit`'s own setAttribute re-entering attributeChangedCallback. */
+    #committing = false;
     /** Guards against the popover re-opening from our own refocus. */
     #suppressOpen = false;
 
@@ -128,6 +132,10 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
     attributeChangedCallback(name: string, _old: string | null, _next: string | null): void {
       if (!this.#connected) return;
       if (name === 'value') {
+        // `#commit` reflects the committed value back onto the attribute; without this
+        // guard that write re-enters here and re-applies the selection to the engine,
+        // which toggles in multi mode and fans out exponentially in range mode.
+        if (this.#committing) return;
         this.#input.value = this.getAttribute('value') ?? '';
         this.#dirty = false;
         this.#commitFromText(this.#input.value);
@@ -391,6 +399,21 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
       }
     }
 
+    /**
+     * Typed text must clear the same constraints a click does — otherwise a
+     * user can type past `min`/`max` and submit the form with that value.
+     */
+    #isDecodedPickable(decoded: DecodedSelection, mode: SelectionMode): boolean {
+      const engine = this.#engine;
+      if (!engine) return true;
+      if (mode === 'single') return decoded.single ? engine.isPickable(decoded.single) : true;
+      if (mode === 'range') {
+        const r = decoded.range;
+        return r ? engine.isPickable(r.start) && engine.isPickable(r.end) : true;
+      }
+      return (decoded.multi ?? []).every(d => engine.isPickable(d));
+    }
+
     #handleBlur(): void {
       this.#dirty = false;
       const text = this.#input.value;
@@ -405,7 +428,9 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
       const decoded =
         parseSelection(text, mode, this.#fmtOpts(this.#displayPattern())) ??
         parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
-      if (!decoded) {
+      if (!decoded || !this.#isDecodedPickable(decoded, mode)) {
+        // Unparseable, or outside min/max/disabled — revert to the last
+        // committed value rather than accepting a value the grid would refuse.
         this.#input.value = this.#toDisplay(current, mode);
         return;
       }
@@ -421,8 +446,13 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
 
     #commit(next: string): void {
       if (next === (this.getAttribute('value') ?? '')) return;
-      if (next) this.setAttribute('value', next);
-      else this.removeAttribute('value');
+      this.#committing = true;
+      try {
+        if (next) this.setAttribute('value', next);
+        else this.removeAttribute('value');
+      } finally {
+        this.#committing = false;
+      }
       this.#syncForm(next);
       if (next) announce(`Selected ${next}`);
       this.dispatchEvent(

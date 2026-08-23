@@ -20,8 +20,13 @@ export interface CreateDatePickerResult {
    * Svelte-compatible readable store of EngineState. Read it with `$store`
    * auto-subscription in Svelte 3/4/5, or bridge it into a rune with
    * Svelte 5's `fromStore`.
+   *
+   * Deliberately NOT named `state`: destructuring `const { state } = ...` in a
+   * Svelte 5 component that also uses the `$state` rune compiles with only a
+   * `store_rune_conflict` warning and rewrites the rune into a store read,
+   * producing a runtime TypeError.
    */
-  readonly state: SvelteStoreLike<EngineState>;
+  readonly store: SvelteStoreLike<EngineState>;
   /** Manual subscribe outside of components (e.g. effects). */
   readonly subscribe: (listener: (state: EngineState) => void) => () => void;
   /**
@@ -31,6 +36,12 @@ export interface CreateDatePickerResult {
    * new state synchronously.
    */
   readonly setOptions: (partial: Partial<DatePickerEngineOptions>) => void;
+  /**
+   * Release the engine and every listener registered on it. Svelte has no
+   * ambient owner here, so call this from `onDestroy` when you create a picker
+   * per component. Idempotent.
+   */
+  readonly dispose: () => void;
 }
 
 /**
@@ -48,8 +59,9 @@ export const createDatePicker = (options: DatePickerEngineOptions = {}): CreateD
 
   return {
     engine,
-    state: { subscribe },
+    store: { subscribe },
     subscribe,
     setOptions: partial => engine.setOptions(partial),
+    dispose: () => engine.destroy(),
   };
 };

@@ -102,6 +102,7 @@ const deepFreezeSelection = (selection: SelectionValue): SelectionValue => {
 
 export class DatePickerEngine {
   readonly #bus = new EventBus<DatePickerEvents>();
+  #destroyed = false;
   #options: DatePickerEngineOptions;
   #strategy!: SelectionStrategy;
   #constraint!: DateConstraint;
@@ -357,6 +358,22 @@ export class DatePickerEngine {
 
   on = this.#bus.on.bind(this.#bus);
 
+  /**
+   * Release every listener registered on this engine. Adapters must call this
+   * when their component unmounts — without it each mount leaks its listeners
+   * for the lifetime of the page. Idempotent.
+   */
+  destroy(): void {
+    if (this.#destroyed) return;
+    this.#destroyed = true;
+    this.#bus.clear();
+  }
+
+  /** True once {@link destroy} has run. */
+  get destroyed(): boolean {
+    return this.#destroyed;
+  }
+
   isDisabled(date: CalendarDate): boolean {
     return this.#constraint.evaluate(date) !== null;
   }
@@ -505,7 +522,9 @@ export class DatePickerEngine {
       // Clear the hover once a range completes / a single picks; redundant otherwise.
       hovered: null,
     });
-    this.#bus.emit('select', { selection: this.#state.selection, focused: effective });
+    // Report what THIS call committed. Reading this.#state here would report
+    // whatever a synchronous `change` listener left behind instead.
+    this.#bus.emit('select', { selection: nextSelection, focused: effective });
   }
 
   /**
@@ -536,21 +555,34 @@ export class DatePickerEngine {
    */
   selectRange(start: CalendarDate, end: CalendarDate): boolean {
     if (this.#state.selection.mode !== 'range') return false;
-    const range = this.#clampRangeToBounds(start, end);
-    if (!range) return false;
+    const clamped = this.#clampRangeToBounds(start, end);
+    if (!clamped) return false;
+
+    // Apply the same date constraints the two-click path applies. Without
+    // this, every preset could commit a range whose endpoints are disabled.
+    if (this.isDisabled(clamped.start)) return false;
+    let resolvedEnd = clamped.end;
+    if (this.#rangeOverDisabled !== 'allow' && !isSameDay(clamped.start, clamped.end)) {
+      const resolved = this.#resolveRangeEnd(clamped.start, clamped.end);
+      if (resolved === null) return false; // 'reject': span contains a disabled date
+      resolvedEnd = resolved;
+    }
+    const range = createRange(clamped.start, resolvedEnd);
+
     const span = daysBetween(this.#calendar, range.start, range.end) + 1; // inclusive
     if (this.#minRangeDays !== undefined && span < this.#minRangeDays) return false;
     if (this.#maxRangeDays !== undefined && span > this.#maxRangeDays) return false;
     const selection: SelectionValue = { mode: 'range', value: range, anchor: range.start };
     this.#commit({ ...this.#state, focused: range.end, selection, hovered: null });
-    this.#bus.emit('select', { selection: this.#state.selection, focused: range.end });
+    this.#bus.emit('select', { selection, focused: range.end });
     return true;
   }
 
   clearSelection(): void {
     const next = this.#strategy.clear(this.#state.selection as never) as SelectionValue;
+    const focused = this.#state.focused;
     this.#commit({ ...this.#state, selection: next, hovered: null });
-    this.#bus.emit('select', { selection: this.#state.selection, focused: this.#state.focused });
+    this.#bus.emit('select', { selection: next, focused });
   }
 
   setHovered(date: CalendarDate | null): void {

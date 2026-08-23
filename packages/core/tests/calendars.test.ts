@@ -32,12 +32,49 @@ describe('BuddhistCalendar', () => {
 describe('PersianCalendar', () => {
   const persian = new PersianCalendar();
 
-  it('1404 Farvardin 1 maps to ~March 21, 2025', () => {
-    const ad = persian.toGregorian(createCalendarDate(1404, 1, 1));
-    expect(ad.year).toBe(2025);
-    expect(ad.month).toBe(3);
-    // Persian new year is March 20-21 depending on tropical equinox; allow ±1
-    expect(Math.abs(ad.day - 21)).toBeLessThanOrEqual(1);
+  it('Nowruz maps to the exact Gregorian day ICU reports', () => {
+    // Exact, not +/-1: a one-day tolerance here previously hid a leap-rule bug
+    // that shifted an entire year at a time.
+    expect(persian.toGregorian(createCalendarDate(1404, 1, 1))).toEqual({
+      year: 2025,
+      month: 3,
+      day: 21,
+    });
+    expect(persian.toGregorian(createCalendarDate(1403, 1, 1))).toEqual({
+      year: 2024,
+      month: 3,
+      day: 20,
+    });
+  });
+
+  it("agrees with Intl's persian calendar day-for-day across a decade", () => {
+    const icu = new Intl.DateTimeFormat('en-u-ca-persian-nu-latn', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    let mismatches = 0;
+    for (let t = Date.UTC(2020, 0, 1); t <= Date.UTC(2030, 0, 1); t += 86_400_000) {
+      const d = new Date(t);
+      const mine = persian.fromGregorian(
+        createCalendarDate(d.getUTCFullYear(), d.getUTCMonth() + 1, d.getUTCDate()),
+      );
+      const parts = Object.fromEntries(icu.formatToParts(d).map(x => [x.type, x.value]));
+      if (
+        mine.year !== Number(parts['year']) ||
+        mine.month !== Number(parts['month']) ||
+        mine.day !== Number(parts['day'])
+      ) {
+        mismatches += 1;
+      }
+    }
+    expect(mismatches).toBe(0);
+  });
+
+  it('leap years match the 33-year cycle (1403 leap, 1404 not)', () => {
+    expect(persian.isValidDate(1403, 12, 30)).toBe(true);
+    expect(persian.isValidDate(1404, 12, 30)).toBe(false);
   });
 
   it('round-trips through Gregorian', () => {

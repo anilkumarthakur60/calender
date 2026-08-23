@@ -18,8 +18,23 @@ describe('applyMask', () => {
 
   it('strips non-digits before applying the mask', () => {
     expect(applyMask('2025-04-15', 'iso').value).toBe('2025-04-15');
-    expect(applyMask('20-25-04-1-5', 'iso').value).toBe('2025-04-15');
+    expect(applyMask('20250415', 'iso').value).toBe('2025-04-15');
     expect(applyMask('abc20250415def', 'iso').value).toBe('2025-04-15');
+  });
+
+  it('a separator commits a short fixed-width field, zero-padded', () => {
+    // Typing "1/5/2024" must not let MM keep swallowing the next field's
+    // digits (which produced "15/20/24" before).
+    expect(applyMask('1/5/2024', 'us').value).toBe('01/05/2024');
+    expect(applyMask('4/7/2025', 'eu').value).toBe('04/07/2025');
+    expect(applyMask('2025-4-15', 'iso').value).toBe('2025-04-15');
+    // Variable-width tokens are unaffected.
+    expect(applyMask('12/3/2025', 'short').value).toBe('12/3/2025');
+  });
+
+  it('accepts localized numerals', () => {
+    expect(applyMask('२०८१०४१५', 'iso').value).toBe('2081-04-15');
+    expect(applyMask('١٥/٠٤/٢٠٢٥', 'eu').value).toBe('15/04/2025');
   });
 
   it('does not append a trailing separator', () => {

@@ -8,11 +8,11 @@ Svelte 3/4/5, or bridge it into a rune with Svelte 5's `fromStore`.
 <script lang="ts">
   import { createDatePicker } from '@anil-labs/calendar-svelte';
 
-  const { engine, state } = createDatePicker({ mode: 'range', locale: 'en-GB' });
+  const { engine, store } = createDatePicker({ mode: 'range', locale: 'en-GB' });
 </script>
 
 <div class="cal-picker">
-  {#each $state.grid.weeks as week}
+  {#each $store.grid.weeks as week}
     {#each week as cell}
       <button
         class="cal-picker__cell"

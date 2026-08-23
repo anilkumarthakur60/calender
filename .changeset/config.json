@@ -8,7 +8,6 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@anil-labs/calendar-angular",
     "docs",
     "example-react",
     "example-vue",

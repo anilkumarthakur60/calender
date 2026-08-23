@@ -4,21 +4,21 @@ import { createDatePicker } from '../src/create-date-picker.js';
 
 describe('createDatePicker (svelte store contract)', () => {
   it('calls subscribers synchronously with the current state', () => {
-    const { state } = createDatePicker({
+    const { store } = createDatePicker({
       initialFocused: createCalendarDate(2025, 4, 15),
     });
     const run = vi.fn();
-    state.subscribe(run);
+    store.subscribe(run);
     expect(run).toHaveBeenCalledTimes(1);
     expect(run.mock.calls[0]![0].focused).toEqual({ year: 2025, month: 4, day: 15 });
   });
 
   it('notifies subscribers when engine.select mutates state', () => {
-    const { engine, state } = createDatePicker({
+    const { engine, store } = createDatePicker({
       initialFocused: createCalendarDate(2025, 4, 15),
     });
     const run = vi.fn();
-    state.subscribe(run);
+    store.subscribe(run);
     engine.select(createCalendarDate(2025, 4, 20));
     expect(run).toHaveBeenCalledTimes(2);
     const latest = run.mock.calls.at(-1)![0];
@@ -29,24 +29,24 @@ describe('createDatePicker (svelte store contract)', () => {
   });
 
   it('stops updates after unsubscribe', () => {
-    const { engine, state } = createDatePicker({
+    const { engine, store } = createDatePicker({
       initialFocused: createCalendarDate(2025, 4, 15),
     });
     const run = vi.fn();
-    const unsubscribe = state.subscribe(run);
+    const unsubscribe = store.subscribe(run);
     unsubscribe();
     engine.select(createCalendarDate(2025, 4, 20));
     expect(run).toHaveBeenCalledTimes(1); // only the initial synchronous call
   });
 
   it('keeps two subscribers independent', () => {
-    const { engine, state } = createDatePicker({
+    const { engine, store } = createDatePicker({
       initialFocused: createCalendarDate(2025, 4, 15),
     });
     const first = vi.fn();
     const second = vi.fn();
-    const unsubscribeFirst = state.subscribe(first);
-    state.subscribe(second);
+    const unsubscribeFirst = store.subscribe(first);
+    store.subscribe(second);
     unsubscribeFirst();
     engine.select(createCalendarDate(2025, 4, 21));
     expect(first).toHaveBeenCalledTimes(1);
@@ -62,12 +62,12 @@ describe('createDatePicker (svelte store contract)', () => {
   });
 
   it('setOptions reconfigures the live engine and pushes new state', () => {
-    const { engine, state, setOptions } = createDatePicker({
+    const { engine, store, setOptions } = createDatePicker({
       initialFocused: createCalendarDate(2025, 4, 15),
     });
     engine.select(createCalendarDate(2025, 4, 20));
     const run = vi.fn();
-    state.subscribe(run);
+    store.subscribe(run);
     setOptions({ min: createCalendarDate(2025, 4, 1) });
     expect(run).toHaveBeenCalledTimes(2);
     const latest = run.mock.calls.at(-1)![0];

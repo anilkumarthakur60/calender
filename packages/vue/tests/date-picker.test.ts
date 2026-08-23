@@ -118,8 +118,9 @@ describe('<DatePicker>', () => {
     });
     const nums = container.querySelectorAll('.cal-picker__weeknum');
     expect(nums).toHaveLength(6);
-    // First row starts Sun Mar 30, 2025 → ISO week 13
-    expect(nums[0]?.textContent).toBe('13');
+    // First row spans Sun Mar 30 - Sat Apr 5, 2025. Its Thursday (Apr 3) is in
+    // ISO week 14, and six of the row's seven days belong to that week.
+    expect(nums[0]?.textContent).toBe('14');
   });
 
   it('accepts a CalendarSystem object for the calendar prop', () => {

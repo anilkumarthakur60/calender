@@ -1,4 +1,4 @@
-import { defineComponent, h, ref, watch, type PropType, type VNode } from 'vue';
+import { defineComponent, h, onScopeDispose, ref, watch, type PropType, type VNode } from 'vue';
 import {
   type CalendarDate,
   type DatePickerEngineOptions,
@@ -132,11 +132,16 @@ export const DatePicker = defineComponent({
 
     // Events come from the ENGINE so keyboard selection (Enter/Space),
     // presets and programmatic changes all emit — not just clicks.
-    engine.on('select', ({ focused, selection }) => {
+    const offSelect = engine.on('select', ({ focused, selection }) => {
       emit('select', focused);
       emit('update:modelValue', encodeSelectionValue(selection, engine.calendar));
     });
-    engine.on('change', ({ state: next }) => emit('change', next));
+    const offChange = engine.on('change', ({ state: next }) => emit('change', next));
+    // Without this the component leaks both listeners on every unmount.
+    onScopeDispose(() => {
+      offSelect();
+      offChange();
+    });
 
     // Live prop changes reconfigure the engine.
     watch(reconfigurableOptions, opts => engine.setOptions(opts));

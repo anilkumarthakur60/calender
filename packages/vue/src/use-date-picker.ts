@@ -33,6 +33,9 @@ export const useDatePicker = (options: DatePickerEngineOptions = {}): UseDatePic
     if (disposed) return;
     disposed = true;
     unsub();
+    // Release any listener a consumer registered on the engine too, not just
+    // our own — the engine dies with the component either way.
+    engine.destroy();
   };
 
   // Scope-aware cleanup: works inside components AND standalone effectScope()s,

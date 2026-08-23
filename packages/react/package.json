@@ -53,7 +53,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/calendar-core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:^"
   },
   "peerDependencies": {
     "react": ">=18",
@@ -76,6 +76,6 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=18"
   }
 }

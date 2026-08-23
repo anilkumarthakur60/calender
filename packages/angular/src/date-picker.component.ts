@@ -20,7 +20,9 @@ import {
   type DatePickerEngineOptions,
   type DateRange,
   type MonthGridCell,
+  type PeriodCell,
   type SelectionValue,
+  buildPeriodGrid,
   isInRange,
   isSameDay,
 } from '@anil-labs/calendar-core';
@@ -58,6 +60,7 @@ const dateKey = (date: CalendarDate): string => `${date.year}-${date.month}-${da
       [attr.data-view]="state().view"
       [attr.data-mode]="state().mode"
       (keydown)="onKey($event)"
+      (focusout)="onFocusOut($event)"
     >
       <div class="cal-picker__header">
         <button
@@ -87,7 +90,22 @@ const dateKey = (date: CalendarDate): string => `${date.year}-${date.month}-${da
           ›
         </button>
       </div>
-      <div class="cal-picker__grid" role="grid">
+      <div class="cal-picker__periods" *ngIf="view() !== 'day'">
+        <button
+          *ngFor="let cell of periodCells(); trackBy: trackByPeriod"
+          type="button"
+          class="cal-picker__period"
+          [attr.aria-label]="cell.longLabel"
+          [attr.data-focused]="cell.isFocused || null"
+          [attr.data-today]="cell.isToday || null"
+          [attr.data-outside]="cell.outside || null"
+          [disabled]="disabled()"
+          (click)="onPeriodClick(cell)"
+        >
+          {{ cell.label }}
+        </button>
+      </div>
+      <div class="cal-picker__grid" role="grid" *ngIf="view() === 'day'">
         <div class="cal-picker__row" role="row">
           <div
             *ngFor="let w of state().grid.weekdayHeaders; trackBy: trackByValue"
@@ -138,10 +156,31 @@ export class DatePickerComponent implements ControlValueAccessor {
   readonly picker = inject(DatePickerService, { optional: true }) ?? new DatePickerService();
   readonly state = this.picker.state;
   readonly disabled = signal(false);
-  readonly direction = computed(() => this.picker.engine.locale.direction);
+  readonly direction = computed(() => {
+    // Touch the state signal: without a dependency this never recomputes, so
+    // switching to an RTL locale updated the engine but never the DOM.
+    this.state();
+    return this.picker.engine.locale.direction;
+  });
   readonly monthYearLabel = computed(() =>
     this.picker.engine.formatter.formatMonthYear(this.state().focused),
   );
+  /** Current view; `day` renders the month grid, anything else a period grid. */
+  readonly view = computed(() => this.state().view);
+  /**
+   * Cells for the month / year / decade views. The title button drills up, so
+   * without this the template kept rendering day cells for every view.
+   */
+  readonly periodCells = computed<ReadonlyArray<PeriodCell>>(() => {
+    const s = this.state();
+    if (s.view === 'day') return [];
+    return buildPeriodGrid(
+      s.focused,
+      s.view,
+      this.picker.engine.calendar,
+      this.picker.engine.locale.locale,
+    ).cells;
+  });
 
   readonly #host: HTMLElement = inject(ElementRef).nativeElement;
   readonly #injector = inject(Injector);
@@ -155,7 +194,6 @@ export class DatePickerComponent implements ControlValueAccessor {
       if (this.#writingValue) return;
       this.select.emit(focused);
       this.#onChange?.(selection.value);
-      this.#onTouched?.();
     });
     // Re-render replaces cell buttons; if focus was inside the grid, move it
     // to the new roving-tabindex cell once the DOM has been updated.
@@ -226,6 +264,22 @@ export class DatePickerComponent implements ControlValueAccessor {
   onClick(date: CalendarDate): void {
     if (this.disabled() || this.picker.engine.isDisabled(date)) return;
     this.picker.engine.select(date);
+  }
+
+  /** Mark the control touched when focus actually leaves the picker. */
+  onFocusOut(event: FocusEvent): void {
+    const next = event.relatedTarget as Node | null;
+    if (next && this.#host.contains(next)) return;
+    this.#onTouched?.();
+  }
+
+  onPeriodClick(cell: PeriodCell): void {
+    if (this.disabled()) return;
+    this.picker.engine.pickInView(cell.date);
+  }
+
+  trackByPeriod(_index: number, cell: PeriodCell): string {
+    return `${cell.date.year}-${cell.date.month}`;
   }
 
   onKey(event: KeyboardEvent): void {

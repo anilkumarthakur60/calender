@@ -70,7 +70,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/calendar-core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:^"
   },
   "devDependencies": {
     "happy-dom": "^20.11.1",
@@ -82,7 +82,7 @@
     "access": "public"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=18"
   },
   "unpkg": "./dist/auto-register.global.js",
   "jsdelivr": "./dist/auto-register.global.js",

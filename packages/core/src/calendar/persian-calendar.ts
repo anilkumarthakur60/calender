@@ -1,4 +1,4 @@
-import { type CalendarDate, toJsDate } from '../domain';
+import type { CalendarDate } from '../domain';
 import type { CalendarSystem } from './calendar-system.js';
 import { GregorianCalendar } from './gregorian-calendar.js';
 
@@ -10,15 +10,70 @@ import { GregorianCalendar } from './gregorian-calendar.js';
  *  - Months 7-11 (Mehr..Bahman) — 30 days each
  *  - Month 12 (Esfand) — 29 days, 30 in leap years
  *
- * Leap-year rule (Birashk algorithm — accurate for SH 1300..1500):
- *   isLeap(SH) ⇔ ((((SH - 474) % 2820 + 474 + 38) * 682) % 2816) < 682
+ * Leap years follow Borkowski's 33-year-cycle breaks table — the rule ICU and
+ * Iran's official calendar use. (The Birashk 2820-year approximation this
+ * previously used disagrees with it for roughly one year in every 30.)
  *
- * Conversion uses the well-established Julian Day Number bridge between
- * Persian, Gregorian, and Islamic calendars.
+ * Conversion runs entirely in integer Julian Day Numbers, so it is free of any
+ * local-time or DST influence.
  */
 
-const PERSIAN_EPOCH = 1948320.5; // JD of Persian epoch (March 19, 622 AD Julian)
-const GREGORIAN_EPOCH = 1721425.5;
+/**
+ * Borkowski's 33-year-cycle algorithm (the "jalaali" breaks table), which is
+ * what ICU and Iran's official calendar follow. Valid for SH -61..3177.
+ */
+const BREAKS: ReadonlyArray<number> = [
+  -61, 9, 38, 199, 426, 686, 756, 818, 1111, 1181, 1210, 1635, 2060, 2097, 2192, 2262, 2324, 2394,
+  2456, 3178,
+];
+
+const div = (a: number, b: number): number => Math.floor(a / b);
+const mod = (a: number, b: number): number => a - Math.floor(a / b) * b;
+
+interface JalCal {
+  readonly leap: number;
+  readonly gy: number;
+  readonly march: number;
+}
+
+/**
+ * For Persian year `jy`, return the Gregorian year it starts in, the March day
+ * of its Nowruz, and its position in the leap cycle (`leap === 0` ⇒ leap year).
+ */
+const jalCal = (jy: number): JalCal => {
+  const bl = BREAKS.length;
+  const gy = jy + 621;
+  let leapJ = -14;
+  let jp = BREAKS[0] as number;
+  let jump = 0;
+
+  if (jy < jp || jy >= (BREAKS[bl - 1] as number)) {
+    throw new RangeError(`Persian year out of supported range (-61..3177): ${jy}`);
+  }
+
+  for (let i = 1; i < bl; i += 1) {
+    const jm = BREAKS[i] as number;
+    jump = jm - jp;
+    if (jy < jm) break;
+    leapJ += div(jump, 33) * 8 + div(mod(jump, 33), 4);
+    jp = jm;
+  }
+
+  let n = jy - jp;
+  leapJ += div(n, 33) * 8 + div(mod(n, 33) + 3, 4);
+  if (mod(jump, 33) === 4 && jump - n === 4) leapJ += 1;
+
+  const leapG = div(gy, 4) - div((div(gy, 100) + 1) * 3, 4) - 150;
+  const march = 20 + leapJ - leapG;
+
+  if (jump - n < 6) n = n - jump + div(jump + 4, 33) * 33;
+  let leap = mod(mod(n + 1, 33) - 1, 4);
+  if (leap === -1) leap = 4;
+
+  return { leap, gy, march };
+};
+
+const isPersianLeap = (year: number): boolean => jalCal(year).leap === 0;
 
 const persianMonthDays = (year: number, month: number): number => {
   if (month <= 6) return 31;
@@ -26,59 +81,56 @@ const persianMonthDays = (year: number, month: number): number => {
   return isPersianLeap(year) ? 30 : 29;
 };
 
-const isPersianLeap = (year: number): boolean => {
-  const a = ((year - 474) % 2820) + 474;
-  return ((a + 38) * 682) % 2816 < 682;
+/**
+ * Gregorian ↔ Julian Day Number (Fliegel–Van Flandern, proleptic Gregorian).
+ * Integer-only, so no local-time or DST influence, and an exact inverse pair.
+ */
+const gregorianToJdn = (gy: number, gm: number, gd: number): number => {
+  const a = div(14 - gm, 12);
+  const y = gy + 4800 - a;
+  const m = gm + 12 * a - 3;
+  return gd + div(153 * m + 2, 5) + 365 * y + div(y, 4) - div(y, 100) + div(y, 400) - 32045;
 };
 
-const persianToJd = (year: number, month: number, day: number): number => {
-  const epbase = year - (year >= 0 ? 474 : 473);
-  const epyear = 474 + (((epbase % 2820) + 2820) % 2820);
-  let jd = day;
-  if (month <= 7) jd += (month - 1) * 31;
-  else jd += (month - 1) * 30 + 6;
-  jd += Math.floor((epyear * 682 - 110) / 2816);
-  jd += (epyear - 1) * 365;
-  jd += Math.floor(epbase / 2820) * 1029983;
-  jd += PERSIAN_EPOCH - 1;
-  return jd;
-};
-
-const jdToPersian = (jd: number): { year: number; month: number; day: number } => {
-  jd = Math.floor(jd) + 0.5;
-  const depoch = jd - persianToJd(475, 1, 1);
-  const cycle = Math.floor(depoch / 1029983);
-  const cyear = ((depoch % 1029983) + 1029983) % 1029983;
-  let ycycle: number;
-  if (cyear === 1029982) ycycle = 2820;
-  else {
-    const aux1 = Math.floor(cyear / 366);
-    const aux2 = cyear % 366;
-    ycycle = Math.floor((2134 * aux1 + 2816 * aux2 + 2815) / 1028522) + aux1 + 1;
-  }
-  let year = ycycle + 2820 * cycle + 474;
-  if (year <= 0) year -= 1;
-  const yday = jd - persianToJd(year, 1, 1) + 1;
-  const month = yday <= 186 ? Math.ceil(yday / 31) : Math.ceil((yday - 6) / 30);
-  const day = jd - persianToJd(year, month, 1) + 1;
+const jdnToGregorian = (jdn: number): { year: number; month: number; day: number } => {
+  let l = jdn + 68569;
+  const n = div(4 * l, 146097);
+  l -= div(146097 * n + 3, 4);
+  const i = div(4000 * (l + 1), 1461001);
+  l = l - div(1461 * i, 4) + 31;
+  const j = div(80 * l, 2447);
+  const day = l - div(2447 * j, 80);
+  l = div(j, 11);
+  const month = j + 2 - 12 * l;
+  const year = 100 * (n - 49) + i + l;
   return { year, month, day };
 };
 
-const gregorianToJd = (year: number, month: number, day: number): number => {
-  const a = Math.floor((14 - month) / 12);
-  const y = year + 4800 - a;
-  const m = month + 12 * a - 3;
+const persianToJdn = (year: number, month: number, day: number): number => {
+  const r = jalCal(year);
   return (
-    day +
-    Math.floor((153 * m + 2) / 5) +
-    365 * y +
-    Math.floor(y / 4) -
-    Math.floor(y / 100) +
-    Math.floor(y / 400) -
-    32045.5 +
-    GREGORIAN_EPOCH -
-    1721425.5
+    gregorianToJdn(r.gy, 3, r.march) + (month - 1) * 31 - div(month, 7) * (month - 7) + day - 1
   );
+};
+
+const jdnToPersian = (jdn: number): { year: number; month: number; day: number } => {
+  const gy = jdnToGregorian(jdn).year;
+  let year = gy - 621;
+  const r = jalCal(year);
+  const nowruzJdn = gregorianToJdn(r.gy, 3, r.march);
+  let k = jdn - nowruzJdn;
+
+  if (k >= 0) {
+    if (k <= 185) {
+      return { year, month: 1 + div(k, 31), day: mod(k, 31) + 1 };
+    }
+    k -= 186;
+  } else {
+    year -= 1;
+    k += 179;
+    if (r.leap === 1) k += 1;
+  }
+  return { year, month: 7 + div(k, 30), day: mod(k, 30) + 1 };
 };
 
 const PERSIAN_MONTH_NAMES_LATIN: ReadonlyArray<string> = [
@@ -146,8 +198,7 @@ export class PersianCalendar implements CalendarSystem {
   }
 
   addDays(date: CalendarDate, days: number): CalendarDate {
-    const jd = persianToJd(date.year, date.month, date.day) + days;
-    return Object.freeze(jdToPersian(jd));
+    return Object.freeze(jdnToPersian(persianToJdn(date.year, date.month, date.day) + days));
   }
 
   addMonths(date: CalendarDate, months: number): CalendarDate {
@@ -179,22 +230,11 @@ export class PersianCalendar implements CalendarSystem {
   }
 
   toGregorian(date: CalendarDate): CalendarDate {
-    const jd = persianToJd(date.year, date.month, date.day);
-    // JD → Gregorian via the JS Date bridge anchored at AD 1970-01-01 (JD 2440587.5)
-    const ad = new Date((jd - 2440587.5) * 86_400_000);
-    return Object.freeze({
-      year: ad.getUTCFullYear(),
-      month: ad.getUTCMonth() + 1,
-      day: ad.getUTCDate(),
-    });
+    return Object.freeze(jdnToGregorian(persianToJdn(date.year, date.month, date.day)));
   }
 
   fromGregorian(date: CalendarDate): CalendarDate {
-    // Pass through JS Date for portability — toJsDate uses local noon, then
-    // we re-derive UTC midnight before computing JD.
-    const ad = toJsDate(date);
-    const jd = gregorianToJd(ad.getFullYear(), ad.getMonth() + 1, ad.getDate());
-    return Object.freeze(jdToPersian(jd));
+    return Object.freeze(jdnToPersian(gregorianToJdn(date.year, date.month, date.day)));
   }
 
   monthName(month: number, style: 'long' | 'short' | 'narrow', locale: string): string {

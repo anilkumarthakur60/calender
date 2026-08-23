@@ -2,7 +2,6 @@
   "name": "@anil-labs/calendar-angular",
   "version": "0.1.0",
   "description": "Angular 17+ adapter for @anil-labs/calendar-core.",
-  "private": true,
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/angular#readme",
@@ -30,12 +29,12 @@
     "src",
     "README.md"
   ],
-  "module": "./dist/fesm2022/anil-labs-angular.mjs",
-  "types": "./dist/types/anil-labs-angular.d.ts",
+  "module": "./dist/fesm2022/anil-labs-calendar-angular.mjs",
+  "types": "./dist/types/anil-labs-calendar-angular.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/anil-labs-angular.d.ts",
-      "default": "./dist/fesm2022/anil-labs-angular.mjs"
+      "types": "./dist/types/anil-labs-calendar-angular.d.ts",
+      "default": "./dist/fesm2022/anil-labs-calendar-angular.mjs"
     }
   },
   "scripts": {
@@ -45,7 +44,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/calendar-core": "workspace:*",
+    "@anil-labs/calendar-core": "workspace:^",
     "tslib": "^2.8.1"
   },
   "peerDependencies": {

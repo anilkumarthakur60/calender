@@ -1,3 +1,4 @@
+import { normalizeDigits } from './parser.js';
 import { resolvePattern, tokenizePattern, type FormatPreset } from './pattern.js';
 
 /**
@@ -41,8 +42,12 @@ const NUMERIC_TOKENS: Readonly<Record<string, { width: number; max?: number }>> 
 };
 
 export const isMaskable = (pattern: string | FormatPreset): boolean => {
+  // Inspect tokens rather than the raw pattern: a substring test also trips on
+  // quoted literals, so "yyyy 'ano' MM/dd" would wrongly opt out via the `a` token.
   const resolved = resolvePattern(pattern);
-  return !NAME_TOKENS.some(t => resolved.includes(t));
+  return !tokenizePattern(resolved).some(
+    seg => seg.kind === 'token' && NAME_TOKENS.includes(seg.value),
+  );
 };
 
 export interface MaskResult {
@@ -76,6 +81,8 @@ const buildSlots = (resolved: string): MaskSlot[] => {
 export const applyMask = (input: string, pattern: string | FormatPreset): MaskResult => {
   if (!isMaskable(pattern)) return { value: input, caret: input.length };
   const slots = buildSlots(resolvePattern(pattern));
+  // Accept Devanagari/Persian/Arabic-Indic/fullwidth numerals, not just ASCII.
+  input = normalizeDigits(input);
 
   let out = '';
   let slotIdx = 0;
@@ -90,9 +97,14 @@ export const applyMask = (input: string, pattern: string | FormatPreset): MaskRe
   while (i < input.length && slotIdx < slots.length) {
     const ch = input[i] as string;
     if (!/[0-9]/.test(ch)) {
-      // Separator/other: commits an in-progress variable-width token. Fixed
-      // tokens ignore it — digits pasted as "20-25" still fill a yyyy slot.
-      if (buf !== '' && (slots[slotIdx] as MaskSlot).max !== undefined) commit();
+      // Separator/other: commits whatever the current token has so far. A
+      // fixed-width token left short is zero-padded ("1/" against MM -> "01"),
+      // otherwise it would keep swallowing the next field's digits.
+      if (buf !== '') {
+        const slot = slots[slotIdx] as MaskSlot;
+        if (slot.max === undefined) buf = buf.padStart(slot.width, '0');
+        commit();
+      }
       i += 1;
       continue;
     }
