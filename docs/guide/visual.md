@@ -98,4 +98,4 @@ Every visual property is a CSS custom property. Override at any scope:
 }
 ```
 
-Full token list lives in `@anil-labs/styles/scss/tokens.scss`.
+Full token list lives in `@anil-labs/calendar-styles/scss/tokens.scss`.

@@ -2,7 +2,7 @@
   "name": "example-angular",
   "private": true,
   "version": "0.0.0",
-  "description": "Reference Angular integration snippets for @anil-labs/angular. Use Angular CLI (ng new) to run.",
+  "description": "Reference Angular integration snippets for @anil-labs/calendar-angular. Use Angular CLI (ng new) to run.",
   "type": "module",
   "scripts": {
     "dev": "echo 'Angular example: copy src/ into an `ng new` app, see README.md' && exit 1",

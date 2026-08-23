@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { DatePickerComponent } from '@anil-labs/angular';
-import { type CalendarDate } from '@anil-labs/core';
+import { DatePickerComponent } from '@anil-labs/calendar-angular';
+import { type CalendarDate } from '@anil-labs/calendar-core';
 
 @Component({
   selector: 'app-root',

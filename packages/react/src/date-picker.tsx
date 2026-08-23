@@ -11,7 +11,7 @@ import {
   isSameDay,
   isoWeekOfYear,
   resolvePresets,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import { useDatePicker } from './use-date-picker.js';
 

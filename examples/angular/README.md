@@ -5,13 +5,13 @@
 > rest of this Vite-based monorepo. So this app holds **reference integration
 > snippets only** — copy them into an Angular CLI scaffold to run them.
 
-The `@anil-labs/angular` adapter itself is fully built and tested via tsup and
+The `@anil-labs/calendar-angular` adapter itself is fully built and tested via tsup and
 publishes to npm like the other adapters. Users consume it the standard way:
 
 ```bash
 ng new my-app --standalone
 cd my-app
-npm install @anil-labs/angular @anil-labs/styles
+npm install @anil-labs/calendar-angular @anil-labs/calendar-styles
 ```
 
 Then in your component:
@@ -19,8 +19,8 @@ Then in your component:
 ```ts
 // src/app/app.component.ts
 import { Component, signal } from '@angular/core';
-import { DatePickerComponent } from '@anil-labs/angular';
-import { type CalendarDate } from '@anil-labs/core';
+import { DatePickerComponent } from '@anil-labs/calendar-angular';
+import { type CalendarDate } from '@anil-labs/calendar-core';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +46,7 @@ export class AppComponent {
 ```ts
 // src/main.ts
 import 'zone.js';
-import '@anil-labs/styles';
+import '@anil-labs/calendar-styles';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 bootstrapApplication(AppComponent);

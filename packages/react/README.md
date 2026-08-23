@@ -1,20 +1,20 @@
-# @anil-labs/react
+# @anil-labs/calendar-react
 
-React 18+ adapter for [`@anil-labs/core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a headless, framework-agnostic calendar/date-picker engine. Ships ready-made components (`DatePicker`, `DateField`, `DateRangeField`) plus a `useDatePicker` hook for fully custom UIs.
+React 18+ adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a headless, framework-agnostic calendar/date-picker engine. Ships ready-made components (`DatePicker`, `DateField`, `DateRangeField`) plus a `useDatePicker` hook for fully custom UIs.
 
 ## Install
 
 ```sh
-npm install @anil-labs/react
+npm install @anil-labs/calendar-react
 # optional pre-built theme
-npm install @anil-labs/styles
+npm install @anil-labs/calendar-styles
 ```
 
 ## Components
 
 ```tsx
-import { DatePicker, DateField, DateRangeField } from '@anil-labs/react';
-import '@anil-labs/styles';
+import { DatePicker, DateField, DateRangeField } from '@anil-labs/calendar-react';
+import '@anil-labs/calendar-styles';
 
 export const Demo = () => (
   <>
@@ -31,7 +31,7 @@ export const Demo = () => (
 );
 ```
 
-`DatePicker` accepts every `DatePickerEngineOptions` field from `@anil-labs/core` (`mode`, `min`, `max`, `locale`, `disabledWeekdays`, `withTime`, `weekNumbers`, …) plus:
+`DatePicker` accepts every `DatePickerEngineOptions` field from `@anil-labs/calendar-core` (`mode`, `min`, `max`, `locale`, `disabledWeekdays`, `withTime`, `weekNumbers`, …) plus:
 
 | Prop         | Type                                 | Description                                                    |
 | ------------ | ------------------------------------ | -------------------------------------------------------------- |
@@ -44,7 +44,7 @@ export const Demo = () => (
 ## Headless hook
 
 ```tsx
-import { useDatePicker } from '@anil-labs/react';
+import { useDatePicker } from '@anil-labs/calendar-react';
 
 const Custom = () => {
   const { engine, state } = useDatePicker({ mode: 'single', locale: 'en-GB' });
@@ -65,7 +65,7 @@ const Custom = () => {
 };
 ```
 
-All core types (`CalendarDate`, `EngineState`, `DatePickerEngineOptions`, …) are re-exported, so `@anil-labs/react` is the only import you need.
+All core types (`CalendarDate`, `EngineState`, `DatePickerEngineOptions`, …) are re-exported, so `@anil-labs/calendar-react` is the only import you need.
 
 ## License
 

@@ -11,4 +11,4 @@ export {
   type DateRangeFieldHandle,
   type DateRangeFieldProps,
 } from './date-range-field.js';
-export type * from '@anil-labs/core';
+export type * from '@anil-labs/calendar-core';

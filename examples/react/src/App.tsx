@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { DateField, DatePicker } from '@anil-labs/react';
-import { createCalendarDate } from '@anil-labs/core';
+import { DateField, DatePicker } from '@anil-labs/calendar-react';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 
 const Section = ({
   title,

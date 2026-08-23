@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*",
-    "@anil-labs/styles": "workspace:*",
-    "@anil-labs/vue": "workspace:*",
-    "@anil-labs/web-component": "workspace:*",
+    "@anil-labs/calendar-core": "workspace:*",
+    "@anil-labs/calendar-styles": "workspace:*",
+    "@anil-labs/calendar-vue": "workspace:*",
+    "@anil-labs/calendar-web-component": "workspace:*",
     "vue": "^3.5.40"
   },
   "devDependencies": {

@@ -1,5 +1,5 @@
 {
-  "name": "@anil-labs/styles",
+  "name": "@anil-labs/calendar-styles",
   "version": "0.1.0",
   "description": "SCSS source and compiled CSS theme for the @anil-labs renderers.",
   "license": "MIT",

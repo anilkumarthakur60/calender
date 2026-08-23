@@ -1,7 +1,7 @@
 # calender — @anil-labs calendar suite
 
 [![CI](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml/badge.svg)](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/npm/v/%40anil-labs%2Fcore.svg)](https://www.npmjs.com/package/@anil-labs/core)
+[![npm](https://img.shields.io/npm/v/%40anil-labs%2Fcore.svg)](https://www.npmjs.com/package/@anil-labs/calendar-core)
 [![license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 A headless, framework-agnostic calendar / date-picker for **React, Vue, Svelte,
@@ -10,12 +10,12 @@ them. Ships **AD (Gregorian) and BS (Bikram Sambat / Nepali)** calendars out of
 the box and an extensible `CalendarSystem` interface for the rest.
 
 ```bash
-npm install @anil-labs/react @anil-labs/styles      # pick your adapter
+npm install @anil-labs/calendar-react @anil-labs/calendar-styles      # pick your adapter
 ```
 
 ```tsx
-import '@anil-labs/styles';
-import { DatePicker } from '@anil-labs/react';
+import '@anil-labs/calendar-styles';
+import { DatePicker } from '@anil-labs/calendar-react';
 
 <DatePicker mode="range" months={2} headerSelectors presets={['today', 'last7days', 'clear']} />;
 ```
@@ -57,16 +57,16 @@ import { DatePicker } from '@anil-labs/react';
 
 ## Packages
 
-| Package                    | What it is                                                                                                                                       |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `@anil-labs/core`          | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events.                        |
-| `@anil-labs/styles`        | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.                                                                              |
-| `@anil-labs/web-component` | Framework-free `<calender-picker>` + `<calender-input>` custom elements. Form-associated.                                                        |
-| `@anil-labs/react`         | `useDatePicker` hook, `<DatePicker>`, `<DateField>` (React 18+).                                                                                 |
-| `@anil-labs/vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>` (Vue 3).                                                                               |
-| `@anil-labs/svelte`        | `createDatePicker` factory satisfying the Svelte store contract.                                                                                 |
-| `@anil-labs/solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                                         |
-| `@anil-labs/angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). **In-repo only — not yet on npm** (awaiting an ng-packagr build). |
+| Package                             | What it is                                                                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `@anil-labs/calendar-core`          | Pure-TS, zero-dep state engine. Domain primitives, selection strategies, constraints, navigation, i18n, keyboard, events.                        |
+| `@anil-labs/calendar-styles`        | SCSS source + compiled CSS theme. Tokens, light/dark, RTL, density.                                                                              |
+| `@anil-labs/calendar-web-component` | Framework-free `<calender-picker>` + `<calender-input>` custom elements. Form-associated.                                                        |
+| `@anil-labs/calendar-react`         | `useDatePicker` hook, `<DatePicker>`, `<DateField>` (React 18+).                                                                                 |
+| `@anil-labs/calendar-vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>` (Vue 3).                                                                               |
+| `@anil-labs/calendar-svelte`        | `createDatePicker` factory satisfying the Svelte store contract.                                                                                 |
+| `@anil-labs/calendar-solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                                         |
+| `@anil-labs/calendar-angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). **In-repo only — not yet on npm** (awaiting an ng-packagr build). |
 
 ## Examples & docs
 
@@ -76,7 +76,7 @@ Each framework has a runnable example under `examples/`; the docs site lives in 
 | ------------------ | ----------------- | --------------------------------------------------------------------------------------- |
 | `docs`             | `docs`            | **VitePress docs site** — guides, adapter pages, API reference, live demos.             |
 | `examples/wc`      | `example-wc`      | Plain HTML + Vite. The most thorough feature showcase, uses the Web Component directly. |
-| `examples/vue`     | `example-vue`     | Vue 3 + Vite. Uses `@anil-labs/vue` and the WC together.                                |
+| `examples/vue`     | `example-vue`     | Vue 3 + Vite. Uses `@anil-labs/calendar-vue` and the WC together.                       |
 | `examples/react`   | `example-react`   | React 18 + Vite.                                                                        |
 | `examples/svelte`  | `example-svelte`  | Svelte 5 (runes) + Vite.                                                                |
 | `examples/solid`   | `example-solid`   | Solid + Vite.                                                                           |
@@ -93,8 +93,8 @@ Pick a framework adapter, install it + the styles, render:
 **React**
 
 ```tsx
-import '@anil-labs/styles';
-import { DatePicker, DateField } from '@anil-labs/react';
+import '@anil-labs/calendar-styles';
+import { DatePicker, DateField } from '@anil-labs/calendar-react';
 
 <DatePicker mode="range" onSelect={d => console.log(d)} />
 // or input + popover:
@@ -105,8 +105,8 @@ import { DatePicker, DateField } from '@anil-labs/react';
 
 ```vue
 <script setup>
-import '@anil-labs/styles';
-import { DatePicker, DateField } from '@anil-labs/vue';
+import '@anil-labs/calendar-styles';
+import { DatePicker, DateField } from '@anil-labs/calendar-vue';
 </script>
 <template>
   <DatePicker mode="range" @select="d => console.log(d)" />
@@ -117,9 +117,9 @@ import { DatePicker, DateField } from '@anil-labs/vue';
 **Web Component**
 
 ```html
-<link rel="stylesheet" href="@anil-labs/styles" />
+<link rel="stylesheet" href="@anil-labs/calendar-styles" />
 <script type="module">
-  import '@anil-labs/web-component/auto-register';
+  import '@anil-labs/calendar-web-component/auto-register';
 </script>
 
 <calender-picker mode="range" header-selectors></calender-picker>
@@ -129,7 +129,7 @@ import { DatePicker, DateField } from '@anil-labs/vue';
 **Engine (any framework)**
 
 ```ts
-import { DatePickerEngine } from '@anil-labs/core';
+import { DatePickerEngine } from '@anil-labs/calendar-core';
 
 const engine = new DatePickerEngine({ mode: 'range', calendar: 'bikram-sambat' });
 engine.on('change', ({ state }) => render(state));
@@ -182,7 +182,7 @@ node_modules (pnpm content-addresses the global store so subsequent installs
 are fast).
 
 > Why pnpm? The monorepo uses `workspace:*` to wire local packages together —
-> when `@anil-labs/react` imports `@anil-labs/core`, you get the live source, not
+> when `@anil-labs/calendar-react` imports `@anil-labs/calendar-core`, you get the live source, not
 > a stale published copy. **This is a contributor-only choice — end users
 > install your published packages with whichever package manager they like.**
 
@@ -241,7 +241,7 @@ CI runs all of these on every push and PR (`.github/workflows/ci.yml`).
 ```
 calender/
 ├── packages/                    # publishable libraries
-│   ├── core/                    # @anil-labs/core — headless engine
+│   ├── core/                    # @anil-labs/calendar-core — headless engine
 │   │   ├── src/
 │   │   │   ├── calendar/         #  CalendarSystem + Gregorian + BS
 │   │   │   ├── constraints/      #  DateConstraint impls (Composite pattern)
@@ -253,13 +253,13 @@ calender/
 │   │   │   ├── navigation/       #  ViewMode + step functions
 │   │   │   └── selection/        #  SelectionStrategy impls (Strategy pattern)
 │   │   └── tests/                #  vitest
-│   ├── styles/                  # @anil-labs/styles — SCSS + compiled CSS
-│   ├── web-component/           # @anil-labs/web-component
-│   ├── react/                   # @anil-labs/react
-│   ├── vue/                     # @anil-labs/vue
-│   ├── svelte/                  # @anil-labs/svelte
-│   ├── solid/                   # @anil-labs/solid
-│   └── angular/                 # @anil-labs/angular
+│   ├── styles/                  # @anil-labs/calendar-styles — SCSS + compiled CSS
+│   ├── web-component/           # @anil-labs/calendar-web-component
+│   ├── react/                   # @anil-labs/calendar-react
+│   ├── vue/                     # @anil-labs/calendar-vue
+│   ├── svelte/                  # @anil-labs/calendar-svelte
+│   ├── solid/                   # @anil-labs/calendar-solid
+│   └── angular/                 # @anil-labs/calendar-angular
 ├── examples/                    # runnable per-framework demos (private)
 │   ├── wc/                      # Plain HTML demo
 │   ├── react/                   # React 18 demo
@@ -302,8 +302,8 @@ this snapshot — they never reach into the engine's internals.
 When you change the engine:
 
 1. Update the relevant `engine/`, `selection/`, `constraints/`, etc.
-2. Run `pnpm --filter @anil-labs/core test` — extend the suite if you touched behavior.
-3. Run `pnpm --filter @anil-labs/core build` — keeps the workspace dist in sync.
+2. Run `pnpm --filter @anil-labs/calendar-core test` — extend the suite if you touched behavior.
+3. Run `pnpm --filter @anil-labs/calendar-core build` — keeps the workspace dist in sync.
 4. The renderers will pick up the new behavior automatically since they consume `EngineState`.
 
 ### Editing the renderers / adapters
@@ -323,7 +323,7 @@ The reference renderer is `packages/web-component/src/picker-renderer.ts` —
 when you ship a new feature it's worth keeping this and the React + Vue
 renderers in sync.
 
-After editing a renderer, run `pnpm --filter @anil-labs/<adapter> build`. The
+After editing a renderer, run `pnpm --filter @anil-labs/calendar-<adapter> build`. The
 relevant playground hot-reloads automatically.
 
 ### Editing styles
@@ -340,7 +340,7 @@ relevant playground hot-reloads automatically.
 After editing:
 
 ```bash
-pnpm --filter @anil-labs/styles build
+pnpm --filter @anil-labs/calendar-styles build
 ```
 
 This compiles `calender.css` (minified) + `calender.dev.css` (expanded for
@@ -353,7 +353,7 @@ Walk-through of how a feature flows from idea to rendered pixels:
 1. **Decide the engine surface.** Will it be a new option (most common), a new
    state field, or a new command? Add to `engine/engine-options.ts` and/or
    `engine/engine-state.ts`.
-2. **Implement in `@anil-labs/core`.** Wire the option into the constructor;
+2. **Implement in `@anil-labs/calendar-core`.** Wire the option into the constructor;
    add a getter or command method on `DatePickerEngine`; emit an event if it
    produces state changes.
 3. **Export from the barrel.** `packages/core/src/index.ts`.
@@ -405,9 +405,9 @@ free.
 
 ### Adding a new framework adapter
 
-Steal the shape of `@anil-labs/solid` — it's the smallest:
+Steal the shape of `@anil-labs/calendar-solid` — it's the smallest:
 
-1. `packages/<framework>/package.json` — workspace dep on `@anil-labs/core`,
+1. `packages/<framework>/package.json` — workspace dep on `@anil-labs/calendar-core`,
    peer dep on the framework, `tsup` build like the others.
 2. `packages/<framework>/src/create-date-picker.ts` — instantiate
    `DatePickerEngine`, mirror its state into the framework's reactivity
@@ -424,13 +424,13 @@ Tests live alongside the package they cover, under a `tests/` directory.
 To run a single file:
 
 ```bash
-pnpm --filter @anil-labs/core exec vitest run tests/engine.test.ts
+pnpm --filter @anil-labs/calendar-core exec vitest run tests/engine.test.ts
 ```
 
 To watch:
 
 ```bash
-pnpm --filter @anil-labs/core exec vitest
+pnpm --filter @anil-labs/calendar-core exec vitest
 ```
 
 ---
@@ -526,7 +526,7 @@ pnpm build && pnpm -r --filter "./packages/**" publish --access public
 ```
 
 The `examples/*` and `docs` are `"private": true` and never publish;
-`@anil-labs/angular` is also private until validated in a real Angular app.
+`@anil-labs/calendar-angular` is also private until validated in a real Angular app.
 
 ---
 

@@ -13,7 +13,7 @@ export default defineConfig([
     minify: false,
   },
   {
-    // CDN drop-in build: <script src="https://unpkg.com/@anil-labs/core"></script>
+    // CDN drop-in build: <script src="https://unpkg.com/@anil-labs/calendar-core"></script>
     entry: ['src/index.ts'],
     format: ['iife'],
     globalName: 'CalenderCore',

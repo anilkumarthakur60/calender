@@ -16,7 +16,7 @@ import {
   isSameDay,
   isoWeekOfYear,
   resolvePresets,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { useDatePicker } from './use-date-picker.js';
 
 /** Number of columns in the month/year/decade period grids. */

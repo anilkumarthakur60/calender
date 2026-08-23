@@ -8,7 +8,7 @@ This repo uses [Changesets](https://github.com/changesets/changesets) to manage
 versioning and changelogs across the eight `@anil-labs/*` packages. The
 `linked` config keeps every public package on the same version number — when
 you cut a release, they all move in lock-step. That matches user expectations
-("I installed `@anil-labs/react@1.2.0`, so my `@anil-labs/core` is 1.2.0 too").
+("I installed `@anil-labs/calendar-react@1.2.0`, so my `@anil-labs/calendar-core` is 1.2.0 too").
 
 ## How to add a changeset
 

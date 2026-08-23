@@ -8,22 +8,22 @@ go — the headless core powers them all.
 ::: code-group
 
 ```bash [React]
-npm install @anil-labs/react @anil-labs/styles
+npm install @anil-labs/calendar-react @anil-labs/calendar-styles
 ```
 
 ```bash [Vue]
-npm install @anil-labs/vue @anil-labs/styles
+npm install @anil-labs/calendar-vue @anil-labs/calendar-styles
 ```
 
 ```bash [Web Component]
-npm install @anil-labs/web-component @anil-labs/styles
+npm install @anil-labs/calendar-web-component @anil-labs/calendar-styles
 ```
 
 ```bash [Svelte / Solid / Angular]
 # Pick the adapter that matches your framework
-npm install @anil-labs/svelte @anil-labs/styles
-npm install @anil-labs/solid @anil-labs/styles
-npm install @anil-labs/angular @anil-labs/styles
+npm install @anil-labs/calendar-svelte @anil-labs/calendar-styles
+npm install @anil-labs/calendar-solid @anil-labs/calendar-styles
+npm install @anil-labs/calendar-angular @anil-labs/calendar-styles
 ```
 
 :::
@@ -33,8 +33,8 @@ npm install @anil-labs/angular @anil-labs/styles
 ::: code-group
 
 ```tsx [React]
-import '@anil-labs/styles';
-import { DatePicker } from '@anil-labs/react';
+import '@anil-labs/calendar-styles';
+import { DatePicker } from '@anil-labs/calendar-react';
 
 export default function App() {
   return <DatePicker mode="single" onSelect={d => console.log(d)} />;
@@ -43,8 +43,8 @@ export default function App() {
 
 ```vue [Vue]
 <script setup>
-import '@anil-labs/styles';
-import { DatePicker } from '@anil-labs/vue';
+import '@anil-labs/calendar-styles';
+import { DatePicker } from '@anil-labs/calendar-vue';
 
 const onSelect = d => console.log(d);
 </script>
@@ -55,9 +55,9 @@ const onSelect = d => console.log(d);
 ```
 
 ```html [HTML / Web Component]
-<link rel="stylesheet" href="https://unpkg.com/@anil-labs/styles" />
+<link rel="stylesheet" href="https://unpkg.com/@anil-labs/calendar-styles" />
 <script type="module">
-  import 'https://unpkg.com/@anil-labs/web-component/auto-register';
+  import 'https://unpkg.com/@anil-labs/calendar-web-component/auto-register';
 </script>
 
 <calender-picker mode="single"></calender-picker>

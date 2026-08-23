@@ -33,7 +33,7 @@ import {
   formatSelection,
   isMaskable,
   parseSelection,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { DatePicker } from './DatePicker.js';
 
 const HINT_BY_PATTERN: Record<string, string> = {

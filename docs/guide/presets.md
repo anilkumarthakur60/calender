@@ -51,7 +51,7 @@ The footer renders a configurable row of preset chips. Default: just `today`.
 Pass a `{ id, label, apply }` object instead of a string:
 
 ```tsx
-import { type DatePreset } from '@anil-labs/core';
+import { type DatePreset } from '@anil-labs/calendar-core';
 
 const Easter: DatePreset = {
   id: 'easter',
@@ -68,7 +68,7 @@ The `apply` callback gets the engine instance — drive it however you want
 ## Resolving presets manually
 
 ```ts
-import { resolvePresets, BUILTIN_PRESETS } from '@anil-labs/core';
+import { resolvePresets, BUILTIN_PRESETS } from '@anil-labs/calendar-core';
 
 const list = resolvePresets(['today', 'last7days', myCustomPreset]);
 // → DatePreset[] ready to render

@@ -9,9 +9,9 @@
     "preview": "vite preview --port 5174"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*",
-    "@anil-labs/react": "workspace:*",
-    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/calendar-core": "workspace:*",
+    "@anil-labs/calendar-react": "workspace:*",
+    "@anil-labs/calendar-styles": "workspace:*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

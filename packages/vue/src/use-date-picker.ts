@@ -1,5 +1,9 @@
 import { getCurrentScope, onScopeDispose, shallowRef, type ShallowRef } from 'vue';
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
+import {
+  DatePickerEngine,
+  type DatePickerEngineOptions,
+  type EngineState,
+} from '@anil-labs/calendar-core';
 
 export interface UseDatePickerResult {
   readonly engine: DatePickerEngine;

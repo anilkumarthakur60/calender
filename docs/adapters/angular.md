@@ -1,7 +1,7 @@
 # Angular
 
 ```bash
-npm install @anil-labs/angular @anil-labs/styles
+npm install @anil-labs/calendar-angular @anil-labs/calendar-styles
 ```
 
 The adapter ships a standalone `DatePickerComponent` + an injectable
@@ -11,8 +11,8 @@ standalone API).
 ```ts
 // src/app/app.component.ts
 import { Component, signal } from '@angular/core';
-import { DatePickerComponent } from '@anil-labs/angular';
-import { type CalendarDate } from '@anil-labs/core';
+import { DatePickerComponent } from '@anil-labs/calendar-angular';
+import { type CalendarDate } from '@anil-labs/calendar-core';
 
 @Component({
   selector: 'app-root',
@@ -36,7 +36,7 @@ export class AppComponent {
 ```ts
 // src/main.ts
 import 'zone.js';
-import '@anil-labs/styles';
+import '@anil-labs/calendar-styles';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
 bootstrapApplication(AppComponent);
@@ -55,7 +55,7 @@ Injectable wrapper. Exposes the engine + `Signal<EngineState>`:
 
 ```ts
 import { Component, inject } from '@angular/core';
-import { DatePickerService } from '@anil-labs/angular';
+import { DatePickerService } from '@anil-labs/calendar-angular';
 
 @Component({
   selector: 'app-custom',
@@ -76,7 +76,7 @@ export class CustomComponent {
 
 Angular ships its own tightly-coupled build tooling (`@angular/build` + Angular
 CLI). The other adapters live in a Vite-first monorepo. For Angular, use
-`ng new` to scaffold your project and install `@anil-labs/angular` from npm —
+`ng new` to scaffold your project and install `@anil-labs/calendar-angular` from npm —
 the standard Angular workflow.
 
 The `examples/angular/` directory in the repo contains reference

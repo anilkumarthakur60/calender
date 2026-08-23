@@ -17,7 +17,7 @@ import {
   createRange,
   formatSelection,
   parseSelection,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { DateField, type DateFieldHandle, type DateFieldProps } from './date-field.js';
 
 export interface DateRangeFieldProps {

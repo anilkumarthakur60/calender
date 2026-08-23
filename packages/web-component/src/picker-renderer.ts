@@ -13,7 +13,7 @@ import {
   isInRange,
   isSameDay,
   resolvePresets,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 
 export class PickerRenderer {
   readonly #host: HTMLElement;

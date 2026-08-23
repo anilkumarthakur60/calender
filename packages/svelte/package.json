@@ -1,7 +1,7 @@
 {
-  "name": "@anil-labs/svelte",
+  "name": "@anil-labs/calendar-svelte",
   "version": "0.1.0",
-  "description": "Svelte 5 adapter for @anil-labs/core.",
+  "description": "Svelte 5 adapter for @anil-labs/calendar-core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/svelte#readme",
@@ -53,7 +53,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:*"
   },
   "peerDependencies": {
     "svelte": ">=5"

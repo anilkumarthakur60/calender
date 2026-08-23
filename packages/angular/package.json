@@ -1,7 +1,7 @@
 {
-  "name": "@anil-labs/angular",
+  "name": "@anil-labs/calendar-angular",
   "version": "0.1.0",
-  "description": "Angular 17+ adapter for @anil-labs/core.",
+  "description": "Angular 17+ adapter for @anil-labs/calendar-core.",
   "private": true,
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
@@ -45,7 +45,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*",
+    "@anil-labs/calendar-core": "workspace:*",
     "tslib": "^2.8.1"
   },
   "peerDependencies": {

@@ -1,12 +1,12 @@
-# @anil-labs/svelte
+# @anil-labs/calendar-svelte
 
-Svelte adapter for `@anil-labs/core`. Exposes a factory that satisfies Svelte's
+Svelte adapter for `@anil-labs/calendar-core`. Exposes a factory that satisfies Svelte's
 readable store contract — read it with `$store` auto-subscription in
 Svelte 3/4/5, or bridge it into a rune with Svelte 5's `fromStore`.
 
 ```svelte
 <script lang="ts">
-  import { createDatePicker } from '@anil-labs/svelte';
+  import { createDatePicker } from '@anil-labs/calendar-svelte';
 
   const { engine, state } = createDatePicker({ mode: 'range', locale: 'en-GB' });
 </script>

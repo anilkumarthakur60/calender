@@ -7,7 +7,11 @@ import {
   DestroyRef,
   inject,
 } from '@angular/core';
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
+import {
+  DatePickerEngine,
+  type DatePickerEngineOptions,
+  type EngineState,
+} from '@anil-labs/calendar-core';
 
 /**
  * Injection token carrying the engine options for a {@link DatePickerService}.

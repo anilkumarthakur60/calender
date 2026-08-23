@@ -1,5 +1,5 @@
 import { mount } from 'svelte';
-import '@anil-labs/styles';
+import '@anil-labs/calendar-styles';
 import App from './App.svelte';
 
 const target = document.getElementById('app');

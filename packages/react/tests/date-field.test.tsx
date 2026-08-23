@@ -2,16 +2,16 @@ import { createRef } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createCalendarDate } from '@anil-labs/core';
-import type * as CoreModule from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
+import type * as CoreModule from '@anil-labs/calendar-core';
 import { DateField, type DateFieldHandle } from '../src/date-field.js';
 
-vi.mock('@anil-labs/core', async importOriginal => {
+vi.mock('@anil-labs/calendar-core', async importOriginal => {
   const actual = await importOriginal<typeof CoreModule>();
   return { ...actual, announce: vi.fn() };
 });
 
-const { announce } = await import('@anil-labs/core');
+const { announce } = await import('@anil-labs/calendar-core');
 
 beforeEach(() => {
   vi.mocked(announce).mockClear();

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { effectScope } from 'vue';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { useDatePicker } from '../src/use-date-picker.js';
 
 describe('useDatePicker', () => {

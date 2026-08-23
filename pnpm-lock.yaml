@@ -68,16 +68,16 @@ importers:
 
   docs:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../packages/core
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../packages/styles
-      '@anil-labs/vue':
+      '@anil-labs/calendar-vue':
         specifier: workspace:*
         version: link:../packages/vue
-      '@anil-labs/web-component':
+      '@anil-labs/calendar-web-component':
         specifier: workspace:*
         version: link:../packages/web-component
       vue:
@@ -92,13 +92,13 @@ importers:
 
   examples/react:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@anil-labs/react':
+      '@anil-labs/calendar-react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../../packages/styles
       react:
@@ -126,13 +126,13 @@ importers:
 
   examples/solid:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@anil-labs/solid':
+      '@anil-labs/calendar-solid':
         specifier: workspace:*
         version: link:../../packages/solid
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../../packages/styles
       solid-js:
@@ -151,13 +151,13 @@ importers:
 
   examples/svelte:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@anil-labs/svelte':
+      '@anil-labs/calendar-svelte':
         specifier: workspace:*
         version: link:../../packages/svelte
       svelte:
@@ -179,16 +179,16 @@ importers:
 
   examples/vue:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../../packages/core
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@anil-labs/vue':
+      '@anil-labs/calendar-vue':
         specifier: workspace:*
         version: link:../../packages/vue
-      '@anil-labs/web-component':
+      '@anil-labs/calendar-web-component':
         specifier: workspace:*
         version: link:../../packages/web-component
       vue:
@@ -216,10 +216,10 @@ importers:
 
   examples/wc:
     dependencies:
-      '@anil-labs/styles':
+      '@anil-labs/calendar-styles':
         specifier: workspace:*
         version: link:../../packages/styles
-      '@anil-labs/web-component':
+      '@anil-labs/calendar-web-component':
         specifier: workspace:*
         version: link:../../packages/web-component
     devDependencies:
@@ -229,7 +229,7 @@ importers:
 
   packages/angular:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
       tslib:
@@ -287,7 +287,7 @@ importers:
 
   packages/react:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -327,7 +327,7 @@ importers:
 
   packages/solid:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -352,7 +352,7 @@ importers:
 
   packages/svelte:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
       svelte:
@@ -371,7 +371,7 @@ importers:
 
   packages/vue:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -405,7 +405,7 @@ importers:
 
   packages/web-component:
     dependencies:
-      '@anil-labs/core':
+      '@anil-labs/calendar-core':
         specifier: workspace:*
         version: link:../core
     devDependencies:

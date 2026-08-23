@@ -9,8 +9,8 @@
     "preview": "vite preview --port 5180"
   },
   "dependencies": {
-    "@anil-labs/styles": "workspace:*",
-    "@anil-labs/web-component": "workspace:*"
+    "@anil-labs/calendar-styles": "workspace:*",
+    "@anil-labs/calendar-web-component": "workspace:*"
   },
   "devDependencies": {
     "vite": "^8.2.0"

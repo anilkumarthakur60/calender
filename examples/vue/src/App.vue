@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { DateField, DatePicker } from "@anil-labs/vue";
-import { createCalendarDate } from "@anil-labs/core";
+import { DateField, DatePicker } from "@anil-labs/calendar-vue";
+import { createCalendarDate } from "@anil-labs/calendar-core";
 import FeaturePair from "./FeaturePair.vue";
 
 // Form-pattern demos (controlled state).

@@ -9,9 +9,9 @@
     "preview": "vite preview --port 5176"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*",
-    "@anil-labs/solid": "workspace:*",
-    "@anil-labs/styles": "workspace:*",
+    "@anil-labs/calendar-core": "workspace:*",
+    "@anil-labs/calendar-solid": "workspace:*",
+    "@anil-labs/calendar-styles": "workspace:*",
     "solid-js": "^1.9.14"
   },
   "devDependencies": {

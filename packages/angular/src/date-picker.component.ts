@@ -23,7 +23,7 @@ import {
   type SelectionValue,
   isInRange,
   isSameDay,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { DatePickerService } from './date-picker.service.js';
 
 /**

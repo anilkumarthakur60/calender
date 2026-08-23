@@ -10,8 +10,8 @@ first — selecting Apr 15 as the start disables Apr 14 and earlier in the end
 field.
 
 ```tsx
-import { DateRangeField } from '@anil-labs/react';
-import { createCalendarDate } from '@anil-labs/core';
+import { DateRangeField } from '@anil-labs/calendar-react';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 
 const [value, setValue] = useState(''); // "2025-04-15/2025-04-20"
 

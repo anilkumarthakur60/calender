@@ -7,7 +7,7 @@ import {
   type SelectionGranularity,
   type SelectionMode,
   fromIso,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 
 /**
  * Parse an ISO date coming from an attribute. Malformed values are ignored

@@ -33,7 +33,7 @@ import {
   formatSelection,
   isMaskable,
   parseSelection,
-} from '@anil-labs/core';
+} from '@anil-labs/calendar-core';
 import { DatePicker, type DatePickerHandle, type DayCellContext } from './date-picker.js';
 
 /** `useLayoutEffect` on the client, `useEffect` during SSR (no warning). */

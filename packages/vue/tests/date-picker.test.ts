@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/vue';
 import { mount } from '@vue/test-utils';
 import userEvent from '@testing-library/user-event';
-import { createCalendarDate, createCalendarSystem, type DatePickerEngine } from '@anil-labs/core';
+import {
+  createCalendarDate,
+  createCalendarSystem,
+  type DatePickerEngine,
+} from '@anil-labs/calendar-core';
 import { DatePicker } from '../src/DatePicker.js';
 
 describe('<DatePicker>', () => {

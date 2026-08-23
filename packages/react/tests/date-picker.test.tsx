@@ -2,7 +2,7 @@ import { createRef } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { DatePicker, type DatePickerHandle } from '../src/date-picker.js';
 
 describe('<DatePicker>', () => {

@@ -1,5 +1,5 @@
 import type { Provider } from '@angular/core';
-import type { DatePickerEngineOptions } from '@anil-labs/core';
+import type { DatePickerEngineOptions } from '@anil-labs/calendar-core';
 import { DATE_PICKER_OPTIONS, DatePickerService } from './date-picker.service.js';
 
 /**

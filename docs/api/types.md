@@ -1,6 +1,6 @@
 # Types
 
-All public types exported from `@anil-labs/core`. Same names available from
+All public types exported from `@anil-labs/calendar-core`. Same names available from
 every adapter package.
 
 ## CalendarDate

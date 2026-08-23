@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { createDatePicker } from '@anil-labs/svelte';
-  import { type CalendarDate, isSameDay, isInRange } from '@anil-labs/core';
+  import { createDatePicker } from '@anil-labs/calendar-svelte';
+  import { type CalendarDate, isSameDay, isInRange } from '@anil-labs/calendar-core';
 
   const single = createDatePicker({ mode: 'single', locale: 'en-GB' });
   const range = createDatePicker({ mode: 'range' });

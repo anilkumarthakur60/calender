@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/vue';
 import userEvent from '@testing-library/user-event';
 import { h } from 'vue';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { DateField } from '../src/DateField.js';
 
 describe('<DateField>', () => {

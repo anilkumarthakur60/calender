@@ -1,6 +1,6 @@
 import { createSignal, For } from 'solid-js';
-import { createDatePicker } from '@anil-labs/solid';
-import { type CalendarDate, isInRange, isSameDay } from '@anil-labs/core';
+import { createDatePicker } from '@anil-labs/calendar-solid';
+import { type CalendarDate, isInRange, isSameDay } from '@anil-labs/calendar-core';
 
 const label = (d: CalendarDate | null): string => (d ? `${d.year}-${d.month}-${d.day}` : '(none)');
 

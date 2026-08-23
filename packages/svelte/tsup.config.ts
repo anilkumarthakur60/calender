@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2022',
-  external: ['svelte', 'svelte/store', '@anil-labs/core'],
+  external: ['svelte', 'svelte/store', '@anil-labs/calendar-core'],
 });

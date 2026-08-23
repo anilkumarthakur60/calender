@@ -2,7 +2,7 @@
 import '@angular/compiler';
 import { describe, expect, it } from 'vitest';
 import { Injector, runInInjectionContext, type ValueProvider } from '@angular/core';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { DATE_PICKER_OPTIONS, DatePickerService } from '../src/date-picker.service.js';
 import { provideDatePicker } from '../src/provide-date-picker.js';
 

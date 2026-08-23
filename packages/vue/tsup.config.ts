@@ -8,5 +8,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   target: 'es2022',
-  external: ['vue', '@anil-labs/core'],
+  external: ['vue', '@anil-labs/calendar-core'],
 });

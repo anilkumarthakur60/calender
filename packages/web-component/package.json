@@ -1,7 +1,7 @@
 {
-  "name": "@anil-labs/web-component",
+  "name": "@anil-labs/calendar-web-component",
   "version": "0.1.0",
-  "description": "Framework-free <calender-picker> custom element built on @anil-labs/core.",
+  "description": "Framework-free <calender-picker> custom element built on @anil-labs/calendar-core.",
   "license": "MIT",
   "author": "Anil Kumar Thakur <anilkumarthakur60@gmail.com>",
   "homepage": "https://github.com/anilkumarthakur60/calender/tree/main/packages/web-component#readme",
@@ -70,7 +70,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@anil-labs/core": "workspace:*"
+    "@anil-labs/calendar-core": "workspace:*"
   },
   "devDependencies": {
     "happy-dom": "^20.11.1",

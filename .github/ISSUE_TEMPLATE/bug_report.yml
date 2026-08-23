@@ -14,14 +14,14 @@ body:
       label: Package
       description: Which package is the bug in?
       options:
-        - '@anil-labs/core'
-        - '@anil-labs/styles'
-        - '@anil-labs/web-component'
-        - '@anil-labs/react'
-        - '@anil-labs/vue'
-        - '@anil-labs/svelte'
-        - '@anil-labs/solid'
-        - '@anil-labs/angular'
+        - '@anil-labs/calendar-core'
+        - '@anil-labs/calendar-styles'
+        - '@anil-labs/calendar-web-component'
+        - '@anil-labs/calendar-react'
+        - '@anil-labs/calendar-vue'
+        - '@anil-labs/calendar-svelte'
+        - '@anil-labs/calendar-solid'
+        - '@anil-labs/calendar-angular'
         - "I don't know"
     validations:
       required: true

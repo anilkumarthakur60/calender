@@ -10,7 +10,7 @@ export default defineConfig([
     treeshake: true,
     target: 'es2022',
     splitting: false,
-    external: ['@anil-labs/core'],
+    external: ['@anil-labs/calendar-core'],
   },
   {
     // CDN drop-in build: one <script> tag registers <calender-picker> and the
@@ -22,6 +22,6 @@ export default defineConfig([
     clean: false,
     target: 'es2022',
     minify: true,
-    noExternal: ['@anil-labs/core'],
+    noExternal: ['@anil-labs/calendar-core'],
   },
 ]);

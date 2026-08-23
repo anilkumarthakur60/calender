@@ -1,4 +1,8 @@
-import { DatePickerEngine, type DatePickerEngineOptions, type EngineState } from '@anil-labs/core';
+import {
+  DatePickerEngine,
+  type DatePickerEngineOptions,
+  type EngineState,
+} from '@anil-labs/calendar-core';
 
 export interface SvelteStoreLike<T> {
   subscribe(run: (value: T) => void): () => void;

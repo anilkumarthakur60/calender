@@ -1,13 +1,13 @@
 # Vue 3
 
 ```bash
-npm install @anil-labs/vue @anil-labs/styles
+npm install @anil-labs/calendar-vue @anil-labs/calendar-styles
 ```
 
 ```vue
 <script setup>
-import '@anil-labs/styles';
-import { DatePicker } from '@anil-labs/vue';
+import '@anil-labs/calendar-styles';
+import { DatePicker } from '@anil-labs/calendar-vue';
 </script>
 
 <template>
@@ -43,7 +43,7 @@ according to `valueFormat` (defaults to `format`).
 ```vue
 <script setup>
 import { ref } from 'vue';
-import { DateField } from '@anil-labs/vue';
+import { DateField } from '@anil-labs/calendar-vue';
 
 const iso = ref('2025-04-15');
 </script>
@@ -59,7 +59,7 @@ Composable returning the engine + a `shallowRef<EngineState>`.
 
 ```vue
 <script setup>
-import { useDatePicker } from '@anil-labs/vue';
+import { useDatePicker } from '@anil-labs/calendar-vue';
 
 const { engine, state } = useDatePicker({ mode: 'single' });
 </script>

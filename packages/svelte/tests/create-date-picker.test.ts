@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { createDatePicker } from '../src/create-date-picker.js';
 
 describe('createDatePicker (svelte store contract)', () => {

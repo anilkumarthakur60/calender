@@ -42,7 +42,7 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      # Build first: adapters resolve @anil-labs/core through its built dist
+      # Build first: adapters resolve @anil-labs/calendar-core through its built dist
       # types, so typecheck and tests need the packages compiled.
       - name: Build packages
         run: pnpm build

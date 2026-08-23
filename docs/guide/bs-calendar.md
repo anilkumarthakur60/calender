@@ -53,7 +53,7 @@ numeral system (`२०८०` instead of `2080` for Devanagari).
 ## Conversion utilities
 
 ```ts
-import { BikramSambatCalendar } from '@anil-labs/core';
+import { BikramSambatCalendar } from '@anil-labs/calendar-core';
 
 const bs = new BikramSambatCalendar();
 
@@ -80,7 +80,7 @@ via a custom `CalendarSystem` (see below).
 Buddhist, Persian — and pass an instance via `calendar`:
 
 ```ts
-import { type CalendarSystem, DatePickerEngine } from '@anil-labs/core';
+import { type CalendarSystem, DatePickerEngine } from '@anil-labs/calendar-core';
 
 class MyCalendar implements CalendarSystem {
   readonly id = 'gregorian' as const;

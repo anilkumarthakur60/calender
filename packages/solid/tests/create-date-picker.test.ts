@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { createRoot } from 'solid-js';
-import { createCalendarDate } from '@anil-labs/core';
+import { createCalendarDate } from '@anil-labs/calendar-core';
 import { createDatePicker } from '../src/create-date-picker.js';
 
 describe('createDatePicker (solid)', () => {

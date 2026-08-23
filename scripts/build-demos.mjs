@@ -133,7 +133,7 @@ const html = `<!doctype html>
       <div class="grid">${cards}
       </div>
       <footer>
-        Every demo runs the same zero-dependency <code>@anil-labs/core</code> engine.
+        Every demo runs the same zero-dependency <code>@anil-labs/calendar-core</code> engine.
         <a href="https://github.com/anilkumarthakur60/calender">View on GitHub</a>
       </footer>
     </main>
