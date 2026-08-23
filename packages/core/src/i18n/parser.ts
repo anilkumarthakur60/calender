@@ -92,7 +92,10 @@ export const parseDate = (
 
   // Anchored: an unanchored prefix match accepted trailing junk, which also
   // short-circuited the multi-value splitter and silently dropped dates.
-  const iso = /^(\d{4})-(\d{2})-(\d{2})(?:[T ].*)?$/.exec(trimmed);
+  const iso =
+    /^(\d{4})-(\d{2})-(\d{2})(?:[T ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)?$/.exec(
+      trimmed,
+    );
   if (iso) return make(Number(iso[1]), Number(iso[2]), Number(iso[3]));
 
   const order = detectDateOrder(locale);

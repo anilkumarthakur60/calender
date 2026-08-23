@@ -109,10 +109,15 @@ export const decodeSelectionValue = (
   text: string,
   mode: SelectionMode,
   locale: string = 'en-US',
+  calendar?: CalendarSystem,
 ): DecodedSelection | null => {
+  if (typeof text !== 'string') return null;
   const trimmed = text.trim();
   if (!trimmed) return null;
-  const parse = (s: string): CalendarDate | null => parseDate(s, locale);
+  // Without the calendar this validated every value against Gregorian rules,
+  // so a legitimate Bikram Sambat value such as "2081-01-32" decoded to null
+  // and the selection was silently lost.
+  const parse = (s: string): CalendarDate | null => parseDate(s, locale, calendar);
 
   switch (mode) {
     case 'single': {
@@ -190,7 +195,7 @@ export const parseSelection = (
   const parseOne = (s: string): CalendarDate | null => {
     const p = parseWithPattern(s, pattern, locale, calendar);
     if (p) return p;
-    return parseDate(s, locale);
+    return parseDate(s, locale, calendar);
   };
 
   switch (mode) {
