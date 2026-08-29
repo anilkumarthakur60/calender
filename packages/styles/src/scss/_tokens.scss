@@ -1,5 +1,5 @@
 // Design tokens exposed as CSS custom properties.
-// All visual styling flows from these — override at any scope to retheme.
+// All visual styling flows from these  override at any scope to retheme.
 // Palette is Slate + Blue (Tailwind reference) tuned for date-picker affordances.
 
 @mixin tokens-light {
@@ -82,7 +82,7 @@
 // --- Density -------------------------------------------------------------
 @mixin tokens-density-comfortable {
   --cal-cell-size: 2.25rem; // 36px
-  --cal-cell-inner: 2rem; // 32px — the visual circle inside the cell
+  --cal-cell-inner: 2rem; // 32px  the visual circle inside the cell
   --cal-cell-font: 0.8125rem; // 13px
   --cal-header-font: 0.9375rem; // 15px
   --cal-weekday-font: 0.6875rem; // 11px (uppercase, letter-spaced)

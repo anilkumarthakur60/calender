@@ -16,7 +16,7 @@ export interface EngineState {
   readonly selection: SelectionValue;
   readonly grid: MonthGrid;
   readonly isOpen: boolean;
-  /** Tentative range cursor — only meaningful in `range` mode after anchor is set. */
+  /** Tentative range cursor  only meaningful in `range` mode after anchor is set. */
   readonly hovered: CalendarDate | null;
   /** Time-of-day portion when `withTime` is enabled. */
   readonly time: TimeOfDay | null;

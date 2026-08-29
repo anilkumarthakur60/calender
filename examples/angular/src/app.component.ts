@@ -10,7 +10,7 @@ import { type CalendarDate } from '@anil-labs/calendar-core';
   template: `
     <main class="layout">
       <header>
-        <h1>@anil-labs — Angular example</h1>
+        <h1>@anil-labs  Angular example</h1>
         <p>Standalone component + signals.</p>
       </header>
 

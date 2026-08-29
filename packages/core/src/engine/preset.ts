@@ -14,7 +14,7 @@ export interface DatePreset {
 export type PresetSpec = string | DatePreset;
 
 // Atomic range application: clamps into min/max and applies nothing when the
-// clamped range is empty — no dangling anchor from a half-applied preset.
+// clamped range is empty  no dangling anchor from a half-applied preset.
 const selectRange = (engine: DatePickerEngine, start: CalendarDate, end: CalendarDate): void => {
   engine.selectRange(start, end);
 };

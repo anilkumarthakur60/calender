@@ -6,7 +6,7 @@ export interface PeriodCell {
   readonly date: CalendarDate;
   /** Short label ("Apr", "2025", "2020s"). */
   readonly label: string;
-  /** Long label ("April", "2025", "2020 - 2029") — used for aria-label. */
+  /** Long label ("April", "2025", "2020 - 2029")  used for aria-label. */
   readonly longLabel: string;
   /** True when this cell represents the currently-focused period. */
   readonly isFocused: boolean;

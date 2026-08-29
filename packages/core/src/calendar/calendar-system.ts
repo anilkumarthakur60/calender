@@ -9,7 +9,7 @@ export type CalendarId = 'gregorian' | 'bikram-sambat' | 'buddhist' | 'persian';
  *
  * To add a new calendar (Hijri, Buddhist, …) implement this interface and
  * register it with the factory. The engine, grid, and formatter all flow
- * through this abstraction — no other code needs to change.
+ * through this abstraction  no other code needs to change.
  */
 export interface CalendarSystem {
   readonly id: 'gregorian' | 'bikram-sambat' | 'buddhist' | 'persian';

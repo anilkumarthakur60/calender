@@ -1,6 +1,6 @@
 /**
  * Polite ARIA live region for screen-reader announcements. Lazily creates a
- * singleton off-screen region on first use. Messages are debounced — a rapid
+ * singleton off-screen region on first use. Messages are debounced  a rapid
  * burst (e.g. arrow-key spam) collapses to the latest one.
  */
 

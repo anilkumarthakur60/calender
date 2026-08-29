@@ -66,7 +66,7 @@ const Easter: DatePreset = {
 <DatePicker presets={['today', Easter, 'clear']} />
 ```
 
-The `apply` callback gets the engine — drive it however you like. Most range
+The `apply` callback gets the engine  drive it however you like. Most range
 presets follow this shape:
 
 ```ts

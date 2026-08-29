@@ -25,19 +25,19 @@ features:
     details: Pure-TS state engine with zero runtime deps. Strategy-pattern selection, composable constraints, calendar-system abstraction.
   - icon: 🎯
     title: Framework adapters
-    details: React 18 hook + component, Vue 3 composable + component, Svelte 5 store, Solid signal, Angular standalone — and a framework-free Web Component.
+    details: React 18 hook + component, Vue 3 composable + component, Svelte 5 store, Solid signal, Angular standalone  and a framework-free Web Component.
   - icon: 📅
     title: AD + BS calendar
     details: Gregorian by default. Pass calendar="bikram-sambat" for the Nepali calendar with Devanagari numerals + month names. Roll your own via CalendarSystem.
   - icon: 🔣
     title: Custom format
-    details: Token-based formatter — yyyy MM dd MMMM HH mm a. Six built-in presets. Format + valueFormat let display and storage diverge.
+    details: Token-based formatter  yyyy MM dd MMMM HH mm a. Six built-in presets. Format + valueFormat let display and storage diverge.
   - icon: 🪟
     title: Form input + popover
     details: DateField (React/Vue) and <calender-input> wrap an input with a popover calendar. Form-associated. Lenient parse on blur.
   - icon: ⌨️
     title: WAI-ARIA grid
-    details: Full keyboard model — arrows, Home/End, PageUp/Down, Enter/Esc. Roving tabindex. Screen-reader labels include the formatted date.
+    details: Full keyboard model  arrows, Home/End, PageUp/Down, Enter/Esc. Roving tabindex. Screen-reader labels include the formatted date.
   - icon: 🎨
     title: Themeable
     details: SCSS source + compiled CSS driven entirely by CSS custom properties. Light / dark / RTL / dense out of the box.

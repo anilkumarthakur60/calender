@@ -1,6 +1,6 @@
 # Navigation
 
-## Default — clickable title
+## Default  clickable title
 
 The header title drills upward through views: day → month → year → decade.
 Click a cell in a non-day view to drill back down.

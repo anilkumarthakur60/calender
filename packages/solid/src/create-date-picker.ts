@@ -10,7 +10,7 @@ export interface CreateDatePickerResult {
   readonly state: Accessor<EngineState>;
   /**
    * Release the engine subscription. Inside a reactive root (component,
-   * `createRoot`) this is registered via `onCleanup` and runs automatically —
+   * `createRoot`) this is registered via `onCleanup` and runs automatically 
    * calling it earlier is safe and idempotent. Outside a root there is no
    * owner to clean up for you, so you MUST call `dispose()` yourself once the
    * picker is no longer needed, or the engine listener is never released.
@@ -24,7 +24,7 @@ export interface CreateDatePickerResult {
  *
  * Lifecycle: when called under an owner (a component or `createRoot`), the
  * engine subscription is cleaned up with the owner. When called outside any
- * reactive root, `onCleanup` would be a silent no-op — so it is skipped and
+ * reactive root, `onCleanup` would be a silent no-op  so it is skipped and
  * the returned `dispose()` is the only way to release the subscription.
  */
 export const createDatePicker = (options: DatePickerEngineOptions = {}): CreateDatePickerResult => {

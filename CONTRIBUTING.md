@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in `@anil-labs`. This guide is intentionally short —
+Thanks for your interest in `@anil-labs`. This guide is intentionally short 
 the [main README](./README.md) has the full project structure and dev
 workflow.
 
@@ -16,7 +16,7 @@ pnpm check         # lint + format:check + typecheck + test
 
 ## What gets accepted
 
-We're picky about scope — the library is small and stays that way. Good PRs:
+We're picky about scope  the library is small and stays that way. Good PRs:
 
 - **Fix a bug** with a regression test.
 - **Add a feature requested in an issue** (please open an issue first if it's
@@ -39,7 +39,7 @@ PRs that get pushback:
 
 ## What CI checks
 
-Every PR runs `.github/workflows/ci.yml` — see [`README.md` → CI/CD](./README.md#cicd-with-github-actions).
+Every PR runs `.github/workflows/ci.yml`  see [`README.md` → CI/CD](./README.md#cicd-with-github-actions).
 
 That's: `pnpm lint`, `pnpm format:check`, `pnpm build`, `pnpm typecheck`,
 `pnpm test`, package checks (publint + arethetypeswrong), the Node import
@@ -63,7 +63,7 @@ pnpm changeset            # describe your change
 git add . && git commit
 ```
 
-The `release` workflow opens a "Version Packages" PR — merging that PR
+The `release` workflow opens a "Version Packages" PR  merging that PR
 publishes to npm.
 
 ## Code of Conduct

@@ -55,7 +55,7 @@ const intlWeekInfo = (tag: Intl.Locale): IntlWeekInfo | undefined => {
     const info = typeof t.getWeekInfo === 'function' ? t.getWeekInfo() : t.weekInfo;
     if (info && typeof info.firstDay === 'number') return info;
   } catch {
-    /* unsupported — fall back to the region table */
+    /* unsupported  fall back to the region table */
   }
   return undefined;
 };

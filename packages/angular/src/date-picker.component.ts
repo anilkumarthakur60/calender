@@ -225,7 +225,7 @@ export class DatePickerComponent implements ControlValueAccessor {
   }
 
   /**
-   * Emits whenever the engine commits a selection — pointer, keyboard
+   * Emits whenever the engine commits a selection  pointer, keyboard
    * (Enter/Space) and programmatic `engine.select(...)` alike.
    */
   @Output() readonly select = new EventEmitter<CalendarDate>();

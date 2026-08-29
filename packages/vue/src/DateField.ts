@@ -145,7 +145,7 @@ export const DateField = defineComponent({
     const inputRef = ref<HTMLInputElement | null>(null);
     const popoverRef = ref<HTMLElement | null>(null);
 
-    // Stable per-instance id (generated ONCE in setup — never in render).
+    // Stable per-instance id (generated ONCE in setup  never in render).
     const generatedId = useId();
     const fieldId = computed(() => props.id ?? `cal-input-${generatedId}`);
 

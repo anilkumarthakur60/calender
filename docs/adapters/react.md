@@ -43,7 +43,7 @@ Text input + popover. Form-associated. Type or pick.
 
 ### `useDatePicker(options)`
 
-Headless hook — returns the engine + a reactive `state` (via
+Headless hook  returns the engine + a reactive `state` (via
 `useSyncExternalStore`). Useful when you want to render your own UI.
 
 ```tsx

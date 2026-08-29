@@ -20,7 +20,7 @@ export interface SelectionStrategy<S extends SelectionValue = SelectionValue> {
   readonly mode: S['mode'];
   /** Initial empty value. */
   initial(): S;
-  /** User clicked a date — return the new selection value. */
+  /** User clicked a date  return the new selection value. */
   select(state: S, date: CalendarDate): S;
   /** Clear the selection. */
   clear(state: S): S;

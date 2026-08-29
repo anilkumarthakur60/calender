@@ -2,7 +2,7 @@ import { type CalendarDate, addDays, usWeekday } from '../domain';
 import type { DateHighlight } from '../engine';
 
 /**
- * Per-country holiday calendars. Tree-shakeable — import only the function for
+ * Per-country holiday calendars. Tree-shakeable  import only the function for
  * the country you need. Each entry is `(year) → ReadonlyArray<DateHighlight>`
  * so consumers can drop it straight into the engine's `highlights` option.
  *
@@ -11,7 +11,7 @@ import type { DateHighlight } from '../engine';
  * verbatim; movable ones (Easter, US "Monday after first weekend in $month")
  * use the standard rules.
  *
- * These are starter sets — public holidays only. Add bank holidays /
+ * These are starter sets  public holidays only. Add bank holidays /
  * regional / religious variants by composing the output array.
  */
 
@@ -27,7 +27,7 @@ const fixed = (
   ...(color !== undefined ? { color } : {}),
 });
 
-/** Nth weekday of a month — e.g. nthWeekdayOf(2025, 11, 4, 1) = 4th Thursday of November. */
+/** Nth weekday of a month  e.g. nthWeekdayOf(2025, 11, 4, 1) = 4th Thursday of November. */
 const nthWeekdayOf = (year: number, month: number, weekday: number, nth: number): CalendarDate => {
   const first: CalendarDate = { year, month, day: 1 };
   const firstWeekday = usWeekday(first);
@@ -35,7 +35,7 @@ const nthWeekdayOf = (year: number, month: number, weekday: number, nth: number)
   return addDays(first, offset + (nth - 1) * 7);
 };
 
-/** Last weekday of a month — e.g. lastWeekdayOf(2025, 5, 1) = last Monday of May. */
+/** Last weekday of a month  e.g. lastWeekdayOf(2025, 5, 1) = last Monday of May. */
 const lastWeekdayOf = (year: number, month: number, weekday: number): CalendarDate => {
   // Walk back from day 31 (or month-end) to find the last instance.
   const monthEnd =
@@ -47,7 +47,7 @@ const lastWeekdayOf = (year: number, month: number, weekday: number): CalendarDa
 };
 
 /**
- * US federal holidays. Observed-on-Monday rules NOT applied — these are the
+ * US federal holidays. Observed-on-Monday rules NOT applied  these are the
  * actual dates. Apply observance shifts in your app if you need them.
  */
 export const usHolidays = (year: number): ReadonlyArray<DateHighlight> => [
@@ -83,7 +83,7 @@ export const ukHolidays = (year: number): ReadonlyArray<DateHighlight> => {
 };
 
 /**
- * Nepal federal holidays — date-fixed approximations. Many Nepali holidays
+ * Nepal federal holidays  date-fixed approximations. Many Nepali holidays
  * follow the Bikram Sambat or Nepal Sambat calendars; this is a Gregorian
  * approximation suitable for highlighting.
  */

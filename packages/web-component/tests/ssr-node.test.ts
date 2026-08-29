@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
 
-// Bug #1 regression: the module graph must be loadable in plain Node (SSR) —
+// Bug #1 regression: the module graph must be loadable in plain Node (SSR) 
 // no `HTMLElement` reference at module scope. Element classes are created
 // lazily inside the registration functions.
 describe('SSR / plain Node import', () => {

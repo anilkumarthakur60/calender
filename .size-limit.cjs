@@ -47,7 +47,7 @@ module.exports = [
     ignore: ['@anil-labs/calendar-core', 'solid-js'],
   },
   {
-    // The CDN drop-in script — minified IIFE with core bundled.
+    // The CDN drop-in script  minified IIFE with core bundled.
     name: '@anil-labs/calendar-web-component (CDN auto-register, minified)',
     path: 'packages/web-component/dist/auto-register.global.js',
     limit: '40 KB',

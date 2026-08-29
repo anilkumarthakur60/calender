@@ -2,7 +2,7 @@ import type { CalendarDate } from './calendar-date.js';
 
 /**
  * ISO 8601 week-of-year. Week 1 is the week containing the first Thursday of
- * the year. Always derived through the Gregorian projection — the week itself
+ * the year. Always derived through the Gregorian projection  the week itself
  * is universal (BS users see the same Gregorian-week label).
  *
  * Computed entirely in UTC (Date.UTC from y/m/d) so the result is identical

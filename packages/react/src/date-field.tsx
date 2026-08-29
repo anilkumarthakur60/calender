@@ -470,7 +470,7 @@ export const DateField = forwardRef<DateFieldHandle, DateFieldProps>(
       return () => trap.deactivate();
     }, [open]);
 
-    // Announce committed values to screen readers — only after user-initiated
+    // Announce committed values to screen readers  only after user-initiated
     // changes (never on mount) and using the human-readable display value.
     const announcedRef = useRef<string | null>(null);
     useEffect(() => {

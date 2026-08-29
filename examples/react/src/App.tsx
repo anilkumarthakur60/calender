@@ -40,7 +40,7 @@ const Card = ({
 
 /**
  * A feature shown twice, side by side: the inline picker on the left and the
- * same feature as a DateField (form input) on the right — so each use case is
+ * same feature as a DateField (form input) on the right  so each use case is
  * easy to compare in both forms.
  */
 const FeaturePair = ({
@@ -106,7 +106,7 @@ export const App = (): React.JSX.Element => {
     <main className="layout">
       <header className="hero">
         <span className="badge">Feature showcase</span>
-        <h1>@anil-labs — React</h1>
+        <h1>@anil-labs  React</h1>
         <p>Every feature shown as an inline picker and as a form input, side by side.</p>
       </header>
 
@@ -118,13 +118,13 @@ export const App = (): React.JSX.Element => {
           field={<DateField mode="single" locale="en-GB" />}
         />
         <FeaturePair
-          title="Range — hover preview"
-          description="Click an anchor, then hover — a tentative range shows until the second click."
+          title="Range  hover preview"
+          description="Click an anchor, then hover  a tentative range shows until the second click."
           picker={<DatePicker mode="range" />}
           field={<DateField mode="range" format="MMM d, yyyy" />}
         />
         <FeaturePair
-          title="Multi-date — weekends disabled"
+          title="Multi-date  weekends disabled"
           description="Toggle multiple non-weekend dates."
           picker={<DatePicker mode="multi" disabledWeekdays={[0, 6]} />}
           field={<DateField mode="multi" disabledWeekdays={[0, 6]} />}
@@ -143,7 +143,7 @@ export const App = (): React.JSX.Element => {
           field={<DateField headerSelectors yearRange={[2000, 2050]} />}
         />
         <FeaturePair
-          title="Multi-month — 2 months"
+          title="Multi-month  2 months"
           description={
             <>
               <code>mode="range" months={2}</code>. Two months side by side; range bands span both.
@@ -187,7 +187,7 @@ export const App = (): React.JSX.Element => {
           field={<DateField weekNumbers />}
         />
         <FeaturePair
-          title="Highlights — events / holidays"
+          title="Highlights  events / holidays"
           description={
             <>
               Coloured dot under the day; tooltip from <code>label</code>.
@@ -285,7 +285,7 @@ export const App = (): React.JSX.Element => {
 
       <PairSection title="Calendar systems">
         <FeaturePair
-          title="Bikram Sambat — English"
+          title="Bikram Sambat  English"
           description="Months: Baishakh, Jestha, … transliterated."
           picker={<DatePicker calendar="bikram-sambat" locale="en-US" headerSelectors />}
           field={
@@ -298,7 +298,7 @@ export const App = (): React.JSX.Element => {
           }
         />
         <FeaturePair
-          title="Bikram Sambat — Nepali Devanagari"
+          title="Bikram Sambat  Nepali Devanagari"
           description={
             <>
               <code>locale="ne-NP"</code> renders Devanagari digits + month names.
@@ -316,9 +316,9 @@ export const App = (): React.JSX.Element => {
         />
       </PairSection>
 
-      <Section title="Form integration — DateField patterns">
+      <Section title="Form integration  DateField patterns">
         <Card
-          title="Controlled — ISO storage"
+          title="Controlled  ISO storage"
           description={
             <>
               <code>value</code> + <code>onChange</code>. ISO format both ways.
@@ -363,7 +363,7 @@ export const App = (): React.JSX.Element => {
           title="Native form submit"
           description={
             <>
-              <code>name="..."</code> emits a hidden &lt;input&gt; — submits via FormData.
+              <code>name="..."</code> emits a hidden &lt;input&gt;  submits via FormData.
             </>
           }
           status={`submitted: ${bookingIso ?? '(unsubmitted)'}`}

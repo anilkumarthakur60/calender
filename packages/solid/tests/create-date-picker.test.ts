@@ -46,7 +46,7 @@ describe('createDatePicker (solid)', () => {
       const picker = createDatePicker({ initialFocused: createCalendarDate(2025, 4, 15) });
       picker.dispose();
       picker.dispose();
-      dispose(); // runs onCleanup(dispose) again — must not throw
+      dispose(); // runs onCleanup(dispose) again  must not throw
       expect(() => picker.engine.select(createCalendarDate(2025, 4, 20))).not.toThrow();
       expect(picker.state().selection.value).toBeNull();
     });

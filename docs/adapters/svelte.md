@@ -4,7 +4,7 @@
 npm install @anil-labs/calendar-svelte @anil-labs/calendar-styles
 ```
 
-The adapter ships a single factory — `createDatePicker` — that satisfies
+The adapter ships a single factory  `createDatePicker`  that satisfies
 Svelte's readable-store contract. Works with Svelte 3/4 store auto-subscribe
 (`$store`) and Svelte 5 runes.
 
@@ -52,21 +52,21 @@ Svelte's readable-store contract. Works with Svelte 3/4 store auto-subscribe
 const { engine, store, subscribe } = createDatePicker(options);
 ```
 
-- `engine` — the `DatePickerEngine` instance.
-- `state` — Svelte-store-compatible (`subscribe(run)`), holds `EngineState`.
-- `subscribe(listener)` — manual subscription outside of components.
+- `engine`  the `DatePickerEngine` instance.
+- `state`  Svelte-store-compatible (`subscribe(run)`), holds `EngineState`.
+- `subscribe(listener)`  manual subscription outside of components.
 
 ## Why no `.svelte` component is shipped
 
 Shipping `.svelte` sources requires the Svelte compiler in the host's build
 pipeline. The factory pattern keeps the library framework-pure while still
-feeling idiomatic. Copy the snippet above as your starting point — it's the
+feeling idiomatic. Copy the snippet above as your starting point  it's the
 full reference implementation.
 
 ## All features available
 
-Every engine feature works — range hover preview, multi-month, week numbers,
-highlights, time picker, BS calendar, presets — by passing the relevant
+Every engine feature works  range hover preview, multi-month, week numbers,
+highlights, time picker, BS calendar, presets  by passing the relevant
 options to `createDatePicker(options)` and reading from `store`. The rendering
 is yours; the state machine is shared.
 

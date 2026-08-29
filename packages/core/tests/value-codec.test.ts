@@ -35,7 +35,7 @@ describe('encodeSelectionValue → decodeSelectionValue round-trip', () => {
     expect(decodeSelectionValue(txt, 'single')?.single).toEqual({ year: 2025, month: 1, day: 1 });
   });
 
-  it('range — "/" separator does not split inside ISO dates', () => {
+  it('range  "/" separator does not split inside ISO dates', () => {
     const txt = encodeSelectionValue(range, greg);
     expect(txt).toBe('2025-01-01/2025-01-10');
     const back = decodeSelectionValue(txt, 'range');
@@ -51,7 +51,7 @@ describe('encodeSelectionValue → decodeSelectionValue round-trip', () => {
   });
 });
 
-describe('decodeSelectionValue — separator-safe range splitting', () => {
+describe('decodeSelectionValue  separator-safe range splitting', () => {
   it('US slashes with spaced dash', () => {
     const back = decodeSelectionValue('01/01/2025 - 01/10/2025', 'range', 'en-US');
     expect(back?.range?.start).toEqual({ year: 2025, month: 1, day: 1 });
@@ -100,7 +100,7 @@ describe('formatSelection → parseSelection round-trip (every preset × mode)',
     });
   }
 
-  it('multi × medium — commas inside "Jan 1, 2025" do not split items', () => {
+  it('multi × medium  commas inside "Jan 1, 2025" do not split items', () => {
     const txt = formatSelection(multi, { pattern: 'medium', locale: 'en-US' });
     expect(txt).toBe('Jan 1, 2025; Feb 14, 2025; Dec 31, 2025');
     const back = parseSelection(txt, 'multi', { pattern: 'medium', locale: 'en-US' });

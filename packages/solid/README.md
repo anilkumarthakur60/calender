@@ -1,6 +1,6 @@
 # @anil-labs/calendar-solid
 
-Solid adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a headless, framework-agnostic calendar/date-picker engine. Engine state is mirrored into a fine-grained signal; every commit pushes a new frozen object so identity-based reactivity is honoured.
+Solid adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core)  a headless, framework-agnostic calendar/date-picker engine. Engine state is mirrored into a fine-grained signal; every commit pushes a new frozen object so identity-based reactivity is honoured.
 
 ## Install
 
@@ -47,7 +47,7 @@ const Picker = () => {
 
 | Field    | Type                    | Description                                         |
 | -------- | ----------------------- | --------------------------------------------------- |
-| `engine` | `DatePickerEngine`      | Full engine API — `select`, `handleKey`, `on`, …    |
+| `engine` | `DatePickerEngine`      | Full engine API  `select`, `handleKey`, `on`, …    |
 | `state`  | `Accessor<EngineState>` | Reactive signal holding the immutable engine state. |
 
 The subscription is cleaned up automatically via `onCleanup`. All core types are re-exported, so `@anil-labs/calendar-solid` is the only import you need.

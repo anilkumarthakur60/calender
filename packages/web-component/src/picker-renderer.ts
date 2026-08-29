@@ -23,7 +23,7 @@ export class PickerRenderer {
   presets: ReadonlyArray<PresetSpec> = ['today'];
 
   // The grid's entry animation should play only when the displayed period
-  // actually changes (navigation / view change) — not on every re-render
+  // actually changes (navigation / view change)  not on every re-render
   // (select, hover, focus move), which would otherwise re-trigger the slide-in
   // on each interaction and cause visible shifting/flicker.
   #lastGridKey: string | undefined;
@@ -127,7 +127,7 @@ export class PickerRenderer {
     this.#swipeStart = null;
   };
 
-  // Throttled wheel handler — page month on each gesture, then ignore for 150ms.
+  // Throttled wheel handler  page month on each gesture, then ignore for 150ms.
   #wheelLockUntil = 0;
   #onWheel = (event: WheelEvent): void => {
     const target = event.target as HTMLElement | null;
@@ -223,7 +223,7 @@ export class PickerRenderer {
     if (state.view === 'day') {
       if (this.#engine.months <= 1) return this.#engine.formatter.formatMonthYear(state.focused);
       const last = this.#engine.calendar.addMonths(state.focused, this.#engine.months - 1);
-      return `${this.#engine.formatter.formatMonthYear(state.focused)} — ${this.#engine.formatter.formatMonthYear(last)}`;
+      return `${this.#engine.formatter.formatMonthYear(state.focused)}  ${this.#engine.formatter.formatMonthYear(last)}`;
     }
     return buildPeriodGrid(
       state.focused,
@@ -378,7 +378,7 @@ export class PickerRenderer {
       queueMicrotask(() => btn.focus({ preventScroll: true }));
     }
     let label = this.#engine.formatter.formatFull(cell.date);
-    if (highlight?.label) label += ` — ${highlight.label}`;
+    if (highlight?.label) label += `  ${highlight.label}`;
     btn.setAttribute('aria-label', label);
     return btn;
   }

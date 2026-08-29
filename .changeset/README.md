@@ -6,7 +6,7 @@ This directory tracks pending releases.
 
 This repo uses [Changesets](https://github.com/changesets/changesets) to manage
 versioning and changelogs across the eight `@anil-labs/*` packages. The
-`linked` config keeps every public package on the same version number — when
+`linked` config keeps every public package on the same version number  when
 you cut a release, they all move in lock-step. That matches user expectations
 ("I installed `@anil-labs/calendar-react@1.2.0`, so my `@anil-labs/calendar-core` is 1.2.0 too").
 
@@ -24,7 +24,7 @@ It asks:
 2. **What kind of bump?** `patch` for bug fixes, `minor` for features,
    `major` for breaking changes.
 3. **Write a summary.** This goes straight to the public CHANGELOG, so be
-   clear: "Add `headerSelectors` prop to `DatePicker`" — not "tweak picker".
+   clear: "Add `headerSelectors` prop to `DatePicker`"  not "tweak picker".
 
 The command writes a markdown file in this directory. Commit it with your PR.
 
@@ -42,4 +42,4 @@ On every push to `main`:
 ## Empty / no-op PRs
 
 If your PR doesn't need a release (docs-only, build-only, refactor), skip
-`pnpm changeset` — CI tolerates the absence on docs/CI changes.
+`pnpm changeset`  CI tolerates the absence on docs/CI changes.

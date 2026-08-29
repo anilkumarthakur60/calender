@@ -6,11 +6,11 @@ import { GregorianCalendar } from './gregorian-calendar.js';
  * Persian / Solar Hijri calendar.
  *
  * Year layout:
- *  - Months 1-6 (Farvardin..Shahrivar) — 31 days each
- *  - Months 7-11 (Mehr..Bahman) — 30 days each
- *  - Month 12 (Esfand) — 29 days, 30 in leap years
+ *  - Months 1-6 (Farvardin..Shahrivar)  31 days each
+ *  - Months 7-11 (Mehr..Bahman)  30 days each
+ *  - Month 12 (Esfand)  29 days, 30 in leap years
  *
- * Leap years follow Borkowski's 33-year-cycle breaks table — the rule ICU and
+ * Leap years follow Borkowski's 33-year-cycle breaks table  the rule ICU and
  * Iran's official calendar use. (The Birashk 2820-year approximation this
  * previously used disagrees with it for roughly one year in every 30.)
  *

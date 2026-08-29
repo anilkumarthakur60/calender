@@ -18,7 +18,7 @@ export default defineConfig({
 
   vite: {
     // Don't try to parse <calender-picker> / <calender-input> as Vue components
-    // — they're registered as custom elements at runtime.
+    //  they're registered as custom elements at runtime.
     server: { port: 5179 },
   },
 
@@ -118,7 +118,7 @@ export default defineConfig({
 
     footer: {
       message: 'Released under MIT.',
-      copyright: 'Built with 💙 — @anil-labs',
+      copyright: 'Built with 💙  @anil-labs',
     },
 
     search: { provider: 'local' },

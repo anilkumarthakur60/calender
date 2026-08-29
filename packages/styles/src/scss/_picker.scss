@@ -3,7 +3,7 @@
 // Design language (modern date-picker patterns à la Linear / Stripe / Apple):
 //   - Cells touch (gap: 0) so range bands appear as one continuous pill
 //   - The "selected" visual is a circle pseudo-element inside the cell, not the
-//     cell itself — this keeps the pill-end shape and the range band aligned
+//     cell itself  this keeps the pill-end shape and the range band aligned
 //   - Today is a small dot under the number, not a ring (doesn't fight selection)
 //   - Hover is a subtle filled circle on the inner pseudo-element only
 //   - Focus is a soft ring around the inner pseudo-element (keyboard-visible)
@@ -237,7 +237,7 @@
   isolation: isolate; // Pseudo-element layering stays within the cell
   transition: color var(--cal-duration-fast) var(--cal-easing);
 
-  // The visual circle/pill — sits behind the number
+  // The visual circle/pill  sits behind the number
   &::before {
     content: '';
     position: absolute;
@@ -310,12 +310,12 @@
     color: var(--cal-color-text);
   }
 
-  // Start: right half filled (band extends to the right) — circle on the left
+  // Start: right half filled (band extends to the right)  circle on the left
   &[data-range-start]:not([data-range-end]) {
     background: linear-gradient(to right, transparent 50%, var(--cal-color-range-bg) 50%);
   }
 
-  // End: left half filled (band extends to the left) — circle on the right
+  // End: left half filled (band extends to the left)  circle on the right
   &[data-range-end]:not([data-range-start]) {
     background: linear-gradient(to left, transparent 50%, var(--cal-color-range-bg) 50%);
   }
@@ -330,7 +330,7 @@
 
   // --- Selected (single OR range endpoint) ------------------------------
   // Range middles carry `data-selected` too, but must stay a light band with
-  // normal text — only the endpoints (and a single/multi selection) get the
+  // normal text  only the endpoints (and a single/multi selection) get the
   // solid accent circle.
   &[data-selected]:not([data-range-mid]) {
     color: var(--cal-color-accent-contrast);
@@ -581,7 +581,7 @@
   }
 }
 
-// --- Period views (month/year/decade) — wider chip cells ----------------
+// --- Period views (month/year/decade)  wider chip cells ----------------
 
 .cal-picker__grid--period,
 .cal-picker[data-view='month'] .cal-picker__grid,

@@ -11,15 +11,15 @@ Everything you can pass to `new DatePickerEngine(options)` or any adapter's
 | `initialFocused`   | `CalendarDate`                                     | today         | Roving-focus start position.           |
 | `initialView`      | `'day' \| 'month' \| 'year' \| 'decade'`           | derived       | Starting view mode.                    |
 | `granularity`      | `'day' \| 'month' \| 'year'`                       | `'day'`       | What the user selects (terminal view). |
-| `min` / `max`      | `CalendarDate`                                     | —             | Bounds (inclusive).                    |
+| `min` / `max`      | `CalendarDate`                                     |              | Bounds (inclusive).                    |
 | `disabledDates`    | `ReadonlyArray<CalendarDate>`                      | `[]`          | Specific dates blocked.                |
 | `disabledWeekdays` | `ReadonlyArray<number>`                            | `[]`          | `0` = Sun, `6` = Sat.                  |
 | `extraConstraints` | `ReadonlyArray<DateConstraint>`                    | `[]`          | Custom predicate constraints.          |
 | `locale`           | `string \| Partial<LocaleConfig>`                  | navigator     | BCP-47 tag.                            |
 | `calendar`         | `'gregorian' \| 'bikram-sambat' \| CalendarSystem` | `'gregorian'` | Calendar system.                       |
 | `fixedWeeks`       | `boolean`                                          | `true`        | Always emit 6 weeks for stable layout. |
-| `range`            | `RangeSelectionOptions`                            | —             | `{ allowSingleDayRange }`.             |
-| `multi`            | `MultiSelectionOptions`                            | —             | `{ max }`.                             |
+| `range`            | `RangeSelectionOptions`                            |              | `{ allowSingleDayRange }`.             |
+| `multi`            | `MultiSelectionOptions`                            |              | `{ max }`.                             |
 
 ## Range constraints
 

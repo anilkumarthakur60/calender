@@ -1,9 +1,9 @@
 # example-angular
 
-> **Note** — Angular ships its own build tooling (`@angular/build` / Angular
+> **Note**  Angular ships its own build tooling (`@angular/build` / Angular
 > CLI) that's tightly version-coupled and doesn't compose cleanly with the
 > rest of this Vite-based monorepo. So this app holds **reference integration
-> snippets only** — copy them into an Angular CLI scaffold to run them.
+> snippets only**  copy them into an Angular CLI scaffold to run them.
 
 The `@anil-labs/calendar-angular` adapter itself is fully built and tested via tsup and
 publishes to npm like the other adapters. Users consume it the standard way:

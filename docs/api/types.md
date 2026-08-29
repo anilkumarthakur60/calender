@@ -5,7 +5,7 @@ every adapter package.
 
 ## CalendarDate
 
-The picker's canonical date representation. Plain `{year, month, day}` —
+The picker's canonical date representation. Plain `{year, month, day}` 
 timezone-safe.
 
 ```ts
@@ -39,7 +39,7 @@ isInRange(date, range, (inclusive = true));
 
 ## SelectionValue
 
-Tagged union — the shape depends on `mode`.
+Tagged union  the shape depends on `mode`.
 
 ```ts
 type SelectionValue =

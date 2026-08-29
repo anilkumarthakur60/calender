@@ -10,7 +10,7 @@ import {
 const OBSERVED: ReadonlyArray<string> = STANDARD_OBSERVED_ATTRS;
 
 /**
- * Instance surface of `<calender-picker>` — form-associated custom element.
+ * Instance surface of `<calender-picker>`  form-associated custom element.
  * Attributes map to engine options; cosmetic attributes (theme, density)
  * only restyle, engine-shaping attributes reconfigure the live engine in
  * place (preserving the selection), and `value` resets the selection.
@@ -36,7 +36,7 @@ let PickerElementClass: CalenderPickerElementConstructor | null = null;
 
 /**
  * Create (and memoize) the `<calender-picker>` element class. Deferred to a
- * factory so SSR frameworks can load the bundle in Node — the class body
+ * factory so SSR frameworks can load the bundle in Node  the class body
  * references `HTMLElement`, which only exists once a DOM is present.
  */
 export const createPickerElementClass = (): CalenderPickerElementConstructor => {
@@ -91,7 +91,7 @@ export const createPickerElementClass = (): CalenderPickerElementConstructor => 
         return;
       }
       if (name === 'value' || !this.#engine) {
-        // A value change is an intentional selection reset — full rebuild.
+        // A value change is an intentional selection reset  full rebuild.
         this.#rebuild();
         return;
       }

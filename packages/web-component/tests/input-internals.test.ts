@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { defineCalenderInput, defineCalenderPicker } from '../src/index.js';
 
 // Bug #9 regression: with ElementInternals available the form value must go
-// through setFormValue ONLY — no duplicate hidden input. happy-dom has no
+// through setFormValue ONLY  no duplicate hidden input. happy-dom has no
 // attachInternals, so fake one before the elements are defined.
 const formValues: string[] = [];
 

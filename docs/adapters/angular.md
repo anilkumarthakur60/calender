@@ -76,7 +76,7 @@ export class CustomComponent {
 
 Angular ships its own tightly-coupled build tooling (`@angular/build` + Angular
 CLI). The other adapters live in a Vite-first monorepo. For Angular, use
-`ng new` to scaffold your project and install `@anil-labs/calendar-angular` from npm —
+`ng new` to scaffold your project and install `@anil-labs/calendar-angular` from npm 
 the standard Angular workflow.
 
 The `examples/angular/` directory in the repo contains reference

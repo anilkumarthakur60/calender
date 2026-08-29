@@ -18,7 +18,7 @@ const key = (k: string, mods: Partial<Record<'shift' | 'ctrl', boolean>> = {}) =
   metaKey: false,
 });
 
-describe('MultiSelectionStrategy — FIFO max trimming', () => {
+describe('MultiSelectionStrategy  FIFO max trimming', () => {
   it('drops the oldest-SELECTED date, not the chronologically earliest', () => {
     const s = new MultiSelectionStrategy({ max: 2 });
     let v = s.select(s.initial(), createCalendarDate(2025, 1, 3)); // selected first
@@ -163,7 +163,7 @@ describe('deep-frozen selection state', () => {
   });
 });
 
-describe('EventBus — duplicate registrations', () => {
+describe('EventBus  duplicate registrations', () => {
   it('same function registered twice fires twice; unsubscribe removes one', () => {
     const bus = new EventBus<{ ping: number }>();
     let calls = 0;
@@ -180,7 +180,7 @@ describe('EventBus — duplicate registrations', () => {
   });
 });
 
-describe('presets — atomic range application', () => {
+describe('presets  atomic range application', () => {
   it('clamps the range into min/max', () => {
     const today = todayCalendarDate();
     const e = new DatePickerEngine({
@@ -211,7 +211,7 @@ describe('presets — atomic range application', () => {
   });
 
   it("today preset uses the engine's tz-aware today", () => {
-    const tz = 'Pacific/Kiritimati'; // UTC+14 — first to roll over
+    const tz = 'Pacific/Kiritimati'; // UTC+14  first to roll over
     const e = new DatePickerEngine({
       mode: 'range',
       locale: { locale: 'en-US', timeZone: tz },
@@ -416,7 +416,7 @@ describe('setOptions', () => {
   });
 });
 
-describe('resolveLocaleConfig — Intl week info', () => {
+describe('resolveLocaleConfig  Intl week info', () => {
   it('en-US: Sunday first day, Sat/Sun weekend', () => {
     const c = resolveLocaleConfig('en-US');
     expect(c.firstDayOfWeek).toBe(0);

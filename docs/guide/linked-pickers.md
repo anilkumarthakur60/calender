@@ -6,7 +6,7 @@ depends on the first. Built-in support via `<DateRangeField>` (React).
 ## DateRangeField
 
 Two `DateField` inputs, paired. The second's `min` automatically follows the
-first — selecting Apr 15 as the start disables Apr 14 and earlier in the end
+first  selecting Apr 15 as the start disables Apr 14 and earlier in the end
 field.
 
 ```tsx
@@ -84,7 +84,7 @@ const error = (() => {
 ## Three or more linked pickers
 
 For multi-leg travel (flight 1, flight 2, flight 3), apply the same pattern
-recursively — each subsequent picker's `min` is the previous one's commit
+recursively  each subsequent picker's `min` is the previous one's commit
 value.
 
 ```tsx

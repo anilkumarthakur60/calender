@@ -36,7 +36,7 @@ export interface DatePickerProps extends DatePickerEngineOptions {
   readonly presets?: ReadonlyArray<PresetSpec>;
   /**
    * Custom render function for the contents of each day cell. The button shell
-   * (click handler, data-attrs, aria-label, focus management) is preserved —
+   * (click handler, data-attrs, aria-label, focus management) is preserved 
    * only the cell's child content is replaced.
    */
   readonly renderCell?: (ctx: DayCellContext) => React.ReactNode;
@@ -73,7 +73,7 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
     const rootRef = useRef<HTMLDivElement>(null);
 
     // Callbacks fire from ENGINE events so keyboard selection (Enter/Space),
-    // presets and programmatic changes all report — not just clicks. Handler
+    // presets and programmatic changes all report  not just clicks. Handler
     // identity is kept in refs so we never need to re-subscribe.
     const onSelectRef = useRef(onSelect);
     const onChangeRef = useRef(onChange);
@@ -141,7 +141,7 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
       if (state.view !== 'day') return periodGrid?.title ?? '';
       if (engine.months <= 1) return fmt.formatMonthYear(state.focused);
       const last = engine.calendar.addMonths(state.focused, engine.months - 1);
-      return `${fmt.formatMonthYear(state.focused)} — ${fmt.formatMonthYear(last)}`;
+      return `${fmt.formatMonthYear(state.focused)}  ${fmt.formatMonthYear(last)}`;
     }, [state.view, state.focused, periodGrid, fmt, engine]);
 
     const resolved = useMemo(() => resolvePresets(presets), [presets]);
@@ -184,7 +184,7 @@ export const DatePicker = forwardRef<DatePickerHandle, DatePickerProps>(
         ? ({ ['--cal-highlight-color' as string]: highlight.color } as React.CSSProperties)
         : undefined;
       let label = fmt.formatFull(cell.date);
-      if (highlight?.label) label += ` — ${highlight.label}`;
+      if (highlight?.label) label += `  ${highlight.label}`;
 
       return (
         <button

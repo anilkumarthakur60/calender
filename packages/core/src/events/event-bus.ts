@@ -11,7 +11,7 @@ interface ListenerEntry {
  * safe against listener mutation during emit (snapshots before iterating, and
  * skips entries removed mid-emit). A throwing listener is isolated: delivery
  * continues and the error is rethrown on a microtask.
- * Duplicate registrations of the same function are kept separately — each
+ * Duplicate registrations of the same function are kept separately  each
  * unsubscribe removes only its own registration.
  */
 export class EventBus<EventMap> {

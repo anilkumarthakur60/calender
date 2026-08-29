@@ -115,7 +115,7 @@ export const applyMask = (input: string, pattern: string | FormatPreset): MaskRe
       if (buf === '') {
         buf = ch;
         i += 1;
-        // No second digit can ever fit (e.g. "3" for M) — commit immediately.
+        // No second digit can ever fit (e.g. "3" for M)  commit immediately.
         if (Number(buf) * 10 > slot.max) commit();
       } else if (Number(buf + ch) <= slot.max) {
         buf += ch;
@@ -131,7 +131,7 @@ export const applyMask = (input: string, pattern: string | FormatPreset): MaskRe
       if (buf.length >= slot.width) commit();
     }
   }
-  // Partial token stays as typed — never append a trailing separator.
+  // Partial token stays as typed  never append a trailing separator.
   out += buf;
 
   return { value: out, caret: out.length };

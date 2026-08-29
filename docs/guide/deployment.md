@@ -35,7 +35,7 @@ The root `vercel.json` points **one** Vercel project at that script:
 3. Keep **Root Directory** at `/` (Vercel reads the root `vercel.json`).
 4. Click **Deploy**.
 
-That's it — **no tokens, no GitHub secrets, no per-app matrix**. Vercel's native
+That's it  **no tokens, no GitHub secrets, no per-app matrix**. Vercel's native
 Git integration then deploys `main` to production and posts a preview URL on
 every pull request automatically.
 
@@ -71,7 +71,7 @@ to `/`) and add the domain in the Pages settings.
 
 `.github/workflows/ci.yml` runs on every push and PR: lint, format check, build,
 typecheck, test, package checks (publint + arethetypeswrong), a Node import
-smoke test, `build:examples`, and the size budgets — on Node 22, 24, and 26. It does
+smoke test, `build:examples`, and the size budgets  on Node 22, 24, and 26. It does
 not deploy anything; deployment is handled by Vercel (demos) and the Docs
 workflow (docs).
 

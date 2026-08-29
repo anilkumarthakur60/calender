@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug. Please fill in everything you can — it makes triage much faster.
+        Thanks for taking the time to report a bug. Please fill in everything you can  it makes triage much faster.
 
   - type: dropdown
     id: package

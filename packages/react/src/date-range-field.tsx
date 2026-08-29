@@ -21,7 +21,7 @@ import {
 import { DateField, type DateFieldHandle, type DateFieldProps } from './date-field.js';
 
 export interface DateRangeFieldProps {
-  /** Form name for the start date — emits a hidden input. */
+  /** Form name for the start date  emits a hidden input. */
   readonly nameStart?: string;
   /** Form name for the end date. */
   readonly nameEnd?: string;
@@ -77,7 +77,7 @@ interface RangeParts {
  * Two side-by-side `DateField` inputs for start + end. The second input's
  * minimum derives from the first (plus `minRangeDays`/`maxRangeDays`), so the
  * user can't select an end before the start. The pair publishes one combined
- * value in the configured `valueFormat ?? format` — the SAME canonical format
+ * value in the configured `valueFormat ?? format`  the SAME canonical format
  * the child fields speak, round-tripped via the separator-safe core codec.
  */
 export const DateRangeField = forwardRef<DateRangeFieldHandle, DateRangeFieldProps>(
@@ -158,7 +158,7 @@ export const DateRangeField = forwardRef<DateRangeFieldHandle, DateRangeFieldPro
     const [internal, setInternal] = useState<string>(defaultValue ?? '');
     const current = controlled ? (value as string) : internal;
 
-    // Externally-controlled value changes re-seed the fields — but an echo of
+    // Externally-controlled value changes re-seed the fields  but an echo of
     // the value we just published must not clobber a half-typed range.
     useEffect(() => {
       if (!controlled) return;

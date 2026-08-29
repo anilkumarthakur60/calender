@@ -26,7 +26,7 @@ console.log(engine.state.selection); // { mode: 'range', value: { start, end }, 
 ```
 
 Every adapter wraps this engine. The Vue composable, the React hook, the Solid
-signal — they all expose the same engine instance.
+signal  they all expose the same engine instance.
 
 ## EngineState
 
@@ -46,9 +46,9 @@ interface EngineState {
 ```
 
 The renderers read this snapshot and emit DOM. When the engine commits a new
-state, it fires a `change` event — the renderer subscribes and re-renders.
+state, it fires a `change` event  the renderer subscribes and re-renders.
 
-## CalendarDate — a plain triple
+## CalendarDate  a plain triple
 
 The picker stores dates as a `{year, month, day}` triple, not a JS `Date`. This
 avoids time-zone surprises and makes BS support trivial.
@@ -69,7 +69,7 @@ The picker's date math (adding days, days-in-month, weekday, today) flows
 through a `CalendarSystem` interface. Two systems ship:
 
 - `GregorianCalendar` (default)
-- `BikramSambatCalendar` — Nepali calendar with months Baishakh, Jestha, …
+- `BikramSambatCalendar`  Nepali calendar with months Baishakh, Jestha, …
 
 ```ts
 import { BikramSambatCalendar } from '@anil-labs/calendar-core';
@@ -79,7 +79,7 @@ bs.toGregorian({ year: 2080, month: 1, day: 1 }); // BS New Year → AD
 ```
 
 To add a new calendar (Hijri, Buddhist, Persian, …) implement the interface
-and pass an instance via `calendar:` — the engine, grid, formatter, and pattern
+and pass an instance via `calendar:`  the engine, grid, formatter, and pattern
 engine all delegate to it.
 
 ## Selection strategies (Strategy pattern)
@@ -87,9 +87,9 @@ engine all delegate to it.
 Each `mode` plugs in a `SelectionStrategy` that decides how successive clicks
 accumulate. Built-in:
 
-- `SingleSelectionStrategy` — each click replaces the value
-- `RangeSelectionStrategy` — first click sets anchor, second click completes
-- `MultiSelectionStrategy` — clicks toggle
+- `SingleSelectionStrategy`  each click replaces the value
+- `RangeSelectionStrategy`  first click sets anchor, second click completes
+- `MultiSelectionStrategy`  clicks toggle
 
 ```ts
 import { RangeSelectionStrategy } from '@anil-labs/calendar-core';

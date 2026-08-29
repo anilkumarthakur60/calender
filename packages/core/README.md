@@ -27,10 +27,10 @@ engine.handleKey({
 
 ## Architecture
 
-- **Domain** — `CalendarDate`, `DateRange`, `buildMonthGrid` (pure value objects + functions).
-- **Selection strategies** — `single | range | multi` implementing the same `SelectionStrategy` interface (Strategy pattern, OCP).
-- **Constraints** — `MinMax`, `DisabledDates`, `DisabledWeekday`, `Filter`, `Composite` (composable predicates).
-- **Navigation** — `ViewMode` (day/month/year/decade) + pure `stepBackward/stepForward` per view.
-- **i18n** — `resolveLocaleConfig`, `DateFormatter` (memoised `Intl`), lenient `parseDate`.
-- **Focus/keyboard** — `interpretKey` maps `KeyboardEventLike` → logical `KeyboardAction`.
-- **Engine facade** — `DatePickerEngine` composes all of the above; renderers consume the immutable `EngineState`.
+- **Domain**  `CalendarDate`, `DateRange`, `buildMonthGrid` (pure value objects + functions).
+- **Selection strategies**  `single | range | multi` implementing the same `SelectionStrategy` interface (Strategy pattern, OCP).
+- **Constraints**  `MinMax`, `DisabledDates`, `DisabledWeekday`, `Filter`, `Composite` (composable predicates).
+- **Navigation**  `ViewMode` (day/month/year/decade) + pure `stepBackward/stepForward` per view.
+- **i18n**  `resolveLocaleConfig`, `DateFormatter` (memoised `Intl`), lenient `parseDate`.
+- **Focus/keyboard**  `interpretKey` maps `KeyboardEventLike` → logical `KeyboardAction`.
+- **Engine facade**  `DatePickerEngine` composes all of the above; renderers consume the immutable `EngineState`.

@@ -98,11 +98,11 @@ const splitMultiText = (
 };
 
 /** Range separator candidates, most explicit first. Bare `-`/`/` last. */
-const RANGE_SEPARATORS: ReadonlyArray<string> = [' – ', ' — ', ' - ', ' to ', '–', '—', '/', '-'];
+const RANGE_SEPARATORS: ReadonlyArray<string> = [' – ', '  ', ' - ', ' to ', '–', '', '/', '-'];
 
 /**
  * Lenient decoder. Accepts ISO (`YYYY-MM-DD`) and locale-formatted strings;
- * returns null for empty input, throws nothing on malformed input — instead
+ * returns null for empty input, throws nothing on malformed input  instead
  * leaves the corresponding field undefined and returns whatever it could parse.
  */
 export const decodeSelectionValue = (

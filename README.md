@@ -1,4 +1,4 @@
-# calender — @anil-labs calendar suite
+# calender  @anil-labs calendar suite
 
 [![CI](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml/badge.svg)](https://github.com/anilkumarthakur60/calender/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/%40anil-labs%2Fcore.svg)](https://www.npmjs.com/package/@anil-labs/calendar-core)
@@ -66,7 +66,7 @@ import { DatePicker } from '@anil-labs/calendar-react';
 | `@anil-labs/calendar-vue`           | `useDatePicker` composable, `<DatePicker>`, `<DateField>` (Vue 3).                                                                               |
 | `@anil-labs/calendar-svelte`        | `createDatePicker` factory satisfying the Svelte store contract.                                                                                 |
 | `@anil-labs/calendar-solid`         | `createDatePicker` returning fine-grained Solid signals.                                                                                         |
-| `@anil-labs/calendar-angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). **In-repo only — not yet on npm** (awaiting an ng-packagr build). |
+| `@anil-labs/calendar-angular`       | Standalone `DatePickerComponent` + `DatePickerService` (signals, Angular 17+). **In-repo only  not yet on npm** (awaiting an ng-packagr build). |
 
 ## Examples & docs
 
@@ -74,7 +74,7 @@ Each framework has a runnable example under `examples/`; the docs site lives in 
 
 | Directory          | Package           | What it is                                                                              |
 | ------------------ | ----------------- | --------------------------------------------------------------------------------------- |
-| `docs`             | `docs`            | **VitePress docs site** — guides, adapter pages, API reference, live demos.             |
+| `docs`             | `docs`            | **VitePress docs site**  guides, adapter pages, API reference, live demos.             |
 | `examples/wc`      | `example-wc`      | Plain HTML + Vite. The most thorough feature showcase, uses the Web Component directly. |
 | `examples/vue`     | `example-vue`     | Vue 3 + Vite. Uses `@anil-labs/calendar-vue` and the WC together.                       |
 | `examples/react`   | `example-react`   | React 18 + Vite.                                                                        |
@@ -82,7 +82,7 @@ Each framework has a runnable example under `examples/`; the docs site lives in 
 | `examples/solid`   | `example-solid`   | Solid + Vite.                                                                           |
 | `examples/angular` | `example-angular` | Reference snippets only. Angular needs its own `ng new` scaffold.                       |
 
-`pnpm build:demos` assembles every example into a single static site under `dist-demos/` (this is what the Vercel project builds — see [Deployment](#deployment)).
+`pnpm build:demos` assembles every example into a single static site under `dist-demos/` (this is what the Vercel project builds  see [Deployment](#deployment)).
 
 ---
 
@@ -143,13 +143,13 @@ Full guides, every API, every option: **the [VitePress docs site](https://calend
 
 - **Selection modes**: `single`, `range`, `multi`. Range gets a hover preview before the second click.
 - **Calendar systems**: Gregorian (default) and Bikram Sambat. Add your own by implementing `CalendarSystem`.
-- **Views**: day, month, year, decade — drill in/out via the header.
+- **Views**: day, month, year, decade  drill in/out via the header.
 - **Header dropdowns**: pass `headerSelectors` for `<select>`-based month + year navigation.
 - **Multi-month layout**: render N grids side-by-side.
 - **Week numbers**: ISO week numbers in a left column.
 - **Highlighted dates**: per-date dots (events, holidays) with optional tooltip labels.
 - **Presets**: built-in `today`, `yesterday`, `last7days`, `last30days`, `thisWeek`, `thisMonth`, `lastMonth`, `thisYear`, `clear`. Add custom ones via `{id, label, apply}`.
-- **Time picker**: optional `withTime` row — 12 or 24-hour, AM/PM, optional seconds, configurable minute step.
+- **Time picker**: optional `withTime` row  12 or 24-hour, AM/PM, optional seconds, configurable minute step.
 - **Custom format**: token-based formatter (`yyyy MM dd MMMM HH mm a`) with six presets. `format` and `valueFormat` props let display and storage diverge.
 - **Constraints**: `min`/`max`, `disabledDates`, `disabledWeekdays`, `minRangeDays`/`maxRangeDays`, plus any custom `DateConstraint` predicate.
 - **Form-associated**: `<calender-picker>` and `<calender-input>` participate in `<form>` submission via `ElementInternals`. React/Vue `DateField` emits a hidden `<input>`.
@@ -181,17 +181,17 @@ The first install symlinks the workspace packages and pulls roughly ~500 MB of
 node_modules (pnpm content-addresses the global store so subsequent installs
 are fast).
 
-> Why pnpm? The monorepo uses `workspace:*` to wire local packages together —
+> Why pnpm? The monorepo uses `workspace:*` to wire local packages together 
 > when `@anil-labs/calendar-react` imports `@anil-labs/calendar-core`, you get the live source, not
-> a stale published copy. **This is a contributor-only choice — end users
+> a stale published copy. **This is a contributor-only choice  end users
 > install your published packages with whichever package manager they like.**
 
 ### Run an example
 
-Pick one to start with — each has dozens of feature demos:
+Pick one to start with  each has dozens of feature demos:
 
 ```bash
-pnpm example:wc       # http://localhost:5180  — Web Component (most thorough)
+pnpm example:wc       # http://localhost:5180   Web Component (most thorough)
 pnpm example:vue      # http://localhost:5173
 pnpm example:react    # http://localhost:5174
 pnpm example:svelte   # http://localhost:5175
@@ -241,7 +241,7 @@ CI runs all of these on every push and PR (`.github/workflows/ci.yml`).
 ```
 calender/
 ├── packages/                    # publishable libraries
-│   ├── core/                    # @anil-labs/calendar-core — headless engine
+│   ├── core/                    # @anil-labs/calendar-core  headless engine
 │   │   ├── src/
 │   │   │   ├── calendar/         #  CalendarSystem + Gregorian + BS
 │   │   │   ├── constraints/      #  DateConstraint impls (Composite pattern)
@@ -253,7 +253,7 @@ calender/
 │   │   │   ├── navigation/       #  ViewMode + step functions
 │   │   │   └── selection/        #  SelectionStrategy impls (Strategy pattern)
 │   │   └── tests/                #  vitest
-│   ├── styles/                  # @anil-labs/calendar-styles — SCSS + compiled CSS
+│   ├── styles/                  # @anil-labs/calendar-styles  SCSS + compiled CSS
 │   ├── web-component/           # @anil-labs/calendar-web-component
 │   ├── react/                   # @anil-labs/calendar-react
 │   ├── vue/                     # @anil-labs/calendar-vue
@@ -289,21 +289,21 @@ calender/
 
 The **engine facade** lives at `engine/date-picker-engine.ts`. It composes:
 
-- A `SelectionStrategy` (single / range / multi) — see `selection/`
-- A `CalendarSystem` (Gregorian / BS) — see `calendar/`
-- A `CompositeConstraint` (min/max, disabled dates, weekdays, custom) — see `constraints/`
-- A `DateFormatter` and the token-pattern engine — see `i18n/`
+- A `SelectionStrategy` (single / range / multi)  see `selection/`
+- A `CalendarSystem` (Gregorian / BS)  see `calendar/`
+- A `CompositeConstraint` (min/max, disabled dates, weekdays, custom)  see `constraints/`
+- A `DateFormatter` and the token-pattern engine  see `i18n/`
 - A typed `EventBus` for `change | select | focus | view | hover | time | open | close`
 
 The engine produces an **immutable `EngineState`** snapshot on every mutation
 (`engine/engine-state.ts`). Renderers subscribe to `change` and re-render from
-this snapshot — they never reach into the engine's internals.
+this snapshot  they never reach into the engine's internals.
 
 When you change the engine:
 
 1. Update the relevant `engine/`, `selection/`, `constraints/`, etc.
-2. Run `pnpm --filter @anil-labs/calendar-core test` — extend the suite if you touched behavior.
-3. Run `pnpm --filter @anil-labs/calendar-core build` — keeps the workspace dist in sync.
+2. Run `pnpm --filter @anil-labs/calendar-core test`  extend the suite if you touched behavior.
+3. Run `pnpm --filter @anil-labs/calendar-core build`  keeps the workspace dist in sync.
 4. The renderers will pick up the new behavior automatically since they consume `EngineState`.
 
 ### Editing the renderers / adapters
@@ -319,7 +319,7 @@ Each adapter is **a thin reactive binding** to the engine:
 | Angular | `signal()` (signals API)                 |
 | WC      | DOM events (`change` listener on engine) |
 
-The reference renderer is `packages/web-component/src/picker-renderer.ts` —
+The reference renderer is `packages/web-component/src/picker-renderer.ts` 
 when you ship a new feature it's worth keeping this and the React + Vue
 renderers in sync.
 
@@ -330,12 +330,12 @@ relevant playground hot-reloads automatically.
 
 `packages/styles/src/scss/`:
 
-- `_tokens.scss` — design tokens (palette, type, motion). All visual style
+- `_tokens.scss`  design tokens (palette, type, motion). All visual style
   comes from CSS custom properties.
-- `_root.scss` — `:root` + theme variants (light / dark / auto / density).
-- `_picker.scss` — picker, cells, ranges, hover preview, time, footer,
+- `_root.scss`  `:root` + theme variants (light / dark / auto / density).
+- `_picker.scss`  picker, cells, ranges, hover preview, time, footer,
   DateField input + popover.
-- `calender.scss` — entry point (just `@use` the above).
+- `calender.scss`  entry point (just `@use` the above).
 
 After editing:
 
@@ -358,9 +358,9 @@ Walk-through of how a feature flows from idea to rendered pixels:
    produces state changes.
 3. **Export from the barrel.** `packages/core/src/index.ts`.
 4. **Tests.** Add a vitest case to `packages/core/tests/`. The pattern is
-   small and self-contained — most features land in 20–30 lines of test.
+   small and self-contained  most features land in 20–30 lines of test.
 5. **Render it.** Update the WC renderer first
-   (`packages/web-component/src/picker-renderer.ts`) — it's the canonical
+   (`packages/web-component/src/picker-renderer.ts`)  it's the canonical
    reference. Then mirror the change in React (`packages/react/src/date-picker.tsx`)
    and Vue (`packages/vue/src/DatePicker.ts`).
 6. **Style it.** Add the necessary selectors to `_picker.scss`. The renderers
@@ -394,25 +394,25 @@ export class HijriCalendar implements CalendarSystem {
   addDays(date: CalendarDate, n: number): CalendarDate {
     /* … */
   }
-  // … 12 more methods — see CalendarSystem in src/calendar/calendar-system.ts
+  // … 12 more methods  see CalendarSystem in src/calendar/calendar-system.ts
 }
 ```
 
 Register it in `calendar/calendar-factory.ts` so `calendar: 'hijri'` works.
-Add its tests. That's it — every renderer, the formatter, the pattern engine,
+Add its tests. That's it  every renderer, the formatter, the pattern engine,
 the grid all flow through the abstraction and pick up the new calendar for
 free.
 
 ### Adding a new framework adapter
 
-Steal the shape of `@anil-labs/calendar-solid` — it's the smallest:
+Steal the shape of `@anil-labs/calendar-solid`  it's the smallest:
 
-1. `packages/<framework>/package.json` — workspace dep on `@anil-labs/calendar-core`,
+1. `packages/<framework>/package.json`  workspace dep on `@anil-labs/calendar-core`,
    peer dep on the framework, `tsup` build like the others.
-2. `packages/<framework>/src/create-date-picker.ts` — instantiate
+2. `packages/<framework>/src/create-date-picker.ts`  instantiate
    `DatePickerEngine`, mirror its state into the framework's reactivity
    primitive, dispose on cleanup.
-3. (Optional) `packages/<framework>/src/<DatePicker>.ts` — a component that
+3. (Optional) `packages/<framework>/src/<DatePicker>.ts`  a component that
    renders the picker using the framework's idioms.
 4. Barrel + tsup config + README + playground.
 
@@ -439,16 +439,16 @@ pnpm --filter @anil-labs/calendar-core exec vitest
 
 The project is deliberately layered to enforce **SOLID**:
 
-- **Single Responsibility** — every file does one thing: a value object, a
+- **Single Responsibility**  every file does one thing: a value object, a
   selection strategy, a date constraint, a navigator, a formatter, an event bus.
-- **Open/Closed** — selection modes and date constraints are added by
+- **Open/Closed**  selection modes and date constraints are added by
   implementing `SelectionStrategy` / `DateConstraint`. No core changes
   required. New calendars likewise via `CalendarSystem`.
-- **Liskov** — all strategies / constraints / calendar systems are
+- **Liskov**  all strategies / constraints / calendar systems are
   interchangeable behind their interfaces.
-- **Interface Segregation** — `DateConstraint` exposes only `evaluate()`,
+- **Interface Segregation**  `DateConstraint` exposes only `evaluate()`,
   formatters only formatting, navigator only stepping.
-- **Dependency Inversion** — `DatePickerEngine` depends on abstractions
+- **Dependency Inversion**  `DatePickerEngine` depends on abstractions
   (`SelectionStrategy`, `DateConstraint`, `CalendarSystem`). Concrete
   implementations are injected through the factory + options.
 
@@ -479,7 +479,7 @@ project at it:
 
 On vercel.com: **Add New → Project**, import the repo, keep **Root Directory**
 at `/`, deploy. Vercel's native Git integration then auto-deploys `main` to
-production and posts a preview URL on every PR — **no tokens, no GitHub secrets,
+production and posts a preview URL on every PR  **no tokens, no GitHub secrets,
 no per-app matrix**. Run `pnpm build:demos` to reproduce the exact build
 locally.
 
@@ -501,7 +501,7 @@ Three workflows ship in `.github/workflows/`:
 | `docs.yml`    | Push to `main` (`docs/**`) | Builds VitePress and deploys it to GitHub Pages.                                                                                                         |
 | `release.yml` | Push to `main`             | Changesets: opens the version PR, or publishes to npm with provenance when it merges (needs `NPM_TOKEN`).                                                |
 
-Deployment of the demos needs **no** workflow — Vercel's Git integration
+Deployment of the demos needs **no** workflow  Vercel's Git integration
 handles it. The only repo secret required anywhere is `NPM_TOKEN`, for releases.
 
 ---
@@ -512,7 +512,7 @@ The packages live under the `@anil-labs/` scope and release through
 [Changesets](https://github.com/changesets/changesets), fully automated by
 `.github/workflows/release.yml`:
 
-1. Land your change with a changeset (`pnpm changeset` — pick the bump, write
+1. Land your change with a changeset (`pnpm changeset`  pick the bump, write
    the summary). CI on `main` then opens/updates a **"chore: version packages"**
    PR.
 2. Merge that PR → the workflow builds, tests, and publishes every changed

@@ -13,7 +13,7 @@ export interface MonthGridCell {
    * True for filler cells that fall outside the calendar system's supported
    * year range (only reachable on table-driven calendars such as Bikram
    * Sambat, at the very first and last supported month). `date` is a
-   * placeholder on these — renderers should draw them blank and unselectable.
+   * placeholder on these  renderers should draw them blank and unselectable.
    */
   readonly outOfRange?: boolean;
 }
@@ -67,7 +67,7 @@ export const buildMonthGrid = (
   /**
    * Table-driven calendars (Bikram Sambat) throw outside their supported
    * years, and the leading/trailing filler of the first and last supported
-   * month falls exactly there. Return null instead of letting it escape — the
+   * month falls exactly there. Return null instead of letting it escape  the
    * grid keeps its shape and the cell is flagged `outOfRange`.
    */
   const safeAdd = (days: number): CalendarDate | null => {
@@ -111,7 +111,7 @@ export const buildMonthGrid = (
 
   const weekdayHeaders = Array.from({ length: 7 }, (_, i) => (opts.firstDayOfWeek + i) % 7);
 
-  // Week numbers are ISO/Gregorian by definition — project non-Gregorian cells.
+  // Week numbers are ISO/Gregorian by definition  project non-Gregorian cells.
   // The ISO week of a row is the week containing its THURSDAY; the row's first
   // cell is only the ISO Monday when firstDayOfWeek is 1, so indexing [0] made
   // every number wrong for the (default) Sunday start.

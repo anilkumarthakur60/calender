@@ -28,7 +28,7 @@ bun add @anil-labs/calendar-react @anil-labs/calendar-styles
 ```
 
 The repo itself is a **pnpm workspace** for the dev workflow (workspace symlinks,
-disk-efficient install). That's a dev-time choice — it doesn't affect end users.
+disk-efficient install). That's a dev-time choice  it doesn't affect end users.
 
 ## Styles
 
@@ -59,4 +59,4 @@ The CSS is fully driven by CSS custom properties (design tokens). Override any
 Types ship with every package. Strict mode-clean: `exactOptionalPropertyTypes`,
 `noUncheckedIndexedAccess`, `noImplicitOverride`, `verbatimModuleSyntax`.
 
-No setup needed — `import { DatePicker } from '@anil-labs/calendar-react'` works.
+No setup needed  `import { DatePicker } from '@anil-labs/calendar-react'` works.

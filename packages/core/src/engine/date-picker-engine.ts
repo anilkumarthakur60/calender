@@ -69,7 +69,7 @@ const centuryStart = (year: number): number => Math.floor(year / 100) * 100;
 
 /**
  * Signed day count from `a` to `b` (positive when a < b). O(1) via UTC
- * epoch-day subtraction through the Gregorian projection — no iteration,
+ * epoch-day subtraction through the Gregorian projection  no iteration,
  * no span cap.
  */
 const daysBetween = (calendar: CalendarSystem, a: CalendarDate, b: CalendarDate): number =>
@@ -360,7 +360,7 @@ export class DatePickerEngine {
 
   /**
    * Release every listener registered on this engine. Adapters must call this
-   * when their component unmounts — without it each mount leaks its listeners
+   * when their component unmounts  without it each mount leaks its listeners
    * for the lifetime of the page. Idempotent.
    */
   destroy(): void {
@@ -549,8 +549,8 @@ export class DatePickerEngine {
 
   /**
    * Atomically apply a complete range (presets, adapters). The range is
-   * clamped into `min`/`max`; when the clamped range is empty — or violates
-   * `minRangeDays`/`maxRangeDays` — NOTHING is applied (no dangling anchor).
+   * clamped into `min`/`max`; when the clamped range is empty  or violates
+   * `minRangeDays`/`maxRangeDays`  NOTHING is applied (no dangling anchor).
    * Range mode only. Returns true when the range was applied.
    */
   selectRange(start: CalendarDate, end: CalendarDate): boolean {
@@ -839,7 +839,7 @@ export class DatePickerEngine {
       }
       case 'select':
         // Day view selects; period views drill down (or select when the view
-        // is terminal for the configured granularity) — same as clicking.
+        // is terminal for the configured granularity)  same as clicking.
         this.pickInView(this.#state.focused);
         return;
       case 'cancel':

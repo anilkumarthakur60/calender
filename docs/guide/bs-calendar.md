@@ -76,8 +76,8 @@ via a custom `CalendarSystem` (see below).
 
 ## Adding your own calendar
 
-`CalendarSystem` is the abstraction. Implement it for any calendar — Hijri,
-Buddhist, Persian — and pass an instance via `calendar`:
+`CalendarSystem` is the abstraction. Implement it for any calendar  Hijri,
+Buddhist, Persian  and pass an instance via `calendar`:
 
 ```ts
 import { type CalendarSystem, DatePickerEngine } from '@anil-labs/calendar-core';
@@ -99,5 +99,5 @@ class MyCalendar implements CalendarSystem {
 const engine = new DatePickerEngine({ calendar: new MyCalendar() });
 ```
 
-The engine, grid, formatter, and pattern engine all flow through this — no
+The engine, grid, formatter, and pattern engine all flow through this  no
 other code needs to change.

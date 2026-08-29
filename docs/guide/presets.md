@@ -62,7 +62,7 @@ const Easter: DatePreset = {
 <DatePicker presets={['today', Easter]} />;
 ```
 
-The `apply` callback gets the engine instance — drive it however you want
+The `apply` callback gets the engine instance  drive it however you want
 (`select`, `clearSelection`, `setMonth`, `pagePrev`, etc.).
 
 ## Resolving presets manually

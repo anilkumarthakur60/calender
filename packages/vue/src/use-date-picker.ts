@@ -17,7 +17,7 @@ export interface UseDatePickerResult {
 }
 
 /**
- * Vue 3 composable. Engine state is exposed as a `shallowRef` — internally
+ * Vue 3 composable. Engine state is exposed as a `shallowRef`  internally
  * Vue.js sees a new EngineState identity on every commit (engine emits a
  * frozen object), so shallow tracking is sufficient and cheap.
  */
@@ -34,7 +34,7 @@ export const useDatePicker = (options: DatePickerEngineOptions = {}): UseDatePic
     disposed = true;
     unsub();
     // Release any listener a consumer registered on the engine too, not just
-    // our own — the engine dies with the component either way.
+    // our own  the engine dies with the component either way.
     engine.destroy();
   };
 

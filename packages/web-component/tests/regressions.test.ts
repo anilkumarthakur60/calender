@@ -24,7 +24,7 @@ const flushMicrotasks = async (): Promise<void> => {
 const dayCell = (root: HTMLElement, iso: string): HTMLButtonElement =>
   root.querySelector<HTMLButtonElement>(`[data-kind="day"][data-date="${iso}"]`)!;
 
-describe('bug #2 — focus stealing on render', () => {
+describe('bug #2  focus stealing on render', () => {
   it('mounting a picker does not move document focus', async () => {
     mount('<calender-picker value="2025-04-15"></calender-picker>');
     await flushMicrotasks();
@@ -43,7 +43,7 @@ describe('bug #2 — focus stealing on render', () => {
   });
 });
 
-describe('bug #5 — cal-change contract', () => {
+describe('bug #5  cal-change contract', () => {
   it('a selection fires exactly one cal-change with the committed value', () => {
     const el = mount('<calender-picker value="2025-04-15"></calender-picker>');
     const events: CustomEvent[] = [];
@@ -81,7 +81,7 @@ describe('grid entry animation only plays on navigation', () => {
   });
 });
 
-describe('bug #6 — attribute changes must not wipe the selection', () => {
+describe('bug #6  attribute changes must not wipe the selection', () => {
   it('cosmetic attributes (theme/density) keep the selection', () => {
     const el = mount('<calender-picker></calender-picker>') as CalenderPickerElement;
     // Select a concrete date first.
@@ -109,7 +109,7 @@ describe('bug #6 — attribute changes must not wipe the selection', () => {
   });
 });
 
-describe('bug #7 — malformed date attributes must not brick the element', () => {
+describe('bug #7  malformed date attributes must not brick the element', () => {
   it('renders despite min="garbage"', () => {
     const el = mount('<calender-picker min="garbage"></calender-picker>');
     expect(el.querySelectorAll('.cal-picker__cell').length).toBeGreaterThanOrEqual(28);
@@ -124,7 +124,7 @@ describe('bug #7 — malformed date attributes must not brick the element', () =
   });
 });
 
-describe('bug #10 — events bubble out of the element', () => {
+describe('bug #10  events bubble out of the element', () => {
   it('cal-select and cal-change reach a document-level listener', () => {
     const el = mount('<calender-picker value="2025-04-15"></calender-picker>');
     const seen: string[] = [];
@@ -141,7 +141,7 @@ describe('bug #10 — events bubble out of the element', () => {
   });
 });
 
-describe('bug #12 — ARIA grid rows', () => {
+describe('bug #12  ARIA grid rows', () => {
   it('gridcells sit inside role="row" containers, not directly under the grid', () => {
     const el = mount('<calender-picker week-numbers value="2025-04-15"></calender-picker>');
     const grid = el.querySelector('.cal-picker__grid')!;
@@ -165,7 +165,7 @@ describe('bug #12 — ARIA grid rows', () => {
   });
 });
 
-describe('bug #3 — popover only closes on selection commits', () => {
+describe('bug #3  popover only closes on selection commits', () => {
   const openInput = (
     html: string,
   ): { el: HTMLElement; input: HTMLInputElement; popover: HTMLElement } => {
@@ -190,7 +190,7 @@ describe('bug #3 — popover only closes on selection commits', () => {
   });
 });
 
-describe('bug #4 — in-progress typing survives engine changes', () => {
+describe('bug #4  in-progress typing survives engine changes', () => {
   it('paging does not overwrite partially typed text', () => {
     const el = mount('<calender-input></calender-input>');
     const input = el.querySelector<HTMLInputElement>('.cal-field__input')!;
@@ -202,7 +202,7 @@ describe('bug #4 — in-progress typing survives engine changes', () => {
   });
 });
 
-describe('bug #8 — reconnect resets popover state', () => {
+describe('bug #8  reconnect resets popover state', () => {
   it('the popover opens again after remove + re-append', () => {
     const el = mount('<calender-input></calender-input>');
     el.querySelector<HTMLInputElement>('.cal-field__input')!.focus();
@@ -217,7 +217,7 @@ describe('bug #8 — reconnect resets popover state', () => {
   });
 });
 
-describe('bug #11 — value is the storage format; displayValue is the text', () => {
+describe('bug #11  value is the storage format; displayValue is the text', () => {
   it('round-trips value and exposes the formatted text separately', () => {
     const el = mount(
       '<calender-input format="us" value-format="iso" value="2025-04-15"></calender-input>',

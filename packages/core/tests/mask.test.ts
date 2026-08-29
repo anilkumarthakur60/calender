@@ -59,7 +59,7 @@ describe('applyMask', () => {
   });
 });
 
-describe('applyMask — single-digit tokens (M/d in "short")', () => {
+describe('applyMask  single-digit tokens (M/d in "short")', () => {
   it('regression: 12/3/2025 stays 12/3/2025 (was 1/2/3202)', () => {
     expect(applyMask('12/3/2025', 'short')).toEqual({ value: '12/3/2025', caret: 9 });
   });

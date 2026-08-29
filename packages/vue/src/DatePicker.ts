@@ -88,7 +88,7 @@ export const DatePicker = defineComponent({
     'update:modelValue': (_value: string) => true,
   },
   setup(props, { emit, slots, expose }) {
-    // Reconfigurable engine options — everything except the construction-only
+    // Reconfigurable engine options  everything except the construction-only
     // initial* fields. Also used as a reactive watch source for setOptions.
     const reconfigurableOptions = (): DatePickerEngineOptions => ({
       ...(props.mode !== undefined ? { mode: props.mode } : {}),
@@ -131,7 +131,7 @@ export const DatePicker = defineComponent({
     });
 
     // Events come from the ENGINE so keyboard selection (Enter/Space),
-    // presets and programmatic changes all emit — not just clicks.
+    // presets and programmatic changes all emit  not just clicks.
     const offSelect = engine.on('select', ({ focused, selection }) => {
       emit('select', focused);
       emit('update:modelValue', encodeSelectionValue(selection, engine.calendar));
@@ -197,7 +197,7 @@ export const DatePicker = defineComponent({
           if (engine.months <= 1) title = fmt.formatMonthYear(s.focused);
           else {
             const last = engine.calendar.addMonths(s.focused, engine.months - 1);
-            title = `${fmt.formatMonthYear(s.focused)} — ${fmt.formatMonthYear(last)}`;
+            title = `${fmt.formatMonthYear(s.focused)}  ${fmt.formatMonthYear(last)}`;
           }
         } else {
           title = buildPeriodGrid(s.focused, s.view, engine.calendar, engine.locale.locale).title;
@@ -316,7 +316,7 @@ export const DatePicker = defineComponent({
 
         const highlight = engine.getHighlight(cell.date);
         let label = fmt.formatFull(cell.date);
-        if (highlight?.label) label += ` — ${highlight.label}`;
+        if (highlight?.label) label += `  ${highlight.label}`;
 
         return h(
           'button',

@@ -8,7 +8,7 @@ import { GregorianCalendar } from './gregorian-calendar.js';
  *
  * E.g. AD 2025 = BE 2568, AD 2024-04-13 (Thai New Year week) = BE 2567-04-13.
  * Month/day arithmetic, leap years, and weekday calculation match Gregorian
- * exactly — only the year number changes.
+ * exactly  only the year number changes.
  */
 const BE_OFFSET = 543;
 

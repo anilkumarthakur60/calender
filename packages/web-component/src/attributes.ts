@@ -138,7 +138,7 @@ export const readPresetsFromAttribute = (
 };
 
 /**
- * Attributes that are purely presentational — changing them must never
+ * Attributes that are purely presentational  changing them must never
  * rebuild or reconfigure the engine (and therefore never wipe a selection).
  */
 export const COSMETIC_ATTRS: ReadonlySet<string> = new Set(['theme', 'density']);

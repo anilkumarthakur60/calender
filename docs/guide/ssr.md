@@ -1,6 +1,6 @@
 # Server-side rendering
 
-The headless engine has no DOM dependencies — it can be constructed and
+The headless engine has no DOM dependencies  it can be constructed and
 queried on the server, in workers, in tests, anywhere. Renderers (React, Vue,
 Web Component) only touch the DOM when they actually render.
 
@@ -46,7 +46,7 @@ mismatch:
 ### Styles
 
 Import `@anil-labs/calendar-styles` once at the top of your `app/layout.tsx` (or
-`pages/_app.tsx`). The styles are pure CSS — no `useEffect` needed.
+`pages/_app.tsx`). The styles are pure CSS  no `useEffect` needed.
 
 ```tsx
 import '@anil-labs/calendar-styles';
@@ -85,7 +85,7 @@ import '@anil-labs/calendar-web-component/auto-register';
 
 ## Nuxt (Vue)
 
-Same idea — wrap `<DatePicker>` in a client-only boundary:
+Same idea  wrap `<DatePicker>` in a client-only boundary:
 
 ```vue
 <template>
@@ -100,13 +100,13 @@ Or import directly in a `.client.vue` component.
 ## SvelteKit
 
 Svelte's adapter exposes a `createDatePicker` factory rather than a component
-— so SSR-safe by construction. Render the resulting state inside a Svelte
+ so SSR-safe by construction. Render the resulting state inside a Svelte
 template; if you need browser-only APIs (`Intl.DateTimeFormat` is fine; the
 DOM is not), guard with `if (browser)` from `$app/environment`.
 
 ## Astro
 
-Each adapter works as an Astro island — pass `client:visible` or
+Each adapter works as an Astro island  pass `client:visible` or
 `client:idle` so the picker only hydrates when needed.
 
 ```astro

@@ -17,7 +17,7 @@ const greg = new GregorianCalendar();
 const toIso = (d: { year: number; month: number; day: number }): string =>
   `${d.year}-${String(d.month).padStart(2, '0')}-${String(d.day).padStart(2, '0')}`;
 
-describe('BikramSambatCalendar — epoch + conversion', () => {
+describe('BikramSambatCalendar  epoch + conversion', () => {
   it('BS 1970-01-01 ↔ AD 1913-04-13 (anchor)', () => {
     expect(bs.toGregorian(createCalendarDate(1970, 1, 1))).toEqual({
       year: 1913,
@@ -73,7 +73,7 @@ describe('BikramSambatCalendar — epoch + conversion', () => {
   });
 });
 
-describe('BikramSambatCalendar — UTC-pure conversion', () => {
+describe('BikramSambatCalendar  UTC-pure conversion', () => {
   // toGregorian is pure UTC epoch-day arithmetic, so these hold in EVERY host
   // time zone (the old local-Date math drifted a day around e.g. the Samoa
   // 2011 dateline jump). vitest cannot switch TZ in-process; the table plus
@@ -129,7 +129,7 @@ describe('BikramSambatCalendar — UTC-pure conversion', () => {
   });
 });
 
-describe('BikramSambatCalendar — arithmetic', () => {
+describe('BikramSambatCalendar  arithmetic', () => {
   it('addDays crosses irregular BS month boundaries', () => {
     // BS 2080 month 1 has 31 days (per table)
     const last = createCalendarDate(2080, 1, 31);
@@ -152,7 +152,7 @@ describe('BikramSambatCalendar — arithmetic', () => {
   });
 });
 
-describe('BikramSambatCalendar — boundaries', () => {
+describe('BikramSambatCalendar  boundaries', () => {
   it('Throws on year before BS_MIN_YEAR', () => {
     expect(() => bs.daysInMonth(BS_MIN_YEAR - 1, 1)).toThrow();
   });

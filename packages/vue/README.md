@@ -1,6 +1,6 @@
 # @anil-labs/calendar-vue
 
-Vue 3 adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a headless, framework-agnostic calendar/date-picker engine. Ships `DatePicker` and `DateField` components plus a `useDatePicker` composable for fully custom UIs.
+Vue 3 adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core)  a headless, framework-agnostic calendar/date-picker engine. Ships `DatePicker` and `DateField` components plus a `useDatePicker` composable for fully custom UIs.
 
 ## Install
 

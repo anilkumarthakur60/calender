@@ -14,7 +14,7 @@ export class MultiSelectionStrategy implements SelectionStrategy<S> {
   /**
    * Insertion-order bookkeeping so max-cap trimming drops the OLDEST-SELECTED
    * date (FIFO), not the chronologically earliest. The exposed `value` stays
-   * sorted by date — only the trim order tracks selection order.
+   * sorted by date  only the trim order tracks selection order.
    */
   #order: CalendarDate[] = [];
 

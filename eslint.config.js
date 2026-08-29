@@ -27,7 +27,7 @@ export default tseslint.config(
     },
   },
   {
-    // React adapter — enable the rules-of-hooks + exhaustive-deps plugin.
+    // React adapter  enable the rules-of-hooks + exhaustive-deps plugin.
     files: ['packages/react/**/*.{ts,tsx}', 'examples/react/**/*.{ts,tsx}'],
     plugins: { 'react-hooks': reactHooks },
     rules: {

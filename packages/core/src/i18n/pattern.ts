@@ -152,7 +152,7 @@ const weekdayName = (weekdayUS: number, style: 'long' | 'short', locale: string)
 
 /**
  * Substitute each ASCII digit in `s` with the calendar's locale-aware digit
- * — used after padding so padded zeros also get localized (e.g. "0025" →
+ *  used after padding so padded zeros also get localized (e.g. "0025" →
  * "००२५" for Devanagari).
  */
 const localizeDigits = (s: string, calendar: CalendarSystem, locale: string): string => {
@@ -330,7 +330,7 @@ interface ParseFields {
   month?: number;
   day?: number;
   hour?: number;
-  /** True when the hour came from a 12-hour token (h/hh) — validated 1-12. */
+  /** True when the hour came from a 12-hour token (h/hh)  validated 1-12. */
   hour12?: boolean;
   minute?: number;
   second?: number;

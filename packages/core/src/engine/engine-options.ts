@@ -74,7 +74,7 @@ export interface DatePickerEngineOptions {
    * enabled span reaching out from the anchor.
    */
   readonly rangeOverDisabled?: 'allow' | 'reject' | 'clamp';
-  /** Per-date decorations (dots, tooltips). Cheap to evaluate — looked up by ISO key. */
+  /** Per-date decorations (dots, tooltips). Cheap to evaluate  looked up by ISO key. */
   readonly highlights?: ReadonlyArray<DateHighlight>;
   /** Number of consecutive months to render. Default 1. */
   readonly months?: number;

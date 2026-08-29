@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
 
-# Cancel earlier runs on the same branch/PR — only the latest matters.
+# Cancel earlier runs on the same branch/PR  only the latest matters.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -65,7 +65,7 @@ jobs:
           done
 
       # Smoke-test that every publishable JS package loads in plain Node,
-      # both require() and import — catches SSR-hostile module-scope DOM access.
+      # both require() and import  catches SSR-hostile module-scope DOM access.
       # angular is excluded here only because it ships ESM/FESM with no CJS
       # entry; publint and attw above DO cover it.
       - name: Node import smoke test

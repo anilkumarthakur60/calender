@@ -27,7 +27,7 @@ via `name=`.
 The user can also **type** into the input. On blur, the text is lenient-parsed
 and normalised back to the format you specified.
 
-## React — controlled
+## React  controlled
 
 ```tsx
 import { DateField } from '@anil-labs/calendar-react';
@@ -37,7 +37,7 @@ const [date, setDate] = useState('2025-04-15');
 <DateField value={date} onChange={setDate} mode="single" />;
 ```
 
-## React — react-hook-form
+## React  react-hook-form
 
 ```tsx
 import { Controller, useForm } from 'react-hook-form';
@@ -56,7 +56,7 @@ const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
 </form>;
 ```
 
-## React — native form submit
+## React  native form submit
 
 ```tsx
 <form
@@ -71,7 +71,7 @@ const { control, handleSubmit } = useForm({ defaultValues: { dob: '' } });
 </form>
 ```
 
-## Vue — v-model
+## Vue  v-model
 
 ```vue
 <script setup>
@@ -86,7 +86,7 @@ const date = ref('2025-04-15');
 </template>
 ```
 
-## Vue — form submit (no v-model)
+## Vue  form submit (no v-model)
 
 ```vue
 <form @submit.prevent="onSubmit">

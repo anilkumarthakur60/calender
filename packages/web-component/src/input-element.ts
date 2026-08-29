@@ -38,13 +38,13 @@ const HINT_BY_PATTERN: Record<string, string> = {
 };
 
 /**
- * Instance surface of `<calender-input>` — form-associated input that opens a
+ * Instance surface of `<calender-input>`  form-associated input that opens a
  * calendar popover. Type into the input or click to pick. Submits as a
  * normal form field.
  *
  * `value` reads and writes the STORAGE format (the `value-format` attribute
  * pattern, falling back to `format`), matching the attribute and the
- * submitted form value — so `el.value = el.value` round-trips. Use
+ * submitted form value  so `el.value = el.value` round-trips. Use
  * {@link CalenderInputElement.displayValue} for the formatted text shown in
  * the visible input.
  *
@@ -69,7 +69,7 @@ let InputElementClass: CalenderInputElementConstructor | null = null;
 
 /**
  * Create (and memoize) the `<calender-input>` element class. Deferred to a
- * factory so SSR frameworks can load the bundle in Node — the class body
+ * factory so SSR frameworks can load the bundle in Node  the class body
  * references `HTMLElement`, which only exists once a DOM is present.
  */
 export const createInputElementClass = (): CalenderInputElementConstructor => {
@@ -226,7 +226,7 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
       this.#popover.append(this.#pickerHost);
 
       // The hidden input is only a fallback for environments without
-      // ElementInternals — with internals it would double the form entry.
+      // ElementInternals  with internals it would double the form entry.
       this.#hiddenInput = null;
       if (!this.#internals) {
         this.#hiddenInput = document.createElement('input');
@@ -328,7 +328,7 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
       if (initial) this.#applyInitialSelection(engine, initial, mode);
 
       // Only selection COMMITS (select/selectRange/clear) sync the input and
-      // may close the popover — paging/hover/focus changes must not.
+      // may close the popover  paging/hover/focus changes must not.
       engine.on('select', () => this.#onEngineSelect());
 
       this.#engine = engine;
@@ -359,7 +359,7 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
           for (const d of decoded.multi) engine.select(d);
         }
       } catch {
-        /* invalid date for the active calendar — ignore */
+        /* invalid date for the active calendar  ignore */
       }
     }
 
@@ -400,7 +400,7 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
     }
 
     /**
-     * Typed text must clear the same constraints a click does — otherwise a
+     * Typed text must clear the same constraints a click does  otherwise a
      * user can type past `min`/`max` and submit the form with that value.
      */
     #isDecodedPickable(decoded: DecodedSelection, mode: SelectionMode): boolean {
@@ -429,7 +429,7 @@ export const createInputElementClass = (): CalenderInputElementConstructor => {
         parseSelection(text, mode, this.#fmtOpts(this.#displayPattern())) ??
         parseSelection(text, mode, this.#fmtOpts(this.#storagePattern()));
       if (!decoded || !this.#isDecodedPickable(decoded, mode)) {
-        // Unparseable, or outside min/max/disabled — revert to the last
+        // Unparseable, or outside min/max/disabled  revert to the last
         // committed value rather than accepting a value the grid would refuse.
         this.#input.value = this.#toDisplay(current, mode);
         return;

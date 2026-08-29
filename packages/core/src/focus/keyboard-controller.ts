@@ -9,10 +9,10 @@ export interface KeyboardEventLike {
 }
 
 /**
- * Pure key→action mapper. No DOM, no preventDefault — that's the renderer's
+ * Pure key→action mapper. No DOM, no preventDefault  that's the renderer's
  * responsibility. Direction is the physical arrow key pressed; the ENGINE
  * (`DatePickerEngine.handleKey`) swaps left/right for RTL locales itself, so
- * renderers must NOT swap — doing so would double-swap.
+ * renderers must NOT swap  doing so would double-swap.
  */
 export const interpretKey = (event: KeyboardEventLike): KeyboardAction | null => {
   switch (event.key) {

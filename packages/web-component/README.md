@@ -31,10 +31,10 @@ Framework-free `<calender-picker>` custom element built on `@anil-labs/calendar-
 
 ## Events
 
-- `cal-select` — fires when a date is selected (`detail.date`).
-- `cal-change` — fires on any state mutation (`detail.value`, `detail.state`).
+- `cal-select`  fires when a date is selected (`detail.date`).
+- `cal-change`  fires on any state mutation (`detail.value`, `detail.state`).
 
 ## Form association
 
-The element is `form-associated` — its `value` is reported via
+The element is `form-associated`  its `value` is reported via
 `ElementInternals.setFormValue`, so it submits cleanly inside a `<form>`.

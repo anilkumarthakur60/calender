@@ -27,7 +27,7 @@ const demos = [
     slug: 'wc',
     filter: 'example-wc',
     label: 'Web Component',
-    desc: '<calender-picker> and <calender-input> on plain HTML — the most thorough feature showcase.',
+    desc: '<calender-picker> and <calender-input> on plain HTML  the most thorough feature showcase.',
   },
   {
     slug: 'react',
@@ -83,7 +83,7 @@ const html = `<!doctype html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@anil-labs/calender — live demos</title>
+    <title>@anil-labs/calender  live demos</title>
     <meta name="description" content="Live demos of the @anil-labs calendar / date-picker for React, Vue, Svelte, Solid and Web Components." />
     <style>
       :root { color-scheme: dark; }
@@ -128,7 +128,7 @@ const html = `<!doctype html>
     <main>
       <div class="hero">
         <h1>@anil-labs/calender</h1>
-        <p class="tag">A headless, framework-agnostic calendar / date-picker — selection modes, constraints, i18n, time, and full keyboard a11y. Pick a demo:</p>
+        <p class="tag">A headless, framework-agnostic calendar / date-picker  selection modes, constraints, i18n, time, and full keyboard a11y. Pick a demo:</p>
       </div>
       <div class="grid">${cards}
       </div>

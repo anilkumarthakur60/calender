@@ -1,6 +1,6 @@
 # @anil-labs/calendar-angular
 
-Angular 17+ adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a standalone `<cal-date-picker>` component, an injectable `DatePickerService`, and a `provideDatePicker(options)` helper.
+Angular 17+ adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core)  a standalone `<cal-date-picker>` component, an injectable `DatePickerService`, and a `provideDatePicker(options)` helper.
 
 > **Status: not yet published to npm.** The package builds with [ng-packagr](https://github.com/ng-packagr/ng-packagr) in the standard partial-Ivy library format (FESM2022 + type declarations), so it is AOT-safe; it stays `private` until the release workstream flips the flag. It works when consumed from source inside this monorepo.
 
@@ -26,7 +26,7 @@ export class DemoComponent {
 
 Without `provideDatePicker`, the component creates its own service with engine
 defaults. The `[options]` input live-reconfigures the engine via
-`engine.setOptions(...)` — selection and focus are preserved where still valid.
+`engine.setOptions(...)`  selection and focus are preserved where still valid.
 
 ## Reactive forms
 

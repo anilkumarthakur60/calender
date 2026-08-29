@@ -27,7 +27,7 @@ both used by every adapter.
 | `s`    | 1-2 digit second     | `9`      |
 | `a`    | `AM` or `PM`         | `PM`     |
 
-Anything not a token is taken literally — spaces, slashes, commas, words.
+Anything not a token is taken literally  spaces, slashes, commas, words.
 
 ```ts
 import { formatWithPattern, createCalendarDate } from '@anil-labs/calendar-core';
@@ -57,12 +57,12 @@ Use a string ID instead of writing tokens:
 <DateField format="us" />      // "04/07/2025"
 ```
 
-## DateField — display vs storage
+## DateField  display vs storage
 
 `DateField` has two format props:
 
-- `format` — what the user **sees** in the input
-- `valueFormat` — the format of the controlled `value` and `onChange` string (defaults to `format`)
+- `format`  what the user **sees** in the input
+- `valueFormat`  the format of the controlled `value` and `onChange` string (defaults to `format`)
 
 Useful when you want a human-friendly display but ISO storage:
 

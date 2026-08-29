@@ -57,8 +57,8 @@ export const App = () => {
 const { engine, state } = createDatePicker(options);
 ```
 
-- `engine` — the `DatePickerEngine` instance.
-- `state` — a Solid `Accessor<EngineState>` (call `state()` to read; reactive
+- `engine`  the `DatePickerEngine` instance.
+- `state`  a Solid `Accessor<EngineState>` (call `state()` to read; reactive
   by default).
 
 The Solid adapter uses `createSignal` internally; subscribing to engine
@@ -67,7 +67,7 @@ when the component unmounts.
 
 ## Features
 
-Every engine feature is available via the options object — range hover preview,
+Every engine feature is available via the options object  range hover preview,
 multi-month, week numbers, highlights, time picker, BS calendar, presets, etc.
 The rendering is yours, the state machine is shared.
 

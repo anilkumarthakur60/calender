@@ -27,7 +27,7 @@
 
 <main>
   <header>
-    <h1>@anil-labs — Svelte 5 example</h1>
+    <h1>@anil-labs  Svelte 5 example</h1>
     <p>createDatePicker + runes.</p>
   </header>
 

@@ -110,6 +110,6 @@ parseSelection('Apr 1, 2025 – Apr 15, 2025', 'range', { pattern: 'medium' });
 
 Default separators:
 
-- ISO format → `/` (range), `,` (multi) — compact, round-trips cleanly
-- Other formats → `–` (range), `; ` (multi) — avoids comma collision with
+- ISO format → `/` (range), `,` (multi)  compact, round-trips cleanly
+- Other formats → `–` (range), `; ` (multi)  avoids comma collision with
   formatted output like `"Apr 15, 2025"`

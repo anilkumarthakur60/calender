@@ -36,14 +36,14 @@ const holidays = [
         <template #picker><DatePicker mode="single" locale="en-GB" /></template>
         <template #field><DateField mode="single" locale="en-GB" /></template>
       </FeaturePair>
-      <FeaturePair title="Range — hover preview">
+      <FeaturePair title="Range  hover preview">
         <template #desc
-          >Click an anchor, then hover — a tentative range shows until the second click.</template
+          >Click an anchor, then hover  a tentative range shows until the second click.</template
         >
         <template #picker><DatePicker mode="range" /></template>
         <template #field><DateField mode="range" format="MMM d, yyyy" /></template>
       </FeaturePair>
-      <FeaturePair title="Multi-date — weekends disabled">
+      <FeaturePair title="Multi-date  weekends disabled">
         <template #desc>Toggle multiple non-weekend dates.</template>
         <template #picker><DatePicker mode="multi" :disabled-weekdays="[0, 6]" /></template>
         <template #field><DateField mode="multi" :disabled-weekdays="[0, 6]" /></template>
@@ -63,7 +63,7 @@ const holidays = [
           ><DateField :header-selectors="true" :year-range="[2000, 2050]"
         /></template>
       </FeaturePair>
-      <FeaturePair title="Multi-month — 2 months">
+      <FeaturePair title="Multi-month  2 months">
         <template #desc
           ><code>mode="range" :months="2"</code>. Two months side by side; range bands span
           both.</template
@@ -100,7 +100,7 @@ const holidays = [
         <template #picker><DatePicker :week-numbers="true" /></template>
         <template #field><DateField :week-numbers="true" /></template>
       </FeaturePair>
-      <FeaturePair title="Highlights — events / holidays">
+      <FeaturePair title="Highlights  events / holidays">
         <template #desc>Coloured dot under the day; tooltip from <code>label</code>.</template>
         <template #picker
           ><DatePicker :initial-focused="createCalendarDate(2026, 12, 1)" :highlights="holidays"
@@ -179,7 +179,7 @@ const holidays = [
 
     <h2 class="section-title">Calendar systems</h2>
     <div class="pairs">
-      <FeaturePair title="Bikram Sambat — English">
+      <FeaturePair title="Bikram Sambat  English">
         <template #desc>Months: Baishakh, Jestha, … transliterated.</template>
         <template #picker
           ><DatePicker calendar="bikram-sambat" locale="en-US" :header-selectors="true"
@@ -192,7 +192,7 @@ const holidays = [
             format="MMMM d, yyyy"
         /></template>
       </FeaturePair>
-      <FeaturePair title="Bikram Sambat — Nepali Devanagari">
+      <FeaturePair title="Bikram Sambat  Nepali Devanagari">
         <template #desc
           ><code>locale="ne-NP"</code> renders Devanagari digits + month names.</template
         >
@@ -209,11 +209,11 @@ const holidays = [
       </FeaturePair>
     </div>
 
-    <h2 class="section-title">Form integration — DateField patterns</h2>
+    <h2 class="section-title">Form integration  DateField patterns</h2>
     <div class="grid">
       <article class="card">
         <header>
-          <h3>v-model — ISO storage</h3>
+          <h3>v-model  ISO storage</h3>
           <p>Default behaviour. ISO format both ways.</p>
         </header>
         <DateField v-model="isoValue" />

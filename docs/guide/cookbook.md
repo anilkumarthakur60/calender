@@ -3,7 +3,7 @@
 Real-world patterns. Each recipe is a complete snippet you can paste into
 your app.
 
-## 1. Booking range — "from / to" with a minimum stay
+## 1. Booking range  "from / to" with a minimum stay
 
 A hotel-style booking input where the user must book at least 2 nights and
 no more than 30.
@@ -25,10 +25,10 @@ const [range, setRange] = useState('');
 />;
 ```
 
-The second input's `min` automatically follows the first — selecting Apr 15
+The second input's `min` automatically follows the first  selecting Apr 15
 as check-in disables Apr 14 and earlier in the check-out picker.
 
-## 2. Age verification — only let users 18+ submit
+## 2. Age verification  only let users 18+ submit
 
 Compute the boundary date once, pass as `max`.
 
@@ -137,7 +137,7 @@ import { DatePicker, createCalendarDate } from '@anil-labs/calendar-react';
 />;
 ```
 
-## 8. Custom day cell — show prices in a date picker
+## 8. Custom day cell  show prices in a date picker
 
 ```tsx
 import { DatePicker } from '@anil-labs/calendar-react';

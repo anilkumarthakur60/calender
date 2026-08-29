@@ -1,6 +1,6 @@
 # @anil-labs/calendar-react
 
-React 18+ adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core) — a headless, framework-agnostic calendar/date-picker engine. Ships ready-made components (`DatePicker`, `DateField`, `DateRangeField`) plus a `useDatePicker` hook for fully custom UIs.
+React 18+ adapter for [`@anil-labs/calendar-core`](https://github.com/anilkumarthakur60/calender/tree/main/packages/core)  a headless, framework-agnostic calendar/date-picker engine. Ships ready-made components (`DatePicker`, `DateField`, `DateRangeField`) plus a `useDatePicker` hook for fully custom UIs.
 
 ## Install
 

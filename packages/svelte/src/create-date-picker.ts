@@ -12,7 +12,7 @@ export interface CreateDatePickerResult {
   /**
    * The underlying engine. Exposed so consumers can issue commands
    * (`engine.select(...)`, `engine.pageNext()`, ...) and reconfigure a live
-   * picker via `engine.setOptions(partial)` — selection and focus are
+   * picker via `engine.setOptions(partial)`  selection and focus are
    * preserved where still valid, and subscribers are notified.
    */
   readonly engine: DatePickerEngine;
@@ -47,7 +47,7 @@ export interface CreateDatePickerResult {
 /**
  * Framework-agnostic factory that also satisfies Svelte's store contract via
  * `subscribe`. Use `$store` auto-subscription (Svelte 3/4/5) or Svelte 5's
- * `fromStore` bridge to read it reactively — no Svelte runtime dependency.
+ * `fromStore` bridge to read it reactively  no Svelte runtime dependency.
  */
 export const createDatePicker = (options: DatePickerEngineOptions = {}): CreateDatePickerResult => {
   const engine = new DatePickerEngine(options);

@@ -24,9 +24,9 @@ Now use `<calender-picker>` or `<calender-input>` anywhere:
 
 ## Two elements
 
-- **`<calender-picker>`** — the bare grid. Form-associated via
+- **`<calender-picker>`**  the bare grid. Form-associated via
   `ElementInternals`; clicking dates updates the form value.
-- **`<calender-input>`** — text input + popover containing the picker. Type or
+- **`<calender-input>`**  text input + popover containing the picker. Type or
   pick. Lenient parse on blur. Same form behaviour.
 
 ## Attributes
