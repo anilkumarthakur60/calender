@@ -51,7 +51,7 @@
     "test": "echo 'no tests'"
   },
   "devDependencies": {
-    "sass": "^1.102.0"
+    "sass": "^1.104.1"
   },
   "publishConfig": {
     "access": "public"
